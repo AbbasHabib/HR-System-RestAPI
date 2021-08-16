@@ -14,19 +14,15 @@ public class DepartmentController
     @Autowired
     DepartmentService departmentService;
 
-    @GetMapping("/test")
-    public @ResponseBody Department testResponse(@RequestBody Department d)
-    {
-        return d;
-    }
-    @PostMapping("/add")
+    @PostMapping("/")
     public Department addDepartment(@RequestBody Department department)
     {
         return departmentService.addDepartment(department);
     }
-    @GetMapping("/view")
+    @GetMapping("/")
     public List<Department> getDepartments()
     {
         return departmentService.getDepartments();
     }
+
 }

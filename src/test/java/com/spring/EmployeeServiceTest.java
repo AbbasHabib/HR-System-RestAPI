@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 @SpringBootTest(classes = HrSystemApplication.class)
-public class ServicesTest
+public class EmployeeServiceTest
 {
     @Autowired
     private EmployeeService employeeService;

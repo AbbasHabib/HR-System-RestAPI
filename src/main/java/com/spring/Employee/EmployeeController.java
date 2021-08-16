@@ -1,9 +1,11 @@
 package com.spring.Employee;
 
+import com.spring.Employee.dto.EmployeeModifyDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.PostUpdate;
 import java.util.List;
 
 @RestController
@@ -16,7 +18,15 @@ public class EmployeeController
     @PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
     public Employee addEmployee(@RequestBody Employee employee) throws Exception
     {
-        return employeeService.addEmployee(employee);
+        try
+        {
+            return employeeService.addEmployee(employee);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @GetMapping("/")
@@ -35,5 +45,12 @@ public class EmployeeController
     public Boolean deleteEmployee(@PathVariable String id)
     {
         return employeeService.deleteEmployee(Long.parseLong(id));
+    }
+    @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Employee modifyEmployee(@PathVariable String id, @RequestBody EmployeeModifyDto employeeDto)
+    {
+        Employee employeeToModify = employeeService.getEmployee(Long.parseLong(id));
+        EmployeeModifyDto.dtoToEmployee(employeeDto, employeeToModify);
+        return employeeService.saveEmployeeModification(employeeToModify);
     }
 }

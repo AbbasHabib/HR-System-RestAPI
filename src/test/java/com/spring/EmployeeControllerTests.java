@@ -2,6 +2,7 @@ package com.spring;
 
 import com.spring.Employee.Employee;
 import com.spring.Employee.EmployeeService;
+import com.spring.Employee.dto.EmployeeModifyDto;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,6 +17,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,27 +31,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
-public class ControllerTests
+public class EmployeeControllerTests
 {
-//    @MockBean
-//    EmployeeService employeeService;
-
     @Autowired
     MockMvc mockMvc;
 
     @Test
     public void add_employee() throws Exception
     {
-        Employee EmployeeToAdd = new Employee();
-        EmployeeToAdd.setId(100L);
-        EmployeeToAdd.setName("7amada");
+        // this test is expected to: return same object it receives and add employee to database
 
-        // EmployeeService is tested and (employeeService.addEmployee)
-        // Is expected to return same object it receives
+        Employee employeeToAdd = new Employee();
+        employeeToAdd.setId(100L);
+        employeeToAdd.setName("7amada");
+        employeeToAdd.setGender('R');
+
         ObjectMapper objectMapper = new ObjectMapper();
-        String employeeJson = objectMapper.writeValueAsString(EmployeeToAdd); // converts employee object to JSON string
+        String employeeJson = objectMapper.writeValueAsString(employeeToAdd); // converts employee object to JSON string
 
-        // The from this POST request (.post("/employee/add")) takes to be a Json of employee object on request Body
+        // The from this POST request (.post("/employee/")) takes to be a Json of employee object on request Body
         mockMvc.perform(MockMvcRequestBuilders.post("/employee/")
                 .contentType(MediaType.APPLICATION_JSON).content(employeeJson))
                 .andExpect(content().json(employeeJson))
@@ -75,5 +77,31 @@ public class ControllerTests
                 .andExpect(content().string("true"))
                 .andExpect(status().isOk())
                 .andReturn();
+    }
+    @Test
+    public void modify_employee() throws Exception
+    {
+        // Initial values of the employee
+        Employee employeeToModify = new Employee();
+        employeeToModify.setId(100L);
+        employeeToModify.setName("7amada");
+        employeeToModify.setGender('R');
+        String EmployeeId = employeeToModify.getId().toString();
+
+        // Expected modification
+        EmployeeModifyDto employeeDto = new EmployeeModifyDto();
+        employeeDto.setName("btengana");
+        employeeDto.setGender('F');
+
+        EmployeeModifyDto.dtoToEmployee(employeeDto, employeeToModify);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String employeeDtoJson = objectMapper.writeValueAsString(employeeDto);
+        String employeeModifiedJson = objectMapper.writeValueAsString(employeeToModify);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/employee/"+EmployeeId)
+                .contentType(MediaType.APPLICATION_JSON).content(employeeDtoJson))
+                .andExpect(content().json(employeeModifiedJson))
+                .andExpect(status().isOk());
     }
 }

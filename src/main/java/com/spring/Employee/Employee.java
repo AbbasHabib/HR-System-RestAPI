@@ -38,6 +38,7 @@ public class Employee
     // manager is a a super manager doesn't have a manager above him
     private Employee manager;
 
+    @JsonIgnore
     @OneToMany(mappedBy="manager") // one manager to many employees
     private Set<Employee> employees;
 

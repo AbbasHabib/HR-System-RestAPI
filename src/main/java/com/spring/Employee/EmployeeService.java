@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class EmployeeService
@@ -19,6 +20,10 @@ public class EmployeeService
         }
         throw new Exception("user ID already exists");
     }
+    public Employee saveEmployeeModification(Employee e)
+    {
+        return employeeRepository.save(e);
+    }
     public Boolean deleteEmployee(Long employeeId)
     {
         if(this.getEmployee(employeeId) != null)
@@ -26,9 +31,9 @@ public class EmployeeService
             employeeRepository.deleteById(employeeId);
             return true;
         }
-
         return false;
     }
+
 
     public List<Employee> getEmployees()
     {
