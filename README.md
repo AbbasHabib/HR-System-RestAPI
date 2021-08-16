@@ -6,6 +6,7 @@ this project is an HR system where the of it is managing employees teams, depart
 
 ## ToDo List
 
+- [ ] Deal with Employee salary logic
 - [x] Rest API to add Employee
 - [x] Rest API to get employee Info
 - [x] Rest API to modify employee
