@@ -113,4 +113,54 @@ public class Employee
     {
         return netSalary;
     }
+
+    public void setId(Long id)
+    {
+        this.id = id;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
+    public void setBirthDate(Date birthDate)
+    {
+        this.birthDate = birthDate;
+    }
+
+    public void setGraduationDate(Date graduationDate)
+    {
+        this.graduationDate = graduationDate;
+    }
+
+    public void setGender(char gender)
+    {
+        this.gender = gender;
+    }
+
+    public void setDepartment(Department department)
+    {
+        this.department = department;
+    }
+
+    public void setManager(Employee manager)
+    {
+        this.manager = manager;
+    }
+
+    public void setEmployees(Set<Employee> employees)
+    {
+        this.employees = employees;
+    }
+
+    public void setGrossSalary(Float grossSalary)
+    {
+        this.grossSalary = grossSalary;
+    }
+
+    public void setNetSalary(Float netSalary)
+    {
+        this.netSalary = netSalary;
+    }
 }

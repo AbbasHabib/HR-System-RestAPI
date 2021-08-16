@@ -3,6 +3,7 @@ package com.spring.Employee;
 import com.spring.Employee.Employee;
 import com.spring.Employee.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public class EmployeeController
     {
         return d;
     }
-    @PostMapping("/add")
+    @PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
     public Employee addEmployee(@RequestBody Employee employee)
     {
         return employeeService.addEmployee(employee);
