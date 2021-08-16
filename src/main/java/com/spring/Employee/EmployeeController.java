@@ -1,7 +1,5 @@
 package com.spring.Employee;
 
-import com.spring.Employee.Employee;
-import com.spring.Employee.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -15,19 +13,27 @@ public class EmployeeController
     @Autowired
     EmployeeService employeeService;
 
-    @GetMapping("/test")
-    public Employee testResponse(@RequestBody Employee d)
-    {
-        return d;
-    }
-    @PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Employee addEmployee(@RequestBody Employee employee)
+    @PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Employee addEmployee(@RequestBody Employee employee) throws Exception
     {
         return employeeService.addEmployee(employee);
     }
-    @GetMapping("/view")
+
+    @GetMapping("/")
     public List<Employee> getEmployees()
     {
         return employeeService.getEmployees();
+    }
+
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Employee getEmployee(@PathVariable String id) // send path parameter
+    {
+        return employeeService.getEmployee(Long.parseLong(id));
+    }
+
+    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Boolean deleteEmployee(@PathVariable String id)
+    {
+        return employeeService.deleteEmployee(Long.parseLong(id));
     }
 }

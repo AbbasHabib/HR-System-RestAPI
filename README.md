@@ -9,11 +9,12 @@ this project is an HR system where the of it is managing employees teams, depart
 - [x] Rest API to add Employee
 - [x] Rest API to get employee Info
 - [ ] Rest API to modify employee
-- [ ] Rest API to delete employee
-- [ ] Rest API to get Employee Salary info
+- [x] Rest API to delete employee
+- [ ] Rest API to get Employee salary info
 - [ ] Rest API to get All employees under a specific manager
 - [ ] Rest  Api to get All Employees in some team
 ##
 
 ## Currently working on
 - #### Test Cases for Service and Control Layers
+ooo

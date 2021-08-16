@@ -2,8 +2,6 @@ package com.spring.Employee;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -13,13 +11,33 @@ public class EmployeeService
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    public Employee addEmployee(@RequestBody Employee employee)
+    public Employee addEmployee(Employee employee) throws Exception
     {
-        return employeeRepository.save(employee);
+        if(this.getEmployee(employee.getId()) == null)
+        {
+            return employeeRepository.save(employee);
+        }
+        throw new Exception("user ID already exists");
     }
-    @GetMapping("/view")
+    public Boolean deleteEmployee(Long employeeId)
+    {
+        if(this.getEmployee(employeeId) != null)
+        {
+            employeeRepository.deleteById(employeeId);
+            return true;
+        }
+
+        return false;
+    }
+
     public List<Employee> getEmployees()
     {
         return employeeRepository.findAll();
     }
+
+    public Employee getEmployee(Long employeeId) // send path parameter
+    {
+        return employeeRepository.findById(employeeId).isPresent() ? employeeRepository.findById(employeeId).get() : null;
+    }
+
 }
