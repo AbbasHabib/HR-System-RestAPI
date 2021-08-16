@@ -2,8 +2,7 @@
 
 this project is an HR system where the of it is managing employees teams, departments, salaries...and so on. System is able to apply CRUD operation on the DB
 
-#### The project will be fully driven by [JavaSpringBoot](https://www.tutorialspoint.com/spring_boot/spring_boot_introduction.htm) ​Framework.
-#### And MySql Database.
+#### The project will be fully driven by [JavaSpringBoot](https://www.tutorialspoint.com/spring_boot/spring_boot_introduction.htm) ​Framework, and MySql Database.
 
 ## ToDo List
 
