@@ -1,5 +1,6 @@
 package com.spring.Employee;
 
+import com.spring.Employee.DTO.EmployeeInfoOnlyDTO;
 import com.spring.Employee.DTO.EmployeeModifyDTO;
 import com.spring.Employee.DTO.EmployeeSalaryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,4 +52,20 @@ public class EmployeeController
         return employeeService.employeeSalary(Long.parseLong(id));
     }
 
+    @GetMapping("name/{name}")
+    public List<Employee> getEmployeesByName(@PathVariable String name)
+    {
+        return employeeService.getEmployeesByName(name);
+    }
+    @GetMapping("manager/recursive/{id}")
+    public List<Employee> getEmployeesUnderManagerRecursively(@PathVariable String id)
+    {
+        return employeeService.getManagerEmployeesRecursively(Long.parseLong(id));
+    }
+
+    @GetMapping("manager/{id}")
+    public List<EmployeeInfoOnlyDTO> getEmployeesUnderManager(@PathVariable String id)
+    {
+        return employeeService.getManagerEmployees(Long.parseLong(id));
+    }
 }

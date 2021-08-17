@@ -26,29 +26,32 @@ public class Employee
     private Date graduationDate;
     @Column(name = "gender")
     private char gender;
-
     @ManyToOne
     @JoinColumn(name="department_id", nullable=true)
     private Department department;
 
+    @ManyToOne
+    @JoinColumn(name="team_id", nullable=true)
+    private Team team;
+
     // recursive relationship where a manager is an employee
     // many employees share the same manager id
+
     @ManyToOne
     @JoinColumn(name="manager_id", nullable=true)// in case the manager_id is null that means that
     // manager is a a super manager doesn't have a manager above him
     private Employee manager;
-
     @JsonIgnore
     @OneToMany(mappedBy="manager") // one manager to many employees
     private Set<Employee> employees;
 
     @Column(name="gross_salary")
     private Float grossSalary;
+
     @Column(name="net_salary")
     private Float netSalary;
 
     // list of expertise
-
     public Employee(){  };
 
     public Employee(Long id, String name, Date birthDate, Date graduationDate, char gender, Department department, Employee manager, Set<Employee> employees, Float grossSalary)
@@ -152,6 +155,16 @@ public class Employee
     public void setEmployees(Set<Employee> employees)
     {
         this.employees = employees;
+    }
+
+    public Team getTeam()
+    {
+        return team;
+    }
+
+    public void setTeam(Team team)
+    {
+        this.team = team;
     }
 
     public void setGrossSalary(Float grossSalary)

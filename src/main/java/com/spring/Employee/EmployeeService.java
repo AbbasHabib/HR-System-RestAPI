@@ -1,10 +1,12 @@
 package com.spring.Employee;
 
+import com.spring.Employee.DTO.EmployeeInfoOnlyDTO;
 import com.spring.Employee.DTO.EmployeeModifyDTO;
 import com.spring.Employee.DTO.EmployeeSalaryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -70,5 +72,23 @@ public class EmployeeService
     {
         Employee employeeRequired = this.getEmployee(employeeId);
         return new EmployeeSalaryDTO(employeeRequired);
+    }
+
+    public List<Employee> getEmployeesByName(String name)
+    {
+        return employeeRepository.findByName(name);
+    }
+
+    public List<Employee> getManagerEmployeesRecursively(long managerId)
+    {
+        Employee manager = this.getEmployee(managerId);
+        return employeeRepository.findByManager(manager);
+    }
+
+    public List<EmployeeInfoOnlyDTO> getManagerEmployees(long managerId)
+    {
+        Employee manager = this.getEmployee(managerId);
+        List<Employee> employeesUnderManager = employeeRepository.findByManager(manager);
+        return EmployeeInfoOnlyDTO.setEmployeeToDTOList(employeesUnderManager);
     }
 }

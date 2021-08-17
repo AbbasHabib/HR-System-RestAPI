@@ -1,8 +1,9 @@
-package com.spring;
+package com.spring.employee;
 
 import com.spring.Employee.Employee;
 import com.spring.Employee.EmployeeService;
 
+import com.spring.HrSystemApplication;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
