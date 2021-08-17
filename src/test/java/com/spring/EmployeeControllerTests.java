@@ -1,8 +1,8 @@
 package com.spring;
 
+import com.spring.Employee.DTO.EmployeeSalaryDTO;
 import com.spring.Employee.Employee;
-import com.spring.Employee.EmployeeService;
-import com.spring.Employee.dto.EmployeeModifyDto;
+import com.spring.Employee.DTO.EmployeeModifyDTO;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,21 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -86,22 +80,45 @@ public class EmployeeControllerTests
         employeeToModify.setId(100L);
         employeeToModify.setName("7amada");
         employeeToModify.setGender('R');
+
         String EmployeeId = employeeToModify.getId().toString();
 
         // Expected modification
-        EmployeeModifyDto employeeDto = new EmployeeModifyDto();
-        employeeDto.setName("btengana");
-        employeeDto.setGender('F');
+        EmployeeModifyDTO employeeModificationDto = new EmployeeModifyDTO();
+        employeeModificationDto.setName("btengana");
+        employeeModificationDto.setGender('F');
+        employeeModificationDto.setGrossSalary(7000.0f);
 
-        EmployeeModifyDto.dtoToEmployee(employeeDto, employeeToModify);
+
+        EmployeeModifyDTO.dtoToEmployee(employeeModificationDto, employeeToModify);
 
         ObjectMapper objectMapper = new ObjectMapper();
-        String employeeDtoJson = objectMapper.writeValueAsString(employeeDto);
+        String employeeDtoJson = objectMapper.writeValueAsString(employeeModificationDto);
         String employeeModifiedJson = objectMapper.writeValueAsString(employeeToModify);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/employee/"+EmployeeId)
                 .contentType(MediaType.APPLICATION_JSON).content(employeeDtoJson))
                 .andExpect(content().json(employeeModifiedJson))
+                .andExpect(status().isOk());
+    }
+    @Test
+    public void get_employee_salary() throws Exception
+    {
+        Employee employeeRequired = new Employee();
+        employeeRequired.setId(100L);
+        employeeRequired.setName("7amada");
+        employeeRequired.setGender('R');
+        employeeRequired.setGrossSalary(7000.0f);
+
+        String EmployeeId = employeeRequired.getId().toString();
+
+        EmployeeSalaryDTO employeeSalaryDTO = new EmployeeSalaryDTO(employeeRequired);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String employeeSalaryDTOJson = objectMapper.writeValueAsString(employeeSalaryDTO);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/employee/salary/"+EmployeeId))
+                .andExpect(content().json(employeeSalaryDTOJson))
                 .andExpect(status().isOk());
     }
 }

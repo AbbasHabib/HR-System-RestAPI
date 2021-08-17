@@ -1,6 +1,7 @@
 package com.spring.Employee;
 
-import com.spring.Employee.dto.EmployeeModifyDto;
+import com.spring.Employee.DTO.EmployeeModifyDTO;
+import com.spring.Employee.DTO.EmployeeSalaryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -39,9 +40,15 @@ public class EmployeeController
     }
 
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Employee modifyEmployee(@PathVariable String id, @RequestBody EmployeeModifyDto employeeDto)
+    public Employee modifyEmployee(@PathVariable String id, @RequestBody EmployeeModifyDTO employeeDto)
     {
         return employeeService.modifyEmployee(Long.parseLong(id), employeeDto);
+    }
+
+    @GetMapping(value = "/salary/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public EmployeeSalaryDTO getEmployeeSalary(@PathVariable String id)
+    {
+        return employeeService.employeeSalary(Long.parseLong(id));
     }
 
 }

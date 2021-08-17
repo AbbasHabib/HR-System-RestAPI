@@ -1,4 +1,4 @@
-package com.spring.Employee.dto;
+package com.spring.Employee.DTO;
 
 import com.spring.Department.Department;
 import com.spring.Employee.Employee;
@@ -6,7 +6,7 @@ import com.spring.Employee.Employee;
 import java.util.Date;
 import java.util.Set;
 
-public class EmployeeModifyDto
+public class EmployeeModifyDTO
 {
     private String name;
     private Date birthDate;
@@ -16,8 +16,9 @@ public class EmployeeModifyDto
     private Employee manager;
     private Set<Employee> employees;
     private Float grossSalary;
+    private Float netSalary;
 
-    public static void dtoToEmployee(EmployeeModifyDto dto, Employee employee)
+    public static void dtoToEmployee(EmployeeModifyDTO dto, Employee employee)
     {
         if(dto.name != null && !dto.name.equals(""))
             employee.setName(dto.name);
@@ -31,8 +32,11 @@ public class EmployeeModifyDto
             employee.setManager(dto.manager);
         if(dto.employees != null)
             employee.setEmployees(dto.employees);
-        if(dto.grossSalary != null)
+        if(dto.grossSalary != null && dto.grossSalary != 0)
+        {
             employee.setGrossSalary(dto.grossSalary);
+            employee.setNetSalary(dto.netSalary = dto.grossSalary * 0.85f - 500);
+        }
     }
 
 
@@ -114,5 +118,15 @@ public class EmployeeModifyDto
     public void setGrossSalary(Float grossSalary)
     {
         this.grossSalary = grossSalary;
+    }
+
+    public Float getNetSalary()
+    {
+        return netSalary;
+    }
+
+    public void setNetSalary(Float netSalary)
+    {
+        this.netSalary = netSalary;
     }
 }

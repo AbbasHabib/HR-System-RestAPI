@@ -1,11 +1,11 @@
 package com.spring.Employee;
 
-import com.spring.Employee.dto.EmployeeModifyDto;
+import com.spring.Employee.DTO.EmployeeModifyDTO;
+import com.spring.Employee.DTO.EmployeeSalaryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class EmployeeService
@@ -59,10 +59,16 @@ public class EmployeeService
             employee.setNetSalary(employee.getGrossSalary() * 0.85f - 500);
     }
 
-    public Employee modifyEmployee(long employeeId, EmployeeModifyDto employeeDto)
+    public Employee modifyEmployee(long employeeId, EmployeeModifyDTO employeeDto)
     {
         Employee employeeToModify = this.getEmployee(employeeId);
-        EmployeeModifyDto.dtoToEmployee(employeeDto, employeeToModify);
+        EmployeeModifyDTO.dtoToEmployee(employeeDto, employeeToModify);
         return saveEmployee(employeeToModify);
+    }
+
+    public EmployeeSalaryDTO employeeSalary(long employeeId)
+    {
+        Employee employeeRequired = this.getEmployee(employeeId);
+        return new EmployeeSalaryDTO(employeeRequired);
     }
 }
