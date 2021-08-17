@@ -51,7 +51,7 @@ public class Employee
 
     public Employee(){  };
 
-    public Employee(Long id, String name, Date birthDate, Date graduationDate, char gender, Department department, Employee manager, Set<Employee> employees, Float grossSalary, Float netSalary)
+    public Employee(Long id, String name, Date birthDate, Date graduationDate, char gender, Department department, Employee manager, Set<Employee> employees, Float grossSalary)
     {
         this.id = id;
         this.name = name;

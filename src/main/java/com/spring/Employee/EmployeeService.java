@@ -1,5 +1,6 @@
 package com.spring.Employee;
 
+import com.spring.Employee.dto.EmployeeModifyDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,19 +15,22 @@ public class EmployeeService
 
     public Employee addEmployee(Employee employee) throws Exception
     {
-        if(this.getEmployee(employee.getId()) == null)
+        if (this.getEmployee(employee.getId()) == null)
         {
-            return employeeRepository.save(employee);
+            return saveEmployee(employee);
         }
         throw new Exception("user ID already exists");
     }
-    public Employee saveEmployeeModification(Employee e)
+
+    public Employee saveEmployee(Employee e)
     {
+        calculateNestSalary(e); // This function calculates employee new salary and save it in employee
         return employeeRepository.save(e);
     }
+
     public Boolean deleteEmployee(Long employeeId)
     {
-        if(this.getEmployee(employeeId) != null)
+        if (this.getEmployee(employeeId) != null)
         {
             employeeRepository.deleteById(employeeId);
             return true;
@@ -42,7 +46,23 @@ public class EmployeeService
 
     public Employee getEmployee(Long employeeId) // send path parameter
     {
-        return employeeRepository.findById(employeeId).isPresent() ? employeeRepository.findById(employeeId).get() : null;
+        return employeeRepository.findById(employeeId).isPresent()
+                ? employeeRepository.findById(employeeId).get()
+                : null;
     }
 
+    public void calculateNestSalary(Employee employee)
+    {
+        if (employee.getGrossSalary() != null
+                && employee.getGrossSalary() != 0
+                && employee.getGrossSalary() * 0.85 - 500 > 500)
+            employee.setNetSalary(employee.getGrossSalary() * 0.85f - 500);
+    }
+
+    public Employee modifyEmployee(long employeeId, EmployeeModifyDto employeeDto)
+    {
+        Employee employeeToModify = this.getEmployee(employeeId);
+        EmployeeModifyDto.dtoToEmployee(employeeDto, employeeToModify);
+        return saveEmployee(employeeToModify);
+    }
 }
