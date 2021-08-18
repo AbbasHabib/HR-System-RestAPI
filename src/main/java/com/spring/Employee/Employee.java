@@ -43,7 +43,7 @@ public class Employee
     private Employee manager;
     @JsonIgnore
     @OneToMany(mappedBy="manager") // one manager to many employees
-    private Set<Employee> employees;
+    private Set<Employee> subEmployees;
 
     @Column(name="gross_salary")
     private Float grossSalary;
@@ -51,10 +51,11 @@ public class Employee
     @Column(name="net_salary")
     private Float netSalary;
 
+
     // list of expertise
     public Employee(){  };
 
-    public Employee(Long id, String name, Date birthDate, Date graduationDate, char gender, Department department, Employee manager, Set<Employee> employees, Float grossSalary)
+    public Employee(Long id, String name, Date birthDate, Date graduationDate, char gender, Department department, Employee manager, Set<Employee> subEmployees, Float grossSalary)
     {
         this.id = id;
         this.name = name;
@@ -63,7 +64,7 @@ public class Employee
         this.gender = gender;
         this.department = department;
         this.manager = manager;
-        this.employees = employees;
+        this.subEmployees = subEmployees;
         this.grossSalary = grossSalary;
     }
 
@@ -102,9 +103,9 @@ public class Employee
         return manager;
     }
 
-    public Set<Employee> getEmployees()
+    public Set<Employee> getSubEmployees()
     {
-        return employees;
+        return subEmployees;
     }
 
     public Float getGrossSalary()
@@ -152,9 +153,9 @@ public class Employee
         this.manager = manager;
     }
 
-    public void setEmployees(Set<Employee> employees)
+    public void setSubEmployees(Set<Employee> employees)
     {
-        this.employees = employees;
+        this.subEmployees = employees;
     }
 
     public Team getTeam()

@@ -58,7 +58,7 @@ public class EmployeeController
         return employeeService.getEmployeesByName(name);
     }
     @GetMapping("manager/recursive/{id}")
-    public List<Employee> getEmployeesUnderManagerRecursively(@PathVariable String id)
+    public List<EmployeeInfoOnlyDTO> getEmployeesUnderManagerRecursively(@PathVariable String id)
     {
         return employeeService.getManagerEmployeesRecursively(Long.parseLong(id));
     }

@@ -10,6 +10,7 @@ import java.util.Set;
 
 public class EmployeeInfoOnlyDTO
 {
+    private Long id;
     private String name;
     private Date birthDate;
     private Date graduationDate;
@@ -20,6 +21,8 @@ public class EmployeeInfoOnlyDTO
 
     public void setEmployeeToDTO(Employee e)
     {
+        this.setId(e.getId());
+
         this.setName(e.getName());
 
         this.setGraduationDate(e.getGraduationDate());
@@ -40,13 +43,23 @@ public class EmployeeInfoOnlyDTO
     public static List<EmployeeInfoOnlyDTO> setEmployeeToDTOList(List<Employee> employees)
     {
         List<EmployeeInfoOnlyDTO> employeesDTO = new ArrayList<EmployeeInfoOnlyDTO>();
-        for(Employee emp: employees)
+        for (Employee emp : employees)
         {
             EmployeeInfoOnlyDTO empDTO = new EmployeeInfoOnlyDTO();
             empDTO.setEmployeeToDTO(emp);
             employeesDTO.add(empDTO);
         }
         return employeesDTO;
+    }
+
+    public Long getId()
+    {
+        return id;
+    }
+
+    public void setId(Long id)
+    {
+        this.id = id;
     }
 
     public String getName()

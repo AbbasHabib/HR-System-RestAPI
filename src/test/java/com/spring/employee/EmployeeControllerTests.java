@@ -1,10 +1,12 @@
 package com.spring.employee;
 
+import com.blazebit.persistence.CriteriaBuilderFactory;
 import com.spring.Employee.DTO.EmployeeInfoOnlyDTO;
 import com.spring.Employee.DTO.EmployeeSalaryDTO;
 import com.spring.Employee.Employee;
 import com.spring.Employee.DTO.EmployeeModifyDTO;
 import com.spring.Employee.EmployeeService;
+import javassist.NotFoundException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,6 +41,10 @@ public class EmployeeControllerTests
     @Autowired
     MockMvc mockMvc;
 
+
+    private CriteriaBuilderFactory criteriaBuilderFactory;
+
+
     @Test
     public void add_employee() throws Exception
     {
@@ -64,7 +70,7 @@ public class EmployeeControllerTests
     @Test
     public void get_employee_with_id() throws Exception
     {
-        String searchForId = "2";
+        String searchForId = "22";
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/employee/" + searchForId))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -77,11 +83,10 @@ public class EmployeeControllerTests
     @Test
     public void delete_employee_with_id() throws Exception
     {
-        String deleteUserWithID = "100";
+        String deleteUserWithID = "10";
         mockMvc.perform(MockMvcRequestBuilders.delete("/employee/" + deleteUserWithID))
                 .andExpect(content().string("true"))
-                .andExpect(status().isOk())
-                .andReturn();
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -95,7 +100,7 @@ public class EmployeeControllerTests
 
         // Expected modification
         EmployeeModifyDTO employeeModificationDto = new EmployeeModifyDTO();
-        employeeModificationDto.setName("btengana");
+        employeeModificationDto.setName("reem");
         employeeModificationDto.setGender('F');
         employeeModificationDto.setGrossSalary(7000.0f);
 
@@ -113,12 +118,10 @@ public class EmployeeControllerTests
     @Test
     public void get_employee_salary() throws Exception
     {
-        Employee employeeRequired = new Employee();
-        employeeRequired.setId(100L);
-        employeeRequired.setName("7amada");
-        employeeRequired.setGender('R');
-        employeeRequired.setGrossSalary(7000.0f);
+        Employee employeeRequired = employeeService.getEmployee(1L);
 
+        if(employeeRequired == null)
+            throw new NotFoundException("cant find employee");
         String EmployeeId = employeeRequired.getId().toString();
 
         EmployeeSalaryDTO employeeSalaryDTO = new EmployeeSalaryDTO(employeeRequired);
@@ -137,7 +140,10 @@ public class EmployeeControllerTests
     {
         Employee manager = employeeService.getEmployee(2L);
 
-        List<Employee> employeesUnderManager = new ArrayList<>(manager.getEmployees());
+        if(manager == null)
+            throw new NotFoundException("cant find manager");
+
+        List<Employee> employeesUnderManager = new ArrayList<>(manager.getSubEmployees());
         List<EmployeeInfoOnlyDTO> employeesDTO = EmployeeInfoOnlyDTO.setEmployeeToDTOList(employeesUnderManager);
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -146,6 +152,24 @@ public class EmployeeControllerTests
         mockMvc.perform(MockMvcRequestBuilders.get("/employee/manager/" + manager.getId()))
                 .andExpect(content().json(employeesUnderManagerJson))
                 .andExpect(status().isOk());
+    }
+
+
+    @Test
+    public void getEmployeesRecursively() throws Exception
+    {
+        String managerId= "1";
+        List<EmployeeInfoOnlyDTO> employeesUnderManager = employeeService.getManagerEmployeesRecursively(Long.parseLong(managerId));
+        if(employeesUnderManager == null)
+            throw new NotFoundException("cant find manager");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String employeesUnderManagerJSON = objectMapper.writeValueAsString(employeesUnderManager);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/employee/manager/recursive/" + managerId))
+                .andExpect(content().json(employeesUnderManagerJSON))
+                .andExpect(status().isOk());
+
     }
 
 }

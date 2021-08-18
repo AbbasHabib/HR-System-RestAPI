@@ -33,7 +33,7 @@ public class EmployeeModifyDTO
         if (dto.birthDate != null)
             employee.setBirthDate(dto.birthDate);
         if (dto.employees != null)
-            employee.setEmployees(dto.employees);
+            employee.setSubEmployees(dto.employees);
         if (dto.grossSalary != null && dto.grossSalary != 0)
         {
             employee.setGrossSalary(dto.grossSalary);
@@ -53,7 +53,7 @@ public class EmployeeModifyDTO
 
         this.setManager(e.getManager());
 
-        this.setEmployees(e.getEmployees());
+        this.setEmployees(e.getSubEmployees());
 
         this.setGrossSalary(e.getGrossSalary());
 

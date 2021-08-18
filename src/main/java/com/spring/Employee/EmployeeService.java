@@ -6,7 +6,6 @@ import com.spring.Employee.DTO.EmployeeSalaryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -79,16 +78,22 @@ public class EmployeeService
         return employeeRepository.findByName(name);
     }
 
-    public List<Employee> getManagerEmployeesRecursively(long managerId)
-    {
-        Employee manager = this.getEmployee(managerId);
-        return employeeRepository.findByManager(manager);
-    }
 
     public List<EmployeeInfoOnlyDTO> getManagerEmployees(long managerId)
     {
         Employee manager = this.getEmployee(managerId);
+        if(manager == null)
+            return null;
         List<Employee> employeesUnderManager = employeeRepository.findByManager(manager);
         return EmployeeInfoOnlyDTO.setEmployeeToDTOList(employeesUnderManager);
+    }
+
+    public List<EmployeeInfoOnlyDTO> getManagerEmployeesRecursively(long managerId)
+    {
+        if(this.getEmployee(managerId) == null)
+            return null;
+        List<Employee> employeesUnderManagersRecursive  = employeeRepository.findManagerEmployeesRecursivelyQueried(managerId);
+
+        return EmployeeInfoOnlyDTO.setEmployeeToDTOList(employeesUnderManagersRecursive);
     }
 }
