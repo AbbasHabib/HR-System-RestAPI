@@ -13,7 +13,8 @@ public class Department
 {
     @Id
     @Column(name = "id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @SequenceGenerator(name = "department_id_seq", sequenceName = "department_id_seq", allocationSize=1)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "department_id_seq" )
     private Long id;
     @Column(name = "name", nullable = false)
     private String name;

@@ -18,11 +18,15 @@ public class TeamService
 
     public Team getTeam(Long id)
     {
+        if(id == null)
+            return null;
         return teamRepository.findById(id).isPresent() ? teamRepository.findById(id).get() : null;
     }
 
     public List<EmployeeInfoOnlyDTO> getTeamEmployees(Long id)
     {
+        if(id == null)
+            return null;
         Team team = this.getTeam(id);
         if (team == null)
             return null;

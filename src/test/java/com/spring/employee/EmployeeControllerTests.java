@@ -49,10 +49,9 @@ public class EmployeeControllerTests
     public void add_employee() throws Exception
     {
         Employee emp = new Employee();
-        emp.setId(22L);
-        emp.setName("nau");
+        emp.setName("hamada");
         emp.setGender((char) 's');
-        emp.setGrossSalary(520f);
+        emp.setGrossSalary(10025f);
         // this test is expected to: return same object it receives and add employee to database
 
 

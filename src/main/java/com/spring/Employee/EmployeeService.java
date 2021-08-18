@@ -51,6 +51,8 @@ public class EmployeeService
 
     public Employee getEmployee(Long employeeId) // send path parameter
     {
+        if(employeeId == null)
+            return null;
         return employeeRepository.findById(employeeId).isPresent()
                 ? employeeRepository.findById(employeeId).get()
                 : null;

@@ -12,7 +12,8 @@ public class Team
 {
     @Id
     @Column(name = "id", nullable = false)
-//  @GeneratedValue(strategy = GenerationType.AUTO)
+    @SequenceGenerator(name = "team_id_seq", sequenceName = "team_id_seq", allocationSize=1)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "team_id_seq")
     private Long id;
     @Column(name = "team_name")
     private String teamName;
