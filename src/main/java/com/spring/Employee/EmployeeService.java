@@ -31,12 +31,16 @@ public class EmployeeService
 
     public Boolean deleteEmployee(Long employeeId)
     {
-        if (this.getEmployee(employeeId) != null)
+        Employee employee = this.getEmployee(employeeId);
+        if (employee != null)
         {
-            employeeRepository.deleteById(employeeId);
-            return true;
+            if (employee.shiftSubordinates())
+            {
+                employeeRepository.deleteById(employeeId); // if shifting shiftSubordinates process is complete then return true
+                return true;
+            }
         }
-        return false;
+        return false; // means that employee is null or its a super manager {has no manager}
     }
 
 
@@ -82,7 +86,7 @@ public class EmployeeService
     public List<EmployeeInfoOnlyDTO> getManagerEmployees(long managerId)
     {
         Employee manager = this.getEmployee(managerId);
-        if(manager == null)
+        if (manager == null)
             return null;
         List<Employee> employeesUnderManager = employeeRepository.findByManager(manager);
         return EmployeeInfoOnlyDTO.setEmployeeToDTOList(employeesUnderManager);
@@ -90,9 +94,9 @@ public class EmployeeService
 
     public List<EmployeeInfoOnlyDTO> getManagerEmployeesRecursively(long managerId)
     {
-        if(this.getEmployee(managerId) == null)
+        if (this.getEmployee(managerId) == null)
             return null;
-        List<Employee> employeesUnderManagersRecursive  = employeeRepository.findManagerEmployeesRecursivelyQueried(managerId);
+        List<Employee> employeesUnderManagersRecursive = employeeRepository.findManagerEmployeesRecursivelyQueried(managerId);
 
         return EmployeeInfoOnlyDTO.setEmployeeToDTOList(employeesUnderManagersRecursive);
     }

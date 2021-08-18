@@ -68,6 +68,20 @@ public class Employee
         this.grossSalary = grossSalary;
     }
 
+    public boolean shiftSubordinates()
+    {
+        Employee managerToShiftTo = this.getManager();
+        if(managerToShiftTo == null)
+        {
+            return false;
+        }
+        for(Employee emp : this.getSubEmployees())
+        {
+            emp.setManager(managerToShiftTo);
+        }
+        return true;
+    }
+
     public Long getId()
     {
         return id;
@@ -178,4 +192,6 @@ public class Employee
     {
         this.netSalary = netSalary;
     }
+
+
 }

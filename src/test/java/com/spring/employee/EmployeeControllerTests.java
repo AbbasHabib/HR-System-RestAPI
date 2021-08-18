@@ -83,7 +83,7 @@ public class EmployeeControllerTests
     @Test
     public void delete_employee_with_id() throws Exception
     {
-        String deleteUserWithID = "10";
+        String deleteUserWithID = "2";
         mockMvc.perform(MockMvcRequestBuilders.delete("/employee/" + deleteUserWithID))
                 .andExpect(content().string("true"))
                 .andExpect(status().isOk());
@@ -173,15 +173,6 @@ public class EmployeeControllerTests
     }
 
 }
-
-
-
-
-
-
-
-
-
 
 
 
