@@ -1,8 +1,9 @@
 package com.spring.Employee;
 
 import com.spring.Employee.DTO.EmployeeInfoOnlyDTO;
-import com.spring.Employee.DTO.EmployeeModifyDTO;
+import com.spring.Employee.DTO.EmployeeModifyCommandDTO;
 import com.spring.Employee.DTO.EmployeeSalaryDTO;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -41,9 +42,9 @@ public class EmployeeController
     }
 
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Employee modifyEmployee(@PathVariable String id, @RequestBody EmployeeModifyDTO employeeDto)
+    public Employee modifyEmployee(@PathVariable String id, @RequestBody EmployeeModifyCommandDTO employeeModifyCommandDTO) throws NotFoundException
     {
-        return employeeService.modifyEmployee(Long.parseLong(id), employeeDto);
+        return employeeService.modifyEmployee(Long.parseLong(id), employeeModifyCommandDTO);
     }
 
     @GetMapping(value = "/salary/{id}", produces = MediaType.APPLICATION_JSON_VALUE)

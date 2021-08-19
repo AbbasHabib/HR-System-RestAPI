@@ -6,7 +6,7 @@ import com.spring.Employee.Employee;
 import java.util.Date;
 import java.util.Set;
 
-public class EmployeeModifyDTO
+public class EmployeeModifyCommandDTO
 {
     private String name;
     private Date birthDate;
@@ -18,7 +18,7 @@ public class EmployeeModifyDTO
     private Float grossSalary;
     private Float netSalary;
 
-    public static void dtoToEmployee(EmployeeModifyDTO dto, Employee employee)
+    public static void dtoToEmployee(EmployeeModifyCommandDTO dto, Employee employee)
     {
         if (dto.name != null && !dto.name.equals(""))
             employee.setName(dto.name);
@@ -39,27 +39,28 @@ public class EmployeeModifyDTO
             employee.setGrossSalary(dto.grossSalary);
             employee.setNetSalary(dto.netSalary = dto.grossSalary * 0.85f - 500);
         }
+//        setEmployeeToDTO(employee, dto);
     }
 
-    public void setDTOtoEmployee(Employee e)
+    public static void setEmployeeToDTO(Employee e, EmployeeModifyCommandDTO dto)
     {
-        this.setName(e.getName());
+        dto.setName(e.getName());
 
-        this.setGraduationDate(e.getGraduationDate());
+        dto.setGraduationDate(e.getGraduationDate());
 
-        this.setGender(e.getGender());
+        dto.setGender(e.getGender());
 
-        this.setDepartment(e.getDepartment());
+        dto.setDepartment(e.getDepartment());
 
-        this.setManager(e.getManager());
+        dto.setManager(e.getManager());
 
-        this.setEmployees(e.getSubEmployees());
+        dto.setEmployees(e.getSubEmployees());
 
-        this.setGrossSalary(e.getGrossSalary());
+        dto.setGrossSalary(e.getGrossSalary());
 
-        this.setNetSalary(e.getGrossSalary() * 0.85f - 500);
+        dto.setNetSalary(e.getGrossSalary() * 0.85f - 500);
 
-        this.setBirthDate(e.getBirthDate());
+        dto.setBirthDate(e.getBirthDate());
     }
 
 

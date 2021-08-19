@@ -17,7 +17,6 @@ this project is an HR system where the of it is managing employees teams, depart
 - [x] Rest API to get Employee salary info
 - [x] Rest API to get All employees under a specific manager
 - [x] Rest API to get All employees under a specific manager ***>> recursively <<***
-- [ ] A recursive function to get employees under manager other than query (working on later)
 - [x] Rest Api to get All Employees in some team
 - [x] Primary key sequence for each table
 

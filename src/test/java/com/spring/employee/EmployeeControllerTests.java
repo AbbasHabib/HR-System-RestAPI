@@ -4,7 +4,7 @@ import com.blazebit.persistence.CriteriaBuilderFactory;
 import com.spring.Employee.DTO.EmployeeInfoOnlyDTO;
 import com.spring.Employee.DTO.EmployeeSalaryDTO;
 import com.spring.Employee.Employee;
-import com.spring.Employee.DTO.EmployeeModifyDTO;
+import com.spring.Employee.DTO.EmployeeModifyCommandDTO;
 import com.spring.Employee.EmployeeService;
 import javassist.NotFoundException;
 import org.json.JSONObject;
@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -49,11 +50,17 @@ public class EmployeeControllerTests
     public void add_employee() throws Exception
     {
         Employee emp = new Employee();
-        emp.setName("hamada");
-        emp.setGender((char) 's');
+        emp.setName("fsfsa");
+        emp.setGender((char) 'z');
         emp.setGrossSalary(10025f);
         // this test is expected to: return same object it receives and add employee to database
 
+//        Long managerId = 3L;
+//        Employee manager = employeeService.getEmployee(managerId);
+//        if(manager == null)
+//            throw new NotFoundException("manager not found");
+//
+//        emp.setManager(manager);
 
         // EmployeeService is tested and (employeeService.addEmployee)
         // Is expected to return same object it receives
@@ -69,49 +76,63 @@ public class EmployeeControllerTests
     @Test
     public void get_employee_with_id() throws Exception
     {
-        String searchForId = "22";
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/employee/" + searchForId))
-                .andExpect(status().isOk())
-                .andReturn();
+        Long searchForId = 1L;
 
-        JSONObject employeeJson = new JSONObject(result.getResponse().getContentAsString());
+        Employee employee = employeeService.getEmployee(searchForId);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String employeeJSON = objectMapper.writeValueAsString(employee);
 
-        assertEquals(Long.toString(employeeJson.getLong("id")), searchForId);
+        mockMvc.perform(MockMvcRequestBuilders.get("/employee/" + searchForId))
+                .andExpect(content().json(employeeJSON))
+                .andExpect(status().isOk());
     }
 
     @Test
     public void delete_employee_with_id() throws Exception
     {
-        String deleteUserWithID = "2";
+        long deleteUserWithID = 2L;
+
+
         mockMvc.perform(MockMvcRequestBuilders.delete("/employee/" + deleteUserWithID))
                 .andExpect(content().string("true"))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andReturn();
     }
 
     @Test
+    @Transactional
     public void modify_employee() throws Exception
     {
         // Initial values of the employee
-        Employee employeeToModify = new Employee();
-        employeeToModify.setId(1L);
-
-        String EmployeeId = employeeToModify.getId().toString();
+        Long employeeId = 3L;
+        Employee employeeToModify = employeeService.getEmployee(employeeId);
 
         // Expected modification
-        EmployeeModifyDTO employeeModificationDto = new EmployeeModifyDTO();
+        EmployeeModifyCommandDTO employeeModificationDto = new EmployeeModifyCommandDTO();
+
+        //(1) Edit basic employee info
         employeeModificationDto.setName("reem");
         employeeModificationDto.setGender('F');
         employeeModificationDto.setGrossSalary(7000.0f);
 
+        //(2) Edit employee manager
+        Long managerId = 1L;
+        Employee manager = employeeService.getEmployee(managerId);
+        if(manager == null)
+            throw new NotFoundException("manager not found");
+        employeeModificationDto.setManager(manager);
 
-        EmployeeModifyDTO.dtoToEmployee(employeeModificationDto, employeeToModify);
+
+        EmployeeModifyCommandDTO.dtoToEmployee(employeeModificationDto, employeeToModify);
 
         ObjectMapper objectMapper = new ObjectMapper();
         String employeeDtoJson = objectMapper.writeValueAsString(employeeModificationDto);
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/employee/" + EmployeeId)
+         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/employee/" + employeeId)
                 .contentType(MediaType.APPLICATION_JSON).content(employeeDtoJson))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andReturn();
+         assertNotEquals(result, null);
     }
 
     @Test
@@ -119,7 +140,7 @@ public class EmployeeControllerTests
     {
         Employee employeeRequired = employeeService.getEmployee(1L);
 
-        if(employeeRequired == null)
+        if (employeeRequired == null)
             throw new NotFoundException("cant find employee");
         String EmployeeId = employeeRequired.getId().toString();
 
@@ -137,9 +158,9 @@ public class EmployeeControllerTests
     @Transactional
     public void get_employees_under_manager() throws Exception
     {
-        Employee manager = employeeService.getEmployee(2L);
+        Employee manager = employeeService.getEmployee(1L);
 
-        if(manager == null)
+        if (manager == null)
             throw new NotFoundException("cant find manager");
 
         List<Employee> employeesUnderManager = new ArrayList<>(manager.getSubEmployees());
@@ -155,11 +176,12 @@ public class EmployeeControllerTests
 
 
     @Test
+    @Transactional
     public void getEmployeesRecursively() throws Exception
     {
-        String managerId= "1";
-        List<EmployeeInfoOnlyDTO> employeesUnderManager = employeeService.getManagerEmployeesRecursively(Long.parseLong(managerId));
-        if(employeesUnderManager == null)
+        long managerId = 1L;
+        List<EmployeeInfoOnlyDTO> employeesUnderManager = employeeService.getManagerEmployeesRecursively(managerId);
+        if (employeesUnderManager == null)
             throw new NotFoundException("cant find manager");
 
         ObjectMapper objectMapper = new ObjectMapper();
