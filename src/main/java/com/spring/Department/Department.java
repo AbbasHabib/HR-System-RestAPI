@@ -13,8 +13,7 @@ public class Department
 {
     @Id
     @Column(name = "id", nullable = false)
-    @SequenceGenerator(name = "department_id_seq", sequenceName = "department_id_seq", allocationSize=1)
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "department_id_seq" )
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "name", nullable = false)
     private String name;
@@ -43,5 +42,20 @@ public class Department
     public Set<Employee> getEmployees()
     {
         return employees;
+    }
+
+    public void setId(Long id)
+    {
+        this.id = id;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
+    public void setEmployees(Set<Employee> employees)
+    {
+        this.employees = employees;
     }
 }

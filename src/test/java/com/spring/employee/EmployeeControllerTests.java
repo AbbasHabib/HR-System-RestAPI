@@ -1,11 +1,15 @@
 package com.spring.employee;
 
 import com.blazebit.persistence.CriteriaBuilderFactory;
+import com.spring.Department.Department;
+import com.spring.Department.DepartmentService;
 import com.spring.Employee.DTO.EmployeeInfoOnlyDTO;
 import com.spring.Employee.DTO.EmployeeSalaryDTO;
 import com.spring.Employee.Employee;
 import com.spring.Employee.DTO.EmployeeModifyCommandDTO;
 import com.spring.Employee.EmployeeService;
+import com.spring.Team.Team;
+import com.spring.Team.TeamService;
 import javassist.NotFoundException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
@@ -38,6 +42,11 @@ public class EmployeeControllerTests
 
     @Autowired
     EmployeeService employeeService;
+    @Autowired
+    DepartmentService departmentService;
+
+    @Autowired
+    TeamService teamService;
 
     @Autowired
     MockMvc mockMvc;
@@ -49,27 +58,44 @@ public class EmployeeControllerTests
     @Test
     public void add_employee() throws Exception
     {
-        Employee emp = new Employee();
-        emp.setName("fsfsa");
-        emp.setGender((char) 'z');
-        emp.setGrossSalary(10025f);
+        Employee employeeToAdd = new Employee();
+        employeeToAdd.setName("saad");
+        employeeToAdd.setGender((char) 'M');
+        employeeToAdd.setGrossSalary(10025f);
+        employeeToAdd.setId(22L);
+
+        // set Department to employee
+        Long departmentId = 1L;
+        Department dep = departmentService.getDepartment(departmentId);
+        if(dep == null)
+            throw new NotFoundException("department is not found");
+        employeeToAdd.setDepartment(dep);
+
         // this test is expected to: return same object it receives and add employee to database
 
-//        Long managerId = 3L;
-//        Employee manager = employeeService.getEmployee(managerId);
-//        if(manager == null)
-//            throw new NotFoundException("manager not found");
-//
-//        emp.setManager(manager);
+        // set Team
+        Long teamId = 1L;
+        Team team = teamService.getTeam(teamId);
+        if(team == null)
+            throw new NotFoundException("team is not found");
+        employeeToAdd.setTeam(team);
+
+        Long managerId = 2L;
+        Employee manager = employeeService.getEmployee(managerId);
+        if(manager == null)
+            throw new NotFoundException("manager not found");
+
+        employeeToAdd.setManager(manager);
 
         // EmployeeService is tested and (employeeService.addEmployee)
         // Is expected to return same object it receives
         ObjectMapper objectMapper = new ObjectMapper();
-        String employeeJson = objectMapper.writeValueAsString(emp); // converts employee object to JSON string
+        String employeeJson = objectMapper.writeValueAsString(employeeToAdd); // converts employee object to JSON string
 
-        // The from this POST request (.post("/employee/")) takes to be a Json of employee object on request Body
+        // POST request (.post("/employee/")) takes to be a Json of employee in request Body
         mockMvc.perform(MockMvcRequestBuilders.post("/employee/")
                 .contentType(MediaType.APPLICATION_JSON).content(employeeJson))
+                .andExpect(content().json(employeeJson))
                 .andExpect(status().isOk());
     }
 
@@ -100,11 +126,10 @@ public class EmployeeControllerTests
     }
 
     @Test
-    @Transactional
     public void modify_employee() throws Exception
     {
         // Initial values of the employee
-        Long employeeId = 3L;
+        Long employeeId = 6L; // employee id to modify
         Employee employeeToModify = employeeService.getEmployee(employeeId);
 
         // Expected modification
@@ -115,24 +140,35 @@ public class EmployeeControllerTests
         employeeModificationDto.setGender('F');
         employeeModificationDto.setGrossSalary(7000.0f);
 
-        //(2) Edit employee manager
-        Long managerId = 1L;
+        //(2) set Department
+        Long departmentId = 1L;
+        Department dep = departmentService.getDepartment(departmentId);
+        if(dep == null)
+            throw new NotFoundException("department is not found");
+        employeeModificationDto.setDepartment(dep);
+
+        //(3) set Team
+        Long teamId = 1L;
+        Team team = teamService.getTeam(teamId);
+        if(team == null)
+            throw new NotFoundException("team is not found");
+        employeeModificationDto.setTeam(team);
+
+        //(4) Edit employee manager
+        Long managerId = 3L;
         Employee manager = employeeService.getEmployee(managerId);
-        if(manager == null)
+        if (manager == null)
             throw new NotFoundException("manager not found");
         employeeModificationDto.setManager(manager);
 
-
-        EmployeeModifyCommandDTO.dtoToEmployee(employeeModificationDto, employeeToModify);
+        EmployeeModifyCommandDTO.dtoToEmployee(employeeModificationDto, employeeToModify); // copy modified data to employee
 
         ObjectMapper objectMapper = new ObjectMapper();
         String employeeDtoJson = objectMapper.writeValueAsString(employeeModificationDto);
 
-         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/employee/" + employeeId)
+        mockMvc.perform(MockMvcRequestBuilders.put("/employee/" + employeeId)
                 .contentType(MediaType.APPLICATION_JSON).content(employeeDtoJson))
-                .andExpect(status().isOk())
-                .andReturn();
-         assertNotEquals(result, null);
+                .andExpect(status().isOk());
     }
 
     @Test

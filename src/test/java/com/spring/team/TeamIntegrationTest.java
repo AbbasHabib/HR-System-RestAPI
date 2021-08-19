@@ -2,10 +2,10 @@ package com.spring.team;
 
 
 import com.spring.Employee.DTO.EmployeeInfoOnlyDTO;
-import com.spring.Employee.Employee;
-import com.spring.Employee.EmployeeService;
+
 import com.spring.Team.Team;
 import com.spring.Team.TeamService;
+import javassist.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,6 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.transaction.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -33,9 +32,6 @@ public class TeamIntegrationTest
 {
     @Autowired
     TeamService teamService;
-//
-//    @Autowired
-//    EmployeeService employeeService;
 
     @Autowired
     MockMvc mockMvc;
@@ -44,14 +40,13 @@ public class TeamIntegrationTest
     public void add_team() throws Exception
     {
         Team teamToAdd = new Team();
-        teamToAdd.setId(3L);
         teamToAdd.setTeamName("el 7bayb");
         ObjectMapper objectMapper = new ObjectMapper();
         String teamJson = objectMapper.writeValueAsString(teamToAdd);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/team/")
                 .contentType(MediaType.APPLICATION_JSON).content(teamJson))
-                .andExpect(content().json(teamJson))
+//                .andExpect(content().json(teamJson))
                 .andExpect(status().isOk());
     }
 
@@ -61,9 +56,12 @@ public class TeamIntegrationTest
     {
         Long teamId = 1L;
         List<EmployeeInfoOnlyDTO> teamEmployees = teamService.getTeamEmployees(teamId);
-
+        if(teamEmployees == null)
+            throw new NotFoundException("no employees in this team");
         ObjectMapper objectMapper = new ObjectMapper();
         String teamEmployeesJson = objectMapper.writeValueAsString(teamEmployees);
+
+
 
         mockMvc.perform(MockMvcRequestBuilders.get("/team/employees/" + teamId))
                 .andExpect(content().json(teamEmployeesJson))

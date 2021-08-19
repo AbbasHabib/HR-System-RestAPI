@@ -73,7 +73,7 @@ public class EmployeeService
             return false;
         List<Employee> employeesUnderCurrentEmployee = employeeRepository.findManagerEmployeesRecursivelyQueried(employeeToModify.getId());
 
-        return employeesUnderCurrentEmployee.stream().anyMatch(o -> o.getId().equals(goToManager.getId())); // if it contains this manager then he cant be my manager
+        return employeesUnderCurrentEmployee.stream().noneMatch(o -> o.getId().equals(goToManager.getId())); // if it contains this manager then he cant be my manager
     }
 
     public Employee modifyEmployee(long employeeId, EmployeeModifyCommandDTO employeeDto) throws NotFoundException
@@ -81,12 +81,13 @@ public class EmployeeService
         Employee employeeToModify = this.getEmployee(employeeId);
         if(employeeDto.getManager() != null) // if employee manager is modified check problem could occur
         {
-            if(checkManagerChange(employeeToModify, employeeDto.getManager())) // if the manager is working underMe he cant be my manager
+            if(!checkManagerChange(employeeToModify, employeeDto.getManager())) // if the manager is working underMe he cant be my manager
             {
-                System.out.println("Infinite recursive relation between employee and manager");
-                return null;
+                throw new NotFoundException("Infinite recursive relation between employee and manager");
 
-                //throw new NotFoundException("Infinite recursive relation between employee and manager");
+//                System.out.println("Infinite recursive relation between employee and manager");
+//                return null;
+
             }
         }
         EmployeeModifyCommandDTO.dtoToEmployee(employeeDto, employeeToModify); //  copying new data to employee

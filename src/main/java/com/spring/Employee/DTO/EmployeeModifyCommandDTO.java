@@ -2,6 +2,7 @@ package com.spring.Employee.DTO;
 
 import com.spring.Department.Department;
 import com.spring.Employee.Employee;
+import com.spring.Team.Team;
 
 import java.util.Date;
 import java.util.Set;
@@ -9,6 +10,7 @@ import java.util.Set;
 public class EmployeeModifyCommandDTO
 {
     private String name;
+    private Team team;
     private Date birthDate;
     private Date graduationDate;
     private char gender = '\0';
@@ -34,6 +36,8 @@ public class EmployeeModifyCommandDTO
             employee.setBirthDate(dto.birthDate);
         if (dto.employees != null)
             employee.setSubEmployees(dto.employees);
+        if(dto.team != null)
+            employee.setTeam(dto.team);
         if (dto.grossSalary != null && dto.grossSalary != 0)
         {
             employee.setGrossSalary(dto.grossSalary);
@@ -63,6 +67,15 @@ public class EmployeeModifyCommandDTO
         dto.setBirthDate(e.getBirthDate());
     }
 
+    public Team getTeam()
+    {
+        return team;
+    }
+
+    public void setTeam(Team team)
+    {
+        this.team = team;
+    }
 
     public String getName()
     {

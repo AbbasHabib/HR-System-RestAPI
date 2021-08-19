@@ -1,9 +1,7 @@
 package com.spring.Department;
 
-import com.spring.Employee.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 
@@ -18,10 +16,16 @@ public class DepartmentService
         return departmentRepository.save(department);
     }
 
-    @GetMapping("/view")
     public List<Department> getDepartments()
     {
         return departmentRepository.findAll();
+    }
+
+    public Department getDepartment(Long id)
+    {
+        return departmentRepository.findById(id).isPresent() ?
+                departmentRepository.findById(id).get()
+                : null;
     }
 
 }

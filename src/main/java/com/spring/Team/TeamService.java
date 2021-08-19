@@ -38,7 +38,7 @@ public class TeamService
 
     public Team addTeam(Team team)
     {
-        if (getTeam(team.getId()) == null)
+        if (getTeam(team.getId()) == null || team.getId() == null)
             return teamRepository.save(team);
         return null;
     }

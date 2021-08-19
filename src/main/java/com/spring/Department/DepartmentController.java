@@ -25,4 +25,9 @@ public class DepartmentController
         return departmentService.getDepartments();
     }
 
+    @GetMapping("/{id}")
+    public Department getDepartment(@PathVariable String id)
+    {
+        return departmentService.getDepartment(Long.parseLong(id));
+    }
 }
