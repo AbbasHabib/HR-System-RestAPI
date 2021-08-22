@@ -4,8 +4,17 @@ this project is an HR system where the of it is managing employees teams, depart
 
 #### The project will be fully driven by [JavaSpringBoot](https://www.tutorialspoint.com/spring_boot/spring_boot_introduction.htm) ​Framework, and MySql Database.
 
-## ToDo List
+## Improving Code _Todo List_
 
+- [ ] Auto generate getters and setters using -> _(Project Lombok)_  
+- [ ] Use Enums to replace constants
+- [ ] mapping data from DTO to main entities delete all boilerplate code.
+- [ ] **Remove the beautiful magic numbers ✨**
+
+##
+
+
+## ~~ToDo List~~ 
 
 - [x] Add Team to Employee
 - [x] Deal with Employee salary logic
