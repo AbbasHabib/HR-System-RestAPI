@@ -8,6 +8,7 @@ import com.spring.Employee.DTO.EmployeeSalaryDTO;
 import com.spring.Employee.Employee;
 import com.spring.Employee.DTO.EmployeeModifyCommand;
 import com.spring.Employee.EmployeeService;
+import com.spring.Employee.Gender;
 import com.spring.Team.Team;
 import com.spring.Team.TeamService;
 import javassist.NotFoundException;
@@ -58,7 +59,7 @@ public class EmployeeControllerTests
     {
         Employee employeeToAdd = new Employee();
         employeeToAdd.setName("saad");
-        employeeToAdd.setGender((char) 'M');
+        employeeToAdd.setGender(Gender.MALE);
         employeeToAdd.setGrossSalary(10025f);
         employeeToAdd.setId(1L);
 

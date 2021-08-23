@@ -25,7 +25,8 @@ public class Employee
     @Temporal(TemporalType.DATE)
     private Date graduationDate;
     @Column(name = "gender")
-    private char gender;
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
     @ManyToOne
     @JoinColumn(name="department_id", nullable=true)
     private Department department;
@@ -55,7 +56,7 @@ public class Employee
     // list of expertise
     public Employee(){  };
 
-    public Employee(Long id, String name, Date birthDate, Date graduationDate, char gender, Department department, Employee manager, Set<Employee> subEmployees, Float grossSalary)
+    public Employee(Long id, String name, Date birthDate, Date graduationDate, Gender gender, Department department, Employee manager, Set<Employee> subEmployees, Float grossSalary)
     {
         this.id = id;
         this.name = name;
@@ -102,7 +103,7 @@ public class Employee
         return graduationDate;
     }
 
-    public char getGender()
+    public Gender getGender()
     {
         return gender;
     }
@@ -152,7 +153,7 @@ public class Employee
         this.graduationDate = graduationDate;
     }
 
-    public void setGender(char gender)
+    public void setGender(Gender gender)
     {
         this.gender = gender;
     }

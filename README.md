@@ -7,7 +7,7 @@ this project is an HR system where the of it is managing employees teams, depart
 ## Improving Code _Todo List_
 
 - [ ] Auto generate getters and setters using -> _(Project Lombok)_  
-- [ ] Use Enums to replace constants
+- [x] Use Enums to replace constants
 - [x] mapping data from DTO to main entities delete all boilerplate code.
 - [x] **Remove the beautiful magic numbers ✨**
 
