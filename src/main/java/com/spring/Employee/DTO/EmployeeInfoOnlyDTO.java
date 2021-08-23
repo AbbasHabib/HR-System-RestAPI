@@ -2,6 +2,9 @@ package com.spring.Employee.DTO;
 
 import com.spring.Department.Department;
 import com.spring.Employee.Employee;
+import com.spring.modelMapperGen.ModelMapperGen;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,28 +24,12 @@ public class EmployeeInfoOnlyDTO
 
     public void setEmployeeToDTO(Employee e)
     {
-        this.setId(e.getId());
-
-        this.setName(e.getName());
-
-        this.setGraduationDate(e.getGraduationDate());
-
-        this.setGender(e.getGender());
-
-        this.setDepartment(e.getDepartment());
-
-        this.setGrossSalary(e.getGrossSalary());
-
-        if (e.getNetSalary() == null)
-            this.setNetSalary(e.getGrossSalary() * 0.85f - 500);
-        else this.setNetSalary(e.getNetSalary());
-
-        this.setBirthDate(e.getBirthDate());
+        ModelMapperGen.getModelMapperSingleton().map(e, this);
     }
 
     public static List<EmployeeInfoOnlyDTO> setEmployeeToDTOList(List<Employee> employees)
     {
-        List<EmployeeInfoOnlyDTO> employeesDTO = new ArrayList<EmployeeInfoOnlyDTO>();
+        List<EmployeeInfoOnlyDTO> employeesDTO = new ArrayList<>();
         for (Employee emp : employees)
         {
             EmployeeInfoOnlyDTO empDTO = new EmployeeInfoOnlyDTO();

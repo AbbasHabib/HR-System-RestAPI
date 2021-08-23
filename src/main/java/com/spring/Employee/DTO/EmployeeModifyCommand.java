@@ -3,11 +3,17 @@ package com.spring.Employee.DTO;
 import com.spring.Department.Department;
 import com.spring.Employee.Employee;
 import com.spring.Team.Team;
+import com.spring.modelMapperGen.ModelMapperGen;
+import org.hibernate.mapping.Map;
+import org.modelmapper.Conditions;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
+import java.util.Optional;
 import java.util.Set;
 
-public class EmployeeModifyCommandDTO
+public class EmployeeModifyCommand
 {
     private String name;
     private Team team;
@@ -20,51 +26,9 @@ public class EmployeeModifyCommandDTO
     private Float grossSalary;
     private Float netSalary;
 
-    public static void dtoToEmployee(EmployeeModifyCommandDTO dto, Employee employee)
+    public void dtoToEmployee(EmployeeModifyCommand dto, Employee employee)
     {
-        if (dto.name != null && !dto.name.equals(""))
-            employee.setName(dto.name);
-        if (dto.graduationDate != null)
-            employee.setGraduationDate(dto.graduationDate);
-        if (dto.gender != '\0')
-            employee.setGender(dto.gender);
-        if (dto.department != null)
-            employee.setDepartment(dto.department);
-        if (dto.manager != null)
-            employee.setManager(dto.manager);
-        if (dto.birthDate != null)
-            employee.setBirthDate(dto.birthDate);
-        if (dto.employees != null)
-            employee.setSubEmployees(dto.employees);
-        if(dto.team != null)
-            employee.setTeam(dto.team);
-        if (dto.grossSalary != null && dto.grossSalary != 0)
-        {
-            employee.setGrossSalary(dto.grossSalary);
-            employee.setNetSalary(dto.netSalary = dto.grossSalary * 0.85f - 500);
-        }
-//        setEmployeeToDTO(employee, dto);
-    }
-
-    public static void setEmployeeToDTO(Employee e, EmployeeModifyCommandDTO dto)
-    {
-        dto.setName(e.getName());
-
-        dto.setGraduationDate(e.getGraduationDate());
-
-        dto.setGender(e.getGender());
-
-        dto.setDepartment(e.getDepartment());
-
-        dto.setManager(e.getManager());
-
-        dto.setEmployees(e.getSubEmployees());
-
-        dto.setGrossSalary(e.getGrossSalary());
-
-        dto.setNetSalary(e.getGrossSalary() * 0.85f - 500);
-
-        dto.setBirthDate(e.getBirthDate());
+        ModelMapperGen.getModelMapperSingleton().map(dto, employee);
     }
 
     public Team getTeam()

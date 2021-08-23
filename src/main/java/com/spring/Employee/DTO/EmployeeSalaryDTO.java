@@ -16,7 +16,6 @@ public class EmployeeSalaryDTO
 
         this.grossSalary = employee.getGrossSalary();
         this.netSalary = employee.getNetSalary();
-
     }
 
     public Float getGrossSalary()

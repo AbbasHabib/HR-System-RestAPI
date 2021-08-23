@@ -185,7 +185,6 @@ public class Employee
     public void setGrossSalary(Float grossSalary)
     {
         this.grossSalary = grossSalary;
-        this.netSalary = grossSalary * 0.85f - 500;
     }
 
     public void setNetSalary(Float netSalary)

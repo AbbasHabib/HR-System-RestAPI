@@ -33,7 +33,7 @@ public class DepartmentIntegrationTest
     {
         Department department = new Department();
         department.setName("el a7bab");
-        department.setId(2L); // this id has to be added just to compare it with the received JSON response
+        department.setId(1L); // this id has to be added just to compare it with the received JSON response
         ObjectMapper objectMapper = new ObjectMapper();
         String departmentJSON = objectMapper.writeValueAsString(department);
 

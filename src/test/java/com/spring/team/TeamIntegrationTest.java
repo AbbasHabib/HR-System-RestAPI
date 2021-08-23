@@ -40,13 +40,14 @@ public class TeamIntegrationTest
     public void add_team() throws Exception
     {
         Team teamToAdd = new Team();
+        teamToAdd.setId(1L);
         teamToAdd.setTeamName("el 7bayb");
         ObjectMapper objectMapper = new ObjectMapper();
         String teamJson = objectMapper.writeValueAsString(teamToAdd);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/team/")
                 .contentType(MediaType.APPLICATION_JSON).content(teamJson))
-//                .andExpect(content().json(teamJson))
+                .andExpect(content().json(teamJson))
                 .andExpect(status().isOk());
     }
 

@@ -6,12 +6,11 @@ import com.spring.Department.DepartmentService;
 import com.spring.Employee.DTO.EmployeeInfoOnlyDTO;
 import com.spring.Employee.DTO.EmployeeSalaryDTO;
 import com.spring.Employee.Employee;
-import com.spring.Employee.DTO.EmployeeModifyCommandDTO;
+import com.spring.Employee.DTO.EmployeeModifyCommand;
 import com.spring.Employee.EmployeeService;
 import com.spring.Team.Team;
 import com.spring.Team.TeamService;
 import javassist.NotFoundException;
-import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -62,7 +60,7 @@ public class EmployeeControllerTests
         employeeToAdd.setName("saad");
         employeeToAdd.setGender((char) 'M');
         employeeToAdd.setGrossSalary(10025f);
-        employeeToAdd.setId(22L);
+        employeeToAdd.setId(1L);
 
         // set Department to employee
         Long departmentId = 1L;
@@ -80,12 +78,12 @@ public class EmployeeControllerTests
             throw new NotFoundException("team is not found");
         employeeToAdd.setTeam(team);
 
-        Long managerId = 2L;
-        Employee manager = employeeService.getEmployee(managerId);
-        if(manager == null)
-            throw new NotFoundException("manager not found");
+//        Long managerId = 2L;
+//        Employee manager = employeeService.getEmployee(managerId);
+//        if(manager == null)
+//            throw new NotFoundException("manager not found");
 
-        employeeToAdd.setManager(manager);
+//        employeeToAdd.setManager(manager);
 
         // EmployeeService is tested and (employeeService.addEmployee)
         // Is expected to return same object it receives
@@ -133,7 +131,7 @@ public class EmployeeControllerTests
         Employee employeeToModify = employeeService.getEmployee(employeeId);
 
         // Expected modification
-        EmployeeModifyCommandDTO employeeModificationDto = new EmployeeModifyCommandDTO();
+        EmployeeModifyCommand employeeModificationDto = new EmployeeModifyCommand();
 
         //(1) Edit basic employee info
         employeeModificationDto.setName("reem");
@@ -141,27 +139,27 @@ public class EmployeeControllerTests
         employeeModificationDto.setGrossSalary(7000.0f);
 
         //(2) set Department
-        Long departmentId = 1L;
-        Department dep = departmentService.getDepartment(departmentId);
-        if(dep == null)
-            throw new NotFoundException("department is not found");
-        employeeModificationDto.setDepartment(dep);
+//        Long departmentId = 1L;
+//        Department dep = departmentService.getDepartment(departmentId);
+//        if(dep == null)
+//            throw new NotFoundException("department is not found");
+//        employeeModificationDto.setDepartment(dep);
+//
+//        //(3) set Team
+//        Long teamId = 1L;
+//        Team team = teamService.getTeam(teamId);
+//        if(team == null)
+//            throw new NotFoundException("team is not found");
+//        employeeModificationDto.setTeam(team);
+//
+//        //(4) Edit employee manager
+//        Long managerId = 3L;
+//        Employee manager = employeeService.getEmployee(managerId);
+//        if (manager == null)
+//            throw new NotFoundException("manager not found");
+//        employeeModificationDto.setManager(manager);
 
-        //(3) set Team
-        Long teamId = 1L;
-        Team team = teamService.getTeam(teamId);
-        if(team == null)
-            throw new NotFoundException("team is not found");
-        employeeModificationDto.setTeam(team);
-
-        //(4) Edit employee manager
-        Long managerId = 3L;
-        Employee manager = employeeService.getEmployee(managerId);
-        if (manager == null)
-            throw new NotFoundException("manager not found");
-        employeeModificationDto.setManager(manager);
-
-        EmployeeModifyCommandDTO.dtoToEmployee(employeeModificationDto, employeeToModify); // copy modified data to employee
+        employeeModificationDto.dtoToEmployee(employeeModificationDto, employeeToModify); // copy modified data to employee
 
         ObjectMapper objectMapper = new ObjectMapper();
         String employeeDtoJson = objectMapper.writeValueAsString(employeeModificationDto);

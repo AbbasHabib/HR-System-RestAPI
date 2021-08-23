@@ -1,7 +1,7 @@
 package com.spring.Employee;
 
 import com.spring.Employee.DTO.EmployeeInfoOnlyDTO;
-import com.spring.Employee.DTO.EmployeeModifyCommandDTO;
+import com.spring.Employee.DTO.EmployeeModifyCommand;
 import com.spring.Employee.DTO.EmployeeSalaryDTO;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class EmployeeService
 
     public Employee saveEmployee(Employee e)
     {
-        calculateNestSalary(e); // This function calculates employee new salary and save it in employee
+        e.setNetSalary(calculateNestSalary(e.getGrossSalary())); // This function calculates employee new salary and return it
         return employeeRepository.save(e);
     }
 
@@ -52,47 +52,47 @@ public class EmployeeService
 
     public Employee getEmployee(Long employeeId) // send path parameter
     {
-        if(employeeId == null)
+        if (employeeId == null)
             return null;
         return employeeRepository.findById(employeeId).isPresent()
                 ? employeeRepository.findById(employeeId).get()
                 : null;
     }
 
-    public void calculateNestSalary(Employee employee)
+    public Float calculateNestSalary(Float employeeSalary)
     {
-        if (employee.getGrossSalary() != null
-                && employee.getGrossSalary() != 0
-                && employee.getGrossSalary() * 0.85 - 500 > 500)
-            employee.setNetSalary(employee.getGrossSalary() * 0.85f - 500);
+        if (employeeSalary != null && employeeSalary != 0)
+        {
+            float empSalary = employeeSalary * (1 - SalariesConstants.TAXES) - SalariesConstants.DEDUCTED_INSURANCE;
+            if (empSalary > 0)
+                return empSalary;
+        }
+        return 0.0f;
     }
 
     public boolean checkManagerChange(Employee employeeToModify, Employee goToManager)
     {
-        if(employeeToModify.getId().equals(goToManager.getId()))
+        if (employeeToModify.getId().equals(goToManager.getId()))
             return false;
         List<Employee> employeesUnderCurrentEmployee = employeeRepository.findManagerEmployeesRecursivelyQueried(employeeToModify.getId());
 
         return employeesUnderCurrentEmployee.stream().noneMatch(o -> o.getId().equals(goToManager.getId())); // if it contains this manager then he cant be my manager
     }
 
-    public Employee modifyEmployee(long employeeId, EmployeeModifyCommandDTO employeeDto) throws NotFoundException
+    public Employee modifyEmployee(long employeeId, EmployeeModifyCommand employeeDto) throws NotFoundException
     {
         Employee employeeToModify = this.getEmployee(employeeId);
-        if(employeeDto.getManager() != null) // if employee manager is modified check problem could occur
+        if (employeeDto.getManager() != null) // if employee manager is modified check problem could occur
         {
-            if(!checkManagerChange(employeeToModify, employeeDto.getManager())) // if the manager is working underMe he cant be my manager
+            if (!checkManagerChange(employeeToModify, employeeDto.getManager())) // if the manager is working underMe he cant be my manager
             {
                 throw new NotFoundException("Infinite recursive relation between employee and manager");
-
-//                System.out.println("Infinite recursive relation between employee and manager");
-//                return null;
-
             }
         }
-        EmployeeModifyCommandDTO.dtoToEmployee(employeeDto, employeeToModify); //  copying new data to employee
+        employeeDto.dtoToEmployee(employeeDto, employeeToModify); //  copying new data to employee
         return saveEmployee(employeeToModify);
     }
+
     public EmployeeSalaryDTO employeeSalary(long employeeId)
     {
         Employee employeeRequired = this.getEmployee(employeeId);
