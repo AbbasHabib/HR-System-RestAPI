@@ -1,6 +1,8 @@
 package com.spring.employee;
 
 import com.blazebit.persistence.CriteriaBuilderFactory;
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.spring.Department.Department;
 import com.spring.Department.DepartmentService;
 import com.spring.Employee.DTO.EmployeeInfoOnlyDTO;
@@ -18,7 +20,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,13 +34,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
+@ActiveProfiles("test")
+@TestExecutionListeners({
+        DependencyInjectionTestExecutionListener.class,
+        DbUnitTestExecutionListener.class
+})
 public class EmployeeControllerTests
 {
 
@@ -50,11 +59,10 @@ public class EmployeeControllerTests
     @Autowired
     MockMvc mockMvc;
 
-
     private CriteriaBuilderFactory criteriaBuilderFactory;
 
-
     @Test
+    @DatabaseSetup("/data.xml")
     public void add_employee() throws Exception
     {
         Employee employeeToAdd = new Employee();
@@ -64,7 +72,7 @@ public class EmployeeControllerTests
         employeeToAdd.setId(1L);
 
         // set Department to employee
-        Long departmentId = 1L;
+        Long departmentId = 101L;
         Department dep = departmentService.getDepartment(departmentId);
         if(dep == null)
             throw new NotFoundException("department is not found");
@@ -73,20 +81,18 @@ public class EmployeeControllerTests
         // this test is expected to: return same object it receives and add employee to database
 
         // set Team
-        Long teamId = 1L;
+        Long teamId = 101L;
         Team team = teamService.getTeam(teamId);
         if(team == null)
             throw new NotFoundException("team is not found");
         employeeToAdd.setTeam(team);
 
-//        Long managerId = 2L;
-//        Employee manager = employeeService.getEmployee(managerId);
-//        if(manager == null)
-//            throw new NotFoundException("manager not found");
+        Long managerId = 101L;
+        Employee manager = employeeService.getEmployee(managerId);
+        if(manager == null)
+            throw new NotFoundException("manager not found");
+        employeeToAdd.setManager(manager);
 
-//        employeeToAdd.setManager(manager);
-
-        // EmployeeService is tested and (employeeService.addEmployee)
         // Is expected to return same object it receives
         ObjectMapper objectMapper = new ObjectMapper();
         String employeeJson = objectMapper.writeValueAsString(employeeToAdd); // converts employee object to JSON string
@@ -94,14 +100,24 @@ public class EmployeeControllerTests
         // POST request (.post("/employee/")) takes to be a Json of employee in request Body
         mockMvc.perform(MockMvcRequestBuilders.post("/employee/")
                 .contentType(MediaType.APPLICATION_JSON).content(employeeJson))
-                .andExpect(content().json(employeeJson))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andReturn(); // request is 200 (OK)
+
+        employeeToAdd.setNetSalary(employeeService.calculateNestSalary(employeeToAdd.getGrossSalary()));
+        employeeJson = objectMapper.writeValueAsString(employeeToAdd); // converts employee object to JSON string
+
+        Employee employeeFromDB = employeeService.getEmployee(employeeToAdd.getId());
+
+        String employeeFromDBJSON = objectMapper.writeValueAsString(employeeFromDB);
+
+        assertEquals(employeeJson, employeeFromDBJSON); // this makes sure that the JSON request = stored data in DB
     }
 
     @Test
+    @DatabaseSetup("/data.xml")
     public void get_employee_with_id() throws Exception
     {
-        Long searchForId = 1L;
+        Long searchForId = 101L;
 
         Employee employee = employeeService.getEmployee(searchForId);
         ObjectMapper objectMapper = new ObjectMapper();
@@ -113,9 +129,10 @@ public class EmployeeControllerTests
     }
 
     @Test
+    @DatabaseSetup("/data.xml")
     public void delete_employee_with_id() throws Exception
     {
-        long deleteUserWithID = 2L;
+        long deleteUserWithID = 102L;
 
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/employee/" + deleteUserWithID))
@@ -125,10 +142,12 @@ public class EmployeeControllerTests
     }
 
     @Test
+    @Transactional
+    @DatabaseSetup("/data.xml")
     public void modify_employee() throws Exception
     {
         // Initial values of the employee
-        Long employeeId = 6L; // employee id to modify
+        Long employeeId = 103L; // employee id to modify
         Employee employeeToModify = employeeService.getEmployee(employeeId);
 
         // Expected modification
@@ -136,29 +155,29 @@ public class EmployeeControllerTests
 
         //(1) Edit basic employee info
         employeeModificationDto.setName("reem");
-        employeeModificationDto.setGender('F');
+        employeeModificationDto.setGender(Gender.FEMALE);
         employeeModificationDto.setGrossSalary(7000.0f);
 
         //(2) set Department
-//        Long departmentId = 1L;
-//        Department dep = departmentService.getDepartment(departmentId);
-//        if(dep == null)
-//            throw new NotFoundException("department is not found");
-//        employeeModificationDto.setDepartment(dep);
-//
-//        //(3) set Team
-//        Long teamId = 1L;
-//        Team team = teamService.getTeam(teamId);
-//        if(team == null)
-//            throw new NotFoundException("team is not found");
-//        employeeModificationDto.setTeam(team);
-//
-//        //(4) Edit employee manager
-//        Long managerId = 3L;
-//        Employee manager = employeeService.getEmployee(managerId);
-//        if (manager == null)
-//            throw new NotFoundException("manager not found");
-//        employeeModificationDto.setManager(manager);
+        Long departmentId = 102L;
+        Department dep = departmentService.getDepartment(departmentId);
+        if(dep == null)
+            throw new NotFoundException("department is not found");
+        employeeModificationDto.setDepartment(dep);
+
+        //(3) set Team
+        Long teamId = 102L;
+        Team team = teamService.getTeam(teamId);
+        if(team == null)
+            throw new NotFoundException("team is not found");
+        employeeModificationDto.setTeam(team);
+
+        //(4) Edit employee manager
+        Long managerId = 102L;
+        Employee manager = employeeService.getEmployee(managerId);
+        if (manager == null)
+            throw new NotFoundException("manager not found");
+        employeeModificationDto.setManager(manager);
 
         employeeModificationDto.dtoToEmployee(employeeModificationDto, employeeToModify); // copy modified data to employee
 
@@ -171,9 +190,10 @@ public class EmployeeControllerTests
     }
 
     @Test
+    @DatabaseSetup("/data.xml")
     public void get_employee_salary() throws Exception
     {
-        Employee employeeRequired = employeeService.getEmployee(1L);
+        Employee employeeRequired = employeeService.getEmployee(101L);
 
         if (employeeRequired == null)
             throw new NotFoundException("cant find employee");
@@ -191,9 +211,10 @@ public class EmployeeControllerTests
 
     @Test
     @Transactional
+    @DatabaseSetup("/data.xml")
     public void get_employees_under_manager() throws Exception
     {
-        Employee manager = employeeService.getEmployee(1L);
+        Employee manager = employeeService.getEmployee(101L);
 
         if (manager == null)
             throw new NotFoundException("cant find manager");
@@ -212,9 +233,10 @@ public class EmployeeControllerTests
 
     @Test
     @Transactional
+    @DatabaseSetup("/data.xml")
     public void getEmployeesRecursively() throws Exception
     {
-        long managerId = 1L;
+        long managerId = 101L;
         List<EmployeeInfoOnlyDTO> employeesUnderManager = employeeService.getManagerEmployeesRecursively(managerId);
         if (employeesUnderManager == null)
             throw new NotFoundException("cant find manager");

@@ -14,7 +14,7 @@ public class Employee
 {
     @Id
     @Column(name = "id", nullable = false)
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue
     private Long id;
     @Column(name = "name", nullable = false)
     private String name;

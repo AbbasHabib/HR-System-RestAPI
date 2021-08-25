@@ -26,7 +26,7 @@ public class DepartmentController
     }
 
     @GetMapping("/{id}")
-    public Department getDepartment(@PathVariable String id)
+    public Department getDepartment(@PathVariable String id) throws Exception
     {
         return departmentService.getDepartment(Long.parseLong(id));
     }

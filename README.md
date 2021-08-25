@@ -8,8 +8,8 @@ this project is an HR system where the of it is managing employees teams, depart
 
 - [ ] Auto generate getters and setters using -> **_(Project Lombok)_**
 - [x] Use Enums to replace constants
-- [ ] Migration of MySQl DB using **_flyway_**
-- [ ] Improve Testing using **_DBunit_**
+- [x] Migration of MySQl DB using **_flyway_**
+- [x] Improve Testing using **_DBunit_**
 - [x] mapping data from DTO to main entities delete all boilerplate code.
 - [x] **Remove the beautiful magic numbers ✨**
 

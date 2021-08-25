@@ -2,7 +2,7 @@ package com.spring.Employee;
 
 public interface Queries
 {
-    public static final String EMPLOYEES_UNDER_MANAGER_RECURSIVE = "with recursive cte as (\n" +
+    public static final String EMPLOYEES_UNDER_MANAGER_RECURSIVE = "with recursive cte(id, birth_date, gender, graduation_date, gross_salary, name, net_salary, department_id, manager_id, team_id) as (\n" +
             "  select     id, birth_date, gender, graduation_date, gross_salary, name, net_salary, department_id, manager_id, team_id\n" +
             "\n" +
             "  from       employee\n" +

@@ -2,6 +2,7 @@ package com.spring.Employee.DTO;
 
 import com.spring.Department.Department;
 import com.spring.Employee.Employee;
+import com.spring.Employee.Gender;
 import com.spring.modelMapperGen.ModelMapperGen;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +18,14 @@ public class EmployeeInfoOnlyDTO
     private String name;
     private Date birthDate;
     private Date graduationDate;
-    private char gender = '\0';
+    private Gender gender;
     private Department department;
     private Float grossSalary;
     private Float netSalary;
 
-    public void setEmployeeToDTO(Employee e)
+    public static void setEmployeeToDTO(Employee e, EmployeeInfoOnlyDTO DTO)
     {
-        ModelMapperGen.getModelMapperSingleton().map(e, this);
+        ModelMapperGen.getModelMapperSingleton().map(e, DTO);
     }
 
     public static List<EmployeeInfoOnlyDTO> setEmployeeToDTOList(List<Employee> employees)
@@ -33,7 +34,7 @@ public class EmployeeInfoOnlyDTO
         for (Employee emp : employees)
         {
             EmployeeInfoOnlyDTO empDTO = new EmployeeInfoOnlyDTO();
-            empDTO.setEmployeeToDTO(emp);
+            setEmployeeToDTO(emp, empDTO);
             employeesDTO.add(empDTO);
         }
         return employeesDTO;
@@ -79,12 +80,12 @@ public class EmployeeInfoOnlyDTO
         this.graduationDate = graduationDate;
     }
 
-    public char getGender()
+    public Gender getGender()
     {
         return gender;
     }
 
-    public void setGender(char gender)
+    public void setGender(Gender gender)
     {
         this.gender = gender;
     }

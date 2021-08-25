@@ -2,6 +2,7 @@ package com.spring.Employee.DTO;
 
 import com.spring.Department.Department;
 import com.spring.Employee.Employee;
+import com.spring.Employee.Gender;
 import com.spring.Team.Team;
 import com.spring.modelMapperGen.ModelMapperGen;
 import org.hibernate.mapping.Map;
@@ -19,7 +20,7 @@ public class EmployeeModifyCommand
     private Team team;
     private Date birthDate;
     private Date graduationDate;
-    private char gender = '\0';
+    private Gender gender;
     private Department department;
     private Employee manager;
     private Set<Employee> employees;
@@ -71,12 +72,12 @@ public class EmployeeModifyCommand
         this.graduationDate = graduationDate;
     }
 
-    public char getGender()
+    public Gender getGender()
     {
         return gender;
     }
 
-    public void setGender(char gender)
+    public void setGender(Gender gender)
     {
         this.gender = gender;
     }

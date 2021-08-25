@@ -12,7 +12,7 @@ public class Team
 {
     @Id
     @Column(name = "id", nullable = false)
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue
     private Long id;
     @Column(name = "team_name")
     private String teamName;

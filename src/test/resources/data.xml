@@ -1,0 +1,28 @@
+<dataset>
+    <team id="101" team_name="el shabab"/>
+
+    <team id="102" team_name="devs"/>
+
+
+    <department id="101" name="btats"/>
+
+    <department id="102" name="apples"/>
+
+
+    <employee id="101" name="Big Boss" gender="MALE" department_id="101" team_id="101" />
+
+    <employee id="102" name="7amada" gender="MALE" manager_id="101" department_id="101" team_id="101"/>
+
+    <employee id="103" name="Zatona" gender="MALE" manager_id="102" department_id="101" team_id="101"/>
+
+    <employee id="104" name="Lamona" gender="MALE" manager_id="102" department_id="101" team_id="101"/>
+
+</dataset>
+
+<!--
+         Big Boss
+            |
+          7amada
+          /    \
+      zatona   Lamona
+-->

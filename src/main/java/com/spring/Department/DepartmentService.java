@@ -21,11 +21,12 @@ public class DepartmentService
         return departmentRepository.findAll();
     }
 
-    public Department getDepartment(Long id)
+    public Department getDepartment(Long id) throws Exception
     {
-        return departmentRepository.findById(id).isPresent() ?
-                departmentRepository.findById(id).get()
-                : null;
+        if(departmentRepository.findById(id).isPresent())
+            return departmentRepository.findById(id).get();
+        else
+            throw new Exception("not found");
     }
 
 }
