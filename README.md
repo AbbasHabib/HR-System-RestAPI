@@ -7,6 +7,7 @@ this project is an HR system where the of it is managing employees teams, depart
 ## Improving Code _Todo List_
 
 - [ ] Auto generate getters and setters using -> **_(Project Lombok)_**
+- [ ] Handle Exceptions at client side
 - [x] Use Enums to replace constants
 - [x] Migration of MySQl DB using **_flyway_**
 - [x] Improve Testing using **_DBunit_**
