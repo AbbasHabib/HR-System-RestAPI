@@ -4,6 +4,9 @@ this project is an HR system where the of it is managing employees teams, depart
 
 #### The project will be fully driven by [JavaSpringBoot](https://www.tutorialspoint.com/spring_boot/spring_boot_introduction.htm) ​Framework, and MySql Database.
 
+## Currently
+- Ignoring flyway
+
 ## Improving Code _Todo List_
 
 - [ ] Auto generate getters and setters using -> **_(Project Lombok)_**

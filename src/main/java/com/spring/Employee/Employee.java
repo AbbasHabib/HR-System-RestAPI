@@ -8,15 +8,39 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.Set;
 
+/*
+
+ now the employee has
+  first name , *
+   last name , *
+    national Id (unique) ,
+     birthdate ,
+      graduation date,
+      degree ( either fresh, intermediate, senior, Architect) ,
+       Years of experience ,
+        manager ,
+         team ,
+          and a gross salary
+
+ */
+
+
+
+
 @Entity
 @Table(name = "employee")
 public class Employee
 {
+
     @Id
     @Column(name = "id", nullable = false)
     private Long id = 0L;
-    @Column(name = "name", nullable = false)
-    private String name;
+
+    @Column(name = "first-name", nullable = false)
+    private String Firstname;
+    @Column(name = "last-name", nullable = false)
+    private String LastName;
+
     @Column(name = "birth_date")
     @Temporal(TemporalType.DATE)
     private Date birthDate;
@@ -87,10 +111,6 @@ public class Employee
         return id;
     }
 
-    public String getName()
-    {
-        return name;
-    }
 
     public Date getBirthDate()
     {
@@ -135,11 +155,6 @@ public class Employee
     public void setId(Long id)
     {
         this.id = id;
-    }
-
-    public void setName(String name)
-    {
-        this.name = name;
     }
 
     public void setBirthDate(Date birthDate)
