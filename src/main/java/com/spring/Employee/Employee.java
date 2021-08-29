@@ -8,39 +8,25 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.Set;
 
-/*
-
- now the employee has
-  first name , *
-   last name , *
-    national Id (unique) ,
-     birthdate ,
-      graduation date,
-      degree ( either fresh, intermediate, senior, Architect) ,
-       Years of experience ,
-        manager ,
-         team ,
-          and a gross salary
-
- */
-
-
-
 
 @Entity
 @Table(name = "employee")
 public class Employee
 {
-
     @Id
     @Column(name = "id", nullable = false)
     private Long id = 0L;
-
+    @Column(name="national_id", nullable = false, unique = true)
+    private String nationalId;
     @Column(name = "first-name", nullable = false)
     private String firstname;
     @Column(name = "last-name", nullable = false)
     private String lastName;
-
+    @Column(name= "degree")
+    @Enumerated(EnumType.STRING)
+    private Degree degree;
+    @Column(name= "years_of_experience")
+    private Integer yearsOfExperience;
     @Column(name = "birth_date")
     @Temporal(TemporalType.DATE)
     private Date birthDate;
@@ -53,14 +39,12 @@ public class Employee
     @ManyToOne
     @JoinColumn(name="department_id", nullable=true)
     private Department department;
-
     @ManyToOne
     @JoinColumn(name="team_id", nullable=true)
     private Team team;
 
     // recursive relationship where a manager is an employee
     // many employees share the same manager id
-
     @ManyToOne
     @JoinColumn(name="manager_id", nullable=true)// in case the manager_id is null that means that
     // manager is a a super manager doesn't have a manager above him
@@ -76,34 +60,28 @@ public class Employee
     private Float netSalary;
 
 
-    // list of expertise
-    public Employee(){  };
-
-    public Employee(Long id, String name, Date birthDate, Date graduationDate, Gender gender, Department department, Employee manager, Set<Employee> subEmployees, Float grossSalary)
+    public Employee(Long id, String nationalId, String firstname, String lastName, Degree degree, Integer yearsOfExperience, Date birthDate, Date graduationDate, Gender gender, Department department, Team team, Employee manager, Set<Employee> subEmployees, Float grossSalary, Float netSalary)
     {
         this.id = id;
-        this.name = name;
+        this.nationalId = nationalId;
+        this.firstname = firstname;
+        this.lastName = lastName;
+        this.degree = degree;
+        this.yearsOfExperience = yearsOfExperience;
         this.birthDate = birthDate;
         this.graduationDate = graduationDate;
         this.gender = gender;
         this.department = department;
+        this.team = team;
         this.manager = manager;
         this.subEmployees = subEmployees;
         this.grossSalary = grossSalary;
+        this.netSalary = netSalary;
     }
 
-    public boolean shiftSubordinates()
+    public Employee()
     {
-        Employee managerToShiftTo = this.getManager();
-        if(managerToShiftTo == null)
-        {
-            return false;
-        }
-        for(Employee emp : this.getSubEmployees())
-        {
-            emp.setManager(managerToShiftTo);
-        }
-        return true;
+
     }
 
     public Long getId()
@@ -111,50 +89,64 @@ public class Employee
         return id;
     }
 
+    public void setId(Long id)
+    {
+        this.id = id;
+    }
+
+    public String getNationalId()
+    {
+        return nationalId;
+    }
+
+    public void setNationalId(String nationalId)
+    {
+        this.nationalId = nationalId;
+    }
+
+    public String getFirstname()
+    {
+        return firstname;
+    }
+
+    public void setFirstname(String firstname)
+    {
+        this.firstname = firstname;
+    }
+
+    public String getLastName()
+    {
+        return lastName;
+    }
+
+    public void setLastName(String lastName)
+    {
+        this.lastName = lastName;
+    }
+
+    public Degree getDegree()
+    {
+        return degree;
+    }
+
+    public void setDegree(Degree degree)
+    {
+        this.degree = degree;
+    }
+
+    public Integer getYearsOfExperience()
+    {
+        return yearsOfExperience;
+    }
+
+    public void setYearsOfExperience(Integer yearsOfExperience)
+    {
+        this.yearsOfExperience = yearsOfExperience;
+    }
 
     public Date getBirthDate()
     {
         return birthDate;
-    }
-
-    public Date getGraduationDate()
-    {
-        return graduationDate;
-    }
-
-    public Gender getGender()
-    {
-        return gender;
-    }
-
-    public Department getDepartment()
-    {
-        return department;
-    }
-
-    public Employee getManager()
-    {
-        return manager;
-    }
-
-    public Set<Employee> getSubEmployees()
-    {
-        return subEmployees;
-    }
-
-    public Float getGrossSalary()
-    {
-        return grossSalary;
-    }
-
-    public Float getNetSalary()
-    {
-        return netSalary;
-    }
-
-    public void setId(Long id)
-    {
-        this.id = id;
     }
 
     public void setBirthDate(Date birthDate)
@@ -162,9 +154,19 @@ public class Employee
         this.birthDate = birthDate;
     }
 
+    public Date getGraduationDate()
+    {
+        return graduationDate;
+    }
+
     public void setGraduationDate(Date graduationDate)
     {
         this.graduationDate = graduationDate;
+    }
+
+    public Gender getGender()
+    {
+        return gender;
     }
 
     public void setGender(Gender gender)
@@ -172,19 +174,14 @@ public class Employee
         this.gender = gender;
     }
 
+    public Department getDepartment()
+    {
+        return department;
+    }
+
     public void setDepartment(Department department)
     {
         this.department = department;
-    }
-
-    public void setManager(Employee manager)
-    {
-        this.manager = manager;
-    }
-
-    public void setSubEmployees(Set<Employee> employees)
-    {
-        this.subEmployees = employees;
     }
 
     public Team getTeam()
@@ -197,15 +194,43 @@ public class Employee
         this.team = team;
     }
 
+    public Employee getManager()
+    {
+        return manager;
+    }
+
+    public void setManager(Employee manager)
+    {
+        this.manager = manager;
+    }
+
+    public Set<Employee> getSubEmployees()
+    {
+        return subEmployees;
+    }
+
+    public void setSubEmployees(Set<Employee> subEmployees)
+    {
+        this.subEmployees = subEmployees;
+    }
+
+    public Float getGrossSalary()
+    {
+        return grossSalary;
+    }
+
     public void setGrossSalary(Float grossSalary)
     {
         this.grossSalary = grossSalary;
+    }
+
+    public Float getNetSalary()
+    {
+        return netSalary;
     }
 
     public void setNetSalary(Float netSalary)
     {
         this.netSalary = netSalary;
     }
-
-
 }
