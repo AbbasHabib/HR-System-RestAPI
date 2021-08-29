@@ -18,15 +18,14 @@ public class TeamService
 
     public Team getTeam(Long id)
     {
-        if(id == null)
+        if (id == null)
             return null;
         return teamRepository.findById(id).isPresent() ? teamRepository.findById(id).get() : null;
     }
 
     public List<EmployeeInfoOnlyDTO> getTeamEmployees(Long id)
     {
-        if(id == null)
-            return null;
+        assert id != null;
         Team team = this.getTeam(id);
         if (team == null)
             return null;
@@ -38,7 +37,8 @@ public class TeamService
 
     public Team addTeam(Team team)
     {
-        if (getTeam(team.getId()) == null || team.getId() == null)
+        assert team.getId() != null;
+        if (getTeam(team.getId()) == null)
             return teamRepository.save(team);
         return null;
     }

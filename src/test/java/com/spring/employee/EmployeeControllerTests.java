@@ -11,6 +11,7 @@ import com.spring.Employee.Employee;
 import com.spring.Employee.DTO.EmployeeModifyCommand;
 import com.spring.Employee.EmployeeService;
 import com.spring.Employee.Gender;
+import com.spring.ExceptionsCustom.CustomException;
 import com.spring.Team.Team;
 import com.spring.Team.TeamService;
 import javassist.NotFoundException;
@@ -63,7 +64,7 @@ public class EmployeeControllerTests
 
     @Test
     @DatabaseSetup("/data.xml")
-    public void add_employee() throws Exception
+    public void add_employee() throws Exception, CustomException
     {
         Employee employeeToAdd = new Employee();
         employeeToAdd.setName("saad");
@@ -115,7 +116,7 @@ public class EmployeeControllerTests
 
     @Test
     @DatabaseSetup("/data.xml")
-    public void get_employee_with_id() throws Exception
+    public void get_employee_with_id() throws Exception, CustomException
     {
         Long searchForId = 101L;
 
@@ -144,7 +145,7 @@ public class EmployeeControllerTests
     @Test
     @Transactional
     @DatabaseSetup("/data.xml")
-    public void modify_employee() throws Exception
+    public void modify_employee() throws Exception, CustomException
     {
         // Initial values of the employee
         Long employeeId = 103L; // employee id to modify
@@ -191,7 +192,7 @@ public class EmployeeControllerTests
 
     @Test
     @DatabaseSetup("/data.xml")
-    public void get_employee_salary() throws Exception
+    public void get_employee_salary() throws Exception, CustomException
     {
         Employee employeeRequired = employeeService.getEmployee(101L);
 
@@ -212,7 +213,7 @@ public class EmployeeControllerTests
     @Test
     @Transactional
     @DatabaseSetup("/data.xml")
-    public void get_employees_under_manager() throws Exception
+    public void get_employees_under_manager() throws Exception, CustomException
     {
         Employee manager = employeeService.getEmployee(101L);
 
@@ -234,7 +235,7 @@ public class EmployeeControllerTests
     @Test
     @Transactional
     @DatabaseSetup("/data.xml")
-    public void getEmployeesRecursively() throws Exception
+    public void getEmployeesRecursively() throws Exception, CustomException
     {
         long managerId = 101L;
         List<EmployeeInfoOnlyDTO> employeesUnderManager = employeeService.getManagerEmployeesRecursively(managerId);

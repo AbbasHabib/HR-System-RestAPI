@@ -2,6 +2,7 @@ package com.spring.Department;
 
 import com.spring.Employee.Employee;
 import com.spring.Employee.EmployeeService;
+import com.spring.ExceptionsCustom.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +27,7 @@ public class DepartmentController
     }
 
     @GetMapping("/{id}")
-    public Department getDepartment(@PathVariable String id) throws Exception
+    public Department getDepartment(@PathVariable String id) throws Exception, CustomException
     {
         return departmentService.getDepartment(Long.parseLong(id));
     }

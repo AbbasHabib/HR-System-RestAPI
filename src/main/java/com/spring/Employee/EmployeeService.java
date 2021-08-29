@@ -3,11 +3,13 @@ package com.spring.Employee;
 import com.spring.Employee.DTO.EmployeeInfoOnlyDTO;
 import com.spring.Employee.DTO.EmployeeModifyCommand;
 import com.spring.Employee.DTO.EmployeeSalaryDTO;
+import com.spring.ExceptionsCustom.CustomException;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class EmployeeService
@@ -15,13 +17,14 @@ public class EmployeeService
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    public Employee addEmployee(Employee employee) throws Exception
+    public Employee addEmployee(Employee employee) throws Exception, CustomException
     {
-        if (this.getEmployee(employee.getId()) == null)
-        {
+        if(employee.getId() == null)
             return saveEmployee(employee);
-        }
-        throw new Exception("user ID already exists");
+        if (this.getEmployee(employee.getId()) == null)
+            return saveEmployee(employee);
+
+        throw new CustomException(">>User ID already exists");
     }
 
     public Employee saveEmployee(Employee e)
@@ -30,18 +33,18 @@ public class EmployeeService
         return employeeRepository.save(e);
     }
 
-    public Boolean deleteEmployee(Long employeeId)
+    public boolean deleteEmployee(Long employeeId) throws CustomException
     {
         Employee employee = this.getEmployee(employeeId);
         if (employee != null)
         {
             if (employee.shiftSubordinates())
             {
-                employeeRepository.deleteById(employeeId); // if shifting shiftSubordinates process is complete then return true
+                employeeRepository.deleteById(employeeId); // if shifting shiftSubordinates process is complete
                 return true;
             }
         }
-        return false; // means that employee is null or its a super manager {has no manager}
+        throw new CustomException(">>This employee id does not exist!!!");
     }
 
 
@@ -52,11 +55,9 @@ public class EmployeeService
 
     public Employee getEmployee(Long employeeId) // send path parameter
     {
-        if (employeeId == null)
-            return null;
-        return employeeRepository.findById(employeeId).isPresent()
-                ? employeeRepository.findById(employeeId).get()
-                : null;
+        if (employeeId != null)
+            return employeeRepository.findById(employeeId).orElse(null);
+        return null;
     }
 
     public Float calculateNestSalary(Float employeeSalary)
@@ -79,21 +80,21 @@ public class EmployeeService
         return employeesUnderCurrentEmployee.stream().noneMatch(o -> o.getId().equals(goToManager.getId())); // if it contains this manager then he cant be my manager
     }
 
-    public Employee modifyEmployee(long employeeId, EmployeeModifyCommand employeeDto) throws NotFoundException
+    public Employee modifyEmployee(long employeeId, EmployeeModifyCommand employeeDto) throws NotFoundException, CustomException
     {
         Employee employeeToModify = this.getEmployee(employeeId);
         if (employeeDto.getManager() != null) // if employee manager is modified check problem could occur
         {
             if (!checkManagerChange(employeeToModify, employeeDto.getManager())) // if the manager is working underMe he cant be my manager
             {
-                throw new NotFoundException("Infinite recursive relation between employee and manager");
+                throw new CustomException("Infinite recursive relation between employee and manager");
             }
         }
         employeeDto.dtoToEmployee(employeeDto, employeeToModify); //  copying new data to employee
         return saveEmployee(employeeToModify);
     }
 
-    public EmployeeSalaryDTO employeeSalary(long employeeId)
+    public EmployeeSalaryDTO employeeSalary(long employeeId) throws CustomException
     {
         Employee employeeRequired = this.getEmployee(employeeId);
         return new EmployeeSalaryDTO(employeeRequired);
@@ -105,7 +106,7 @@ public class EmployeeService
     }
 
 
-    public List<EmployeeInfoOnlyDTO> getManagerEmployees(long managerId)
+    public List<EmployeeInfoOnlyDTO> getManagerEmployees(long managerId) throws CustomException
     {
         Employee manager = this.getEmployee(managerId);
         if (manager == null)
@@ -114,7 +115,7 @@ public class EmployeeService
         return EmployeeInfoOnlyDTO.setEmployeeToDTOList(employeesUnderManager);
     }
 
-    public List<EmployeeInfoOnlyDTO> getManagerEmployeesRecursively(long managerId)
+    public List<EmployeeInfoOnlyDTO> getManagerEmployeesRecursively(long managerId) throws CustomException
     {
         if (this.getEmployee(managerId) == null)
             return null;

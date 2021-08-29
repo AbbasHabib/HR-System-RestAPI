@@ -3,6 +3,7 @@ package com.spring.employee;
 import com.spring.Employee.Employee;
 import com.spring.Employee.EmployeeService;
 
+import com.spring.ExceptionsCustom.CustomException;
 import com.spring.HrSystemApplication;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ public class EmployeeServiceTest
     private EmployeeService employeeService;
 
     @Test
-    public void add_employee() throws Exception
+    public void add_employee() throws Exception, CustomException
     {
         /*
             in this test: if the adding process is success it is expected to
@@ -37,7 +38,7 @@ public class EmployeeServiceTest
     }
 
     @Test
-    public void get_employee_with_id()
+    public void get_employee_with_id() throws CustomException
     {
         /*
             in this test : employee id is sent in the path params and the return expected to be

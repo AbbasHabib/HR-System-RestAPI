@@ -1,5 +1,6 @@
 package com.spring.Department;
 
+import com.spring.ExceptionsCustom.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,12 +22,12 @@ public class DepartmentService
         return departmentRepository.findAll();
     }
 
-    public Department getDepartment(Long id) throws Exception
+    public Department getDepartment(Long id) throws Exception, CustomException
     {
         if(departmentRepository.findById(id).isPresent())
             return departmentRepository.findById(id).get();
         else
-            throw new Exception("not found");
+            throw new CustomException("This department Id does not exist");
     }
 
 }

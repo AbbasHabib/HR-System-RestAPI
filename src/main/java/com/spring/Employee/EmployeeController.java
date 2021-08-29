@@ -3,6 +3,7 @@ package com.spring.Employee;
 import com.spring.Employee.DTO.EmployeeInfoOnlyDTO;
 import com.spring.Employee.DTO.EmployeeModifyCommand;
 import com.spring.Employee.DTO.EmployeeSalaryDTO;
+import com.spring.ExceptionsCustom.CustomException;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -18,7 +19,7 @@ public class EmployeeController
     EmployeeService employeeService;
 
     @PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Employee addEmployee(@RequestBody Employee employee) throws Exception
+    public Employee addEmployee(@RequestBody Employee employee) throws Exception, CustomException
     {
         return employeeService.addEmployee(employee);
     }
@@ -30,25 +31,28 @@ public class EmployeeController
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Employee getEmployee(@PathVariable String id) // send path parameter
+    public Employee getEmployee(@PathVariable String id) throws CustomException // send path parameter
     {
-        return employeeService.getEmployee(Long.parseLong(id));
+        Employee emp = employeeService.getEmployee(Long.parseLong(id));
+        if(emp == null)
+            throw new CustomException("this user Id does not exits");
+        return emp;
     }
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Boolean deleteEmployee(@PathVariable String id)
+    public boolean deleteEmployee(@PathVariable String id) throws CustomException
     {
         return employeeService.deleteEmployee(Long.parseLong(id));
     }
 
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Employee modifyEmployee(@PathVariable String id, @RequestBody EmployeeModifyCommand employeeModifyCommand) throws NotFoundException
+    public Employee modifyEmployee(@PathVariable String id, @RequestBody EmployeeModifyCommand employeeModifyCommand) throws NotFoundException, CustomException
     {
         return employeeService.modifyEmployee(Long.parseLong(id), employeeModifyCommand);
     }
 
     @GetMapping(value = "/salary/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public EmployeeSalaryDTO getEmployeeSalary(@PathVariable String id)
+    public EmployeeSalaryDTO getEmployeeSalary(@PathVariable String id) throws CustomException
     {
         return employeeService.employeeSalary(Long.parseLong(id));
     }
@@ -59,13 +63,13 @@ public class EmployeeController
         return employeeService.getEmployeesByName(name);
     }
     @GetMapping("manager/recursive/{id}")
-    public List<EmployeeInfoOnlyDTO> getEmployeesUnderManagerRecursively(@PathVariable String id)
+    public List<EmployeeInfoOnlyDTO> getEmployeesUnderManagerRecursively(@PathVariable String id) throws CustomException
     {
         return employeeService.getManagerEmployeesRecursively(Long.parseLong(id));
     }
 
     @GetMapping("manager/{id}")
-    public List<EmployeeInfoOnlyDTO> getEmployeesUnderManager(@PathVariable String id)
+    public List<EmployeeInfoOnlyDTO> getEmployeesUnderManager(@PathVariable String id) throws CustomException
     {
         return employeeService.getManagerEmployees(Long.parseLong(id));
     }

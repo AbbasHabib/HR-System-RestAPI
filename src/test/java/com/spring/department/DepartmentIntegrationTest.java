@@ -5,6 +5,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.spring.Department.Department;
 import com.spring.Department.DepartmentService;
 import com.spring.Employee.Employee;
+import com.spring.ExceptionsCustom.CustomException;
 import org.dbunit.DBTestCase;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,7 +43,7 @@ public class DepartmentIntegrationTest
 
     @Test
     @DatabaseSetup("/data.xml")
-    public void add_department() throws Exception
+    public void add_department() throws Exception, CustomException
     {
         Department department = new Department();
         department.setName("el a7bab");
@@ -58,7 +59,7 @@ public class DepartmentIntegrationTest
 
     @Test
     @DatabaseSetup("/data.xml")
-    public void get_department() throws Exception
+    public void get_department() throws Exception, CustomException
     {
         Long searchForId = 101L;
 

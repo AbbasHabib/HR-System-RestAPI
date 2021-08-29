@@ -14,8 +14,7 @@ public class Employee
 {
     @Id
     @Column(name = "id", nullable = false)
-//    @GeneratedValue
-    private Long id;
+    private Long id = 0L;
     @Column(name = "name", nullable = false)
     private String name;
     @Column(name = "birth_date")
