@@ -37,9 +37,9 @@ public class Employee
     private Long id = 0L;
 
     @Column(name = "first-name", nullable = false)
-    private String Firstname;
+    private String firstname;
     @Column(name = "last-name", nullable = false)
-    private String LastName;
+    private String lastName;
 
     @Column(name = "birth_date")
     @Temporal(TemporalType.DATE)
