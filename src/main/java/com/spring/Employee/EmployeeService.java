@@ -28,7 +28,7 @@ public class EmployeeService
 
     public Employee saveEmployee(Employee e)
     {
-        e.setNetSalary(calculateNestSalary(e.getGrossSalary())); // This function calculates employee new salary and return it
+        e.setNetSalary(calculateNestSalary(e.getGrossSalary(), e.getAttendanceTable())); // This function calculates employee new salary and return it
         return employeeRepository.save(e);
     }
 
@@ -59,11 +59,15 @@ public class EmployeeService
         return null;
     }
 
-    public Float calculateNestSalary(Float employeeSalary)
+    public Float calculateNestSalary(Float employeeSalary, AttendanceTable employeeAttendanceTable)
     {
         if (employeeSalary != null && employeeSalary != 0)
         {
             float empSalary = employeeSalary * (1 - SalariesYearsConstants.TAXES) - SalariesYearsConstants.DEDUCTED_INSURANCE;
+            float salaryPerDay = empSalary / employeeAttendanceTable.getCurrentMonthDays();
+            // if absence in this month is zero then there wont be any deduction
+            empSalary -= salaryPerDay * employeeAttendanceTable.getAbsenceDaysInCurrentMonth();
+
             if (empSalary > 0)
                 return empSalary;
         }

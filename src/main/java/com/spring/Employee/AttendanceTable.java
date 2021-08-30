@@ -78,7 +78,7 @@ public class AttendanceTable
         this.absenceDaysInCurrentYear = 0;
     }
 
-    private Integer getCurrentMonthDays()
+    public Integer getCurrentMonthDays()
     {
         Calendar currentDate = Calendar.getInstance();
         return currentDate.getActualMaximum(Calendar.DAY_OF_MONTH);
