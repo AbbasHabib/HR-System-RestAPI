@@ -12,8 +12,8 @@ public class Team
 {
     @Id
     @Column(name = "id", nullable = false)
-//    @GeneratedValue
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id = 0L;
     @Column(name = "team_name")
     private String teamName;
     @JsonIgnore

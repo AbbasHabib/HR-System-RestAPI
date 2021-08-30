@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class EmployeeService
@@ -64,7 +63,7 @@ public class EmployeeService
     {
         if (employeeSalary != null && employeeSalary != 0)
         {
-            float empSalary = employeeSalary * (1 - SalariesConstants.TAXES) - SalariesConstants.DEDUCTED_INSURANCE;
+            float empSalary = employeeSalary * (1 - SalariesYearsConstants.TAXES) - SalariesYearsConstants.DEDUCTED_INSURANCE;
             if (empSalary > 0)
                 return empSalary;
         }

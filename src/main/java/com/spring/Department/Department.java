@@ -13,16 +13,17 @@ public class Department
 {
     @Id
     @Column(name = "id", nullable = false)
-//    @GeneratedValue
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id = 0L;
     @Column(name = "name", nullable = false)
     private String name;
     @JsonIgnore
-    @OneToMany(mappedBy="department")
+    @OneToMany(mappedBy = "department")
     private Set<Employee> employees;
 
     public Department()
-    { }
+    {
+    }
 
     public Department(String name)
     {

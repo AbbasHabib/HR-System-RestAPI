@@ -15,17 +15,18 @@ public class Employee
 {
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id = 0L;
-    @Column(name="national_id", nullable = false, unique = true)
+    @Column(name = "national_id", nullable = false, unique = true)
     private String nationalId;
     @Column(name = "first-name", nullable = false)
     private String firstname;
     @Column(name = "last-name", nullable = false)
     private String lastName;
-    @Column(name= "degree")
+    @Column(name = "degree")
     @Enumerated(EnumType.STRING)
     private Degree degree;
-    @Column(name= "years_of_experience")
+    @Column(name = "years_of_experience")
     private Integer yearsOfExperience;
     @Column(name = "birth_date")
     @Temporal(TemporalType.DATE)
@@ -37,27 +38,31 @@ public class Employee
     @Enumerated(EnumType.STRING)
     private Gender gender;
     @ManyToOne
-    @JoinColumn(name="department_id", nullable=true)
+    @JoinColumn(name = "department_id", nullable = true)
     private Department department;
     @ManyToOne
-    @JoinColumn(name="team_id", nullable=true)
+    @JoinColumn(name = "team_id", nullable = true)
     private Team team;
 
     // recursive relationship where a manager is an employee
     // many employees share the same manager id
     @ManyToOne
-    @JoinColumn(name="manager_id", nullable=true)// in case the manager_id is null that means that
+    @JoinColumn(name = "manager_id", nullable = true)// in case the manager_id is null that means that
     // manager is a a super manager doesn't have a manager above him
     private Employee manager;
     @JsonIgnore
-    @OneToMany(mappedBy="manager") // one manager to many employees
+    @OneToMany(mappedBy = "manager") // one manager to many employees
     private Set<Employee> subEmployees;
 
-    @Column(name="gross_salary")
+    @Column(name = "gross_salary")
     private Float grossSalary;
 
-    @Column(name="net_salary")
+    @Column(name = "net_salary")
     private Float netSalary;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private AttendanceTable attendanceTable;
 
 
     public Employee(Long id, String nationalId, String firstname, String lastName, Degree degree, Integer yearsOfExperience, Date birthDate, Date graduationDate, Gender gender, Department department, Team team, Employee manager, Set<Employee> subEmployees, Float grossSalary, Float netSalary)
@@ -82,6 +87,30 @@ public class Employee
     public Employee()
     {
 
+    }
+
+    public boolean shiftSubordinates()
+    {
+        Employee managerToShiftTo = this.getManager();
+        if(managerToShiftTo == null)
+        {
+            return false;
+        }
+        for(Employee emp : this.getSubEmployees())
+        {
+            emp.setManager(managerToShiftTo);
+        }
+        return true;
+    }
+
+    public AttendanceTable getAttendanceTable()
+    {
+        return attendanceTable;
+    }
+
+    public void setAttendanceTable(AttendanceTable attendanceTable)
+    {
+        this.attendanceTable = attendanceTable;
     }
 
     public Long getId()
