@@ -19,9 +19,9 @@ public class Employee
     private Long id = 0L;
     @Column(name = "national_id", nullable = false, unique = true)
     private String nationalId;
-    @Column(name = "first-name", nullable = false)
+    @Column(name = "first_name", nullable = false)
     private String firstname;
-    @Column(name = "last-name", nullable = false)
+    @Column(name = "last_name", nullable = false)
     private String lastName;
     @Column(name = "degree")
     @Enumerated(EnumType.STRING)
@@ -261,5 +261,16 @@ public class Employee
     public void setNetSalary(Float netSalary)
     {
         this.netSalary = netSalary;
+    }
+
+    public void setName(String name)
+    {
+        String[] fullName = name.split("\\s+");
+        if(fullName.length >= 1)
+        {
+            this.firstname = fullName[0];
+            if(fullName.length >= 2)
+                this.lastName = fullName[1];
+        }
     }
 }

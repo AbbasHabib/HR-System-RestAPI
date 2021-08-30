@@ -1,5 +1,7 @@
 package com.spring.Employee;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Calendar;
 
@@ -14,6 +16,7 @@ public class AttendanceTable
     @OneToOne
     @MapsId
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private Employee user;
     private Integer workingYears;
     private Integer permittedAbsence;

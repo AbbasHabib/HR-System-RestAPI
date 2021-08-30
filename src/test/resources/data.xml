@@ -9,13 +9,13 @@
     <department id="102" name="apples"/>
 
 
-    <employee id="101" name="Big Boss" gender="MALE" department_id="101" team_id="101" />
+    <employee id="101" first_name="Big" gender="MALE" department_id="101" team_id="101" />
 
-    <employee id="102" name="7amada" gender="MALE" manager_id="101" department_id="101" team_id="101"/>
+    <employee id="102" first_name="7amada" gender="MALE" manager_id="101" department_id="101" team_id="101"/>
 
-    <employee id="103" name="Zatona" gender="MALE" manager_id="102" department_id="101" team_id="101"/>
+    <employee id="103" first_name="Zatona" gender="MALE" manager_id="102" department_id="101" team_id="101"/>
 
-    <employee id="104" name="Lamona" gender="MALE" manager_id="102" department_id="101" team_id="101"/>
+    <employee id="104" first_name="Lamona" gender="MALE" manager_id="102" department_id="101" team_id="101"/>
 
 </dataset>
 
