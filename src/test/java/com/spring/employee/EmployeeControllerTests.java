@@ -104,7 +104,7 @@ public class EmployeeControllerTests
                 .andExpect(status().isOk())
                 .andReturn(); // request is 200 (OK)
 
-        employeeToAdd.setNetSalary(employeeService.calculateNestSalary(employeeToAdd.getGrossSalary(), employeeToAdd.getAttendanceTable()));
+        employeeToAdd.setNetSalary(employeeService.calculateNetSalary(employeeToAdd.getGrossSalary(), employeeToAdd.getAttendanceTable()));
         employeeJson = objectMapper.writeValueAsString(employeeToAdd); // converts employee object to JSON string
 
         Employee employeeFromDB = employeeService.getEmployee(employeeToAdd.getId());

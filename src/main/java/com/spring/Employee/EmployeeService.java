@@ -1,10 +1,8 @@
 package com.spring.Employee;
 
 import com.spring.Employee.DTO.EmployeeInfoOnlyDTO;
-import com.spring.Employee.DTO.EmployeeModifyCommand;
 import com.spring.Employee.DTO.EmployeeSalaryDTO;
 import com.spring.ExceptionsCustom.CustomException;
-import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +26,7 @@ public class EmployeeService
 
     public Employee saveEmployee(Employee e)
     {
-        e.setNetSalary(calculateNestSalary(e.getGrossSalary(), e.getAttendanceTable())); // This function calculates employee new salary and return it
+        e.setNetSalary(calculateNetSalary(e.getGrossSalary(), e.getAttendanceTable())); // This function calculates employee new salary and return it
         return employeeRepository.save(e);
     }
 
@@ -59,7 +57,7 @@ public class EmployeeService
         return null;
     }
 
-    public Float calculateNestSalary(Float employeeSalary, AttendanceTable employeeAttendanceTable)
+    public Float calculateNetSalary(Float employeeSalary, AttendanceTable employeeAttendanceTable)
     {
         if (employeeSalary != null && employeeSalary != 0)
         {
