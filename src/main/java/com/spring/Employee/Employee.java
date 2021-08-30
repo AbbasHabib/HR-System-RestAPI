@@ -19,6 +19,8 @@ public class Employee
     private Long id = 0L;
     @Column(name = "national_id", nullable = false, unique = true)
     private String nationalId;
+    @Column(name = "name", nullable = false)
+    private String name;
     @Column(name = "first_name", nullable = false)
     private String firstname;
     @Column(name = "last_name", nullable = false)
@@ -92,11 +94,11 @@ public class Employee
     public boolean shiftSubordinates()
     {
         Employee managerToShiftTo = this.getManager();
-        if(managerToShiftTo == null)
+        if (managerToShiftTo == null)
         {
             return false;
         }
-        for(Employee emp : this.getSubEmployees())
+        for (Employee emp : this.getSubEmployees())
         {
             emp.setManager(managerToShiftTo);
         }
@@ -138,19 +140,9 @@ public class Employee
         return firstname;
     }
 
-    public void setFirstname(String firstname)
-    {
-        this.firstname = firstname;
-    }
-
     public String getLastName()
     {
         return lastName;
-    }
-
-    public void setLastName(String lastName)
-    {
-        this.lastName = lastName;
     }
 
     public Degree getDegree()
@@ -265,12 +257,19 @@ public class Employee
 
     public void setName(String name)
     {
+        this.name = name;
         String[] fullName = name.split("\\s+");
-        if(fullName.length >= 1)
+        if (fullName.length >= 1)
         {
             this.firstname = fullName[0];
-            if(fullName.length >= 2)
+            if (fullName.length >= 2)
                 this.lastName = fullName[1];
         }
+
+    }
+
+    public String getName()
+    {
+        return this.name;
     }
 }

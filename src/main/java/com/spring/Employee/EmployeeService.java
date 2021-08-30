@@ -70,28 +70,28 @@ public class EmployeeService
         return 0.0f;
     }
 
-    public boolean checkManagerChange(Employee employeeToModify, Employee goToManager)
-    {
-        if (employeeToModify.getId().equals(goToManager.getId()))
-            return false;
-        List<Employee> employeesUnderCurrentEmployee = employeeRepository.findManagerEmployeesRecursivelyQueried(employeeToModify.getId());
+//    public boolean checkManagerChange(Employee employeeToModify, Employee goToManager)
+//    {
+//        if (employeeToModify.getId().equals(goToManager.getId()))
+//            return false;
+//        List<Employee> employeesUnderCurrentEmployee = employeeRepository.findManagerEmployeesRecursivelyQueried(employeeToModify.getId());
+//
+//        return employeesUnderCurrentEmployee.stream().noneMatch(o -> o.getId().equals(goToManager.getId())); // if it contains this manager then he cant be my manager
+//    }
 
-        return employeesUnderCurrentEmployee.stream().noneMatch(o -> o.getId().equals(goToManager.getId())); // if it contains this manager then he cant be my manager
-    }
-
-    public Employee modifyEmployee(long employeeId, EmployeeModifyCommand employeeDto) throws NotFoundException, CustomException
-    {
-        Employee employeeToModify = this.getEmployee(employeeId);
-        if (employeeDto.getManager() != null) // if employee manager is modified check problem could occur
-        {
-            if (!checkManagerChange(employeeToModify, employeeDto.getManager())) // if the manager is working underMe he cant be my manager
-            {
-                throw new CustomException("Infinite recursive relation between employee and manager");
-            }
-        }
-        employeeDto.dtoToEmployee(employeeDto, employeeToModify); //  copying new data to employee
-        return saveEmployee(employeeToModify);
-    }
+//    public Employee modifyEmployee(long employeeId, EmployeeModifyCommand employeeDto) throws NotFoundException, CustomException
+//    {
+//        Employee employeeToModify = this.getEmployee(employeeId);
+//        if (employeeDto.getManager() != null) // if employee manager is modified check problem could occur
+//        {
+//            if (!checkManagerChange(employeeToModify, employeeDto.getManager())) // if the manager is working underMe he cant be my manager
+//            {
+//                throw new CustomException("Infinite recursive relation between employee and manager");
+//            }
+//        }
+//        employeeDto.dtoToEmployee(employeeDto, employeeToModify); //  copying new data to employee
+//        return saveEmployee(employeeToModify);
+//    }
 
     public EmployeeSalaryDTO employeeSalary(long employeeId) throws CustomException
     {
@@ -114,12 +114,12 @@ public class EmployeeService
         return EmployeeInfoOnlyDTO.setEmployeeToDTOList(employeesUnderManager);
     }
 
-    public List<EmployeeInfoOnlyDTO> getManagerEmployeesRecursively(long managerId) throws CustomException
-    {
-        if (this.getEmployee(managerId) == null)
-            return null;
-        List<Employee> employeesUnderManagersRecursive = employeeRepository.findManagerEmployeesRecursivelyQueried(managerId);
-
-        return EmployeeInfoOnlyDTO.setEmployeeToDTOList(employeesUnderManagersRecursive);
-    }
+//    public List<EmployeeInfoOnlyDTO> getManagerEmployeesRecursively(long managerId) throws CustomException
+//    {
+//        if (this.getEmployee(managerId) == null)
+//            return null;
+//        List<Employee> employeesUnderManagersRecursive = employeeRepository.findManagerEmployeesRecursivelyQueried(managerId);
+//
+//        return EmployeeInfoOnlyDTO.setEmployeeToDTOList(employeesUnderManagersRecursive);
+//    }
 }

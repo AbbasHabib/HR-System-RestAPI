@@ -4,8 +4,9 @@ this project is an HR system where the of it is managing employees teams, depart
 
 #### The project will be fully driven by [JavaSpringBoot](https://www.tutorialspoint.com/spring_boot/spring_boot_introduction.htm) ​Framework, and MySql Database.
 
-## Currently
-- Ignoring flyway
+## Looking forward to 
+- return flyway
+- Take care of Recursive Query and return the Commented methods
 
 ## Improving Code _Todo List_
 

@@ -232,24 +232,24 @@ public class EmployeeControllerTests
     }
 
 
-    @Test
-    @Transactional
-    @DatabaseSetup("/data.xml")
-    public void getEmployeesRecursively() throws Exception, CustomException
-    {
-        long managerId = 101L;
-        List<EmployeeInfoOnlyDTO> employeesUnderManager = employeeService.getManagerEmployeesRecursively(managerId);
-        if (employeesUnderManager == null)
-            throw new NotFoundException("cant find manager");
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        String employeesUnderManagerJSON = objectMapper.writeValueAsString(employeesUnderManager);
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/employee/manager/recursive/" + managerId))
-                .andExpect(content().json(employeesUnderManagerJSON))
-                .andExpect(status().isOk());
-
-    }
+//    @Test
+//    @Transactional
+//    @DatabaseSetup("/data.xml")
+//    public void getEmployeesRecursively() throws Exception, CustomException
+//    {
+//        long managerId = 101L;
+//        List<EmployeeInfoOnlyDTO> employeesUnderManager = employeeService.getManagerEmployeesRecursively(managerId);
+//        if (employeesUnderManager == null)
+//            throw new NotFoundException("cant find manager");
+//
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        String employeesUnderManagerJSON = objectMapper.writeValueAsString(employeesUnderManager);
+//
+//        mockMvc.perform(MockMvcRequestBuilders.get("/employee/manager/recursive/" + managerId))
+//                .andExpect(content().json(employeesUnderManagerJSON))
+//                .andExpect(status().isOk());
+//
+//    }
 
 
 }
