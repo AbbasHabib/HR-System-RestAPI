@@ -17,6 +17,7 @@
 
     <employee id="104" name="Lamona" gender="MALE" manager_id="102" department_id="101" team_id="101"/>
 
+    <attendance_table user_id="101" absence_days_in_current_year
 </dataset>
 
 <!--

@@ -6,6 +6,7 @@ import com.spring.ExceptionsCustom.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -72,6 +73,7 @@ public class EmployeeService
         return 0.0f;
     }
 
+
 //    public boolean checkManagerChange(Employee employeeToModify, Employee goToManager)
 //    {
 //        if (employeeToModify.getId().equals(goToManager.getId()))
@@ -95,10 +97,13 @@ public class EmployeeService
 //        return saveEmployee(employeeToModify);
 //    }
 
-    public EmployeeSalaryDTO employeeSalary(long employeeId) throws CustomException
+    public EmployeeSalaryDTO employeeSalary(long employeeId, LocalDate date) throws CustomException
     {
         Employee employeeRequired = this.getEmployee(employeeId);
-        return new EmployeeSalaryDTO(employeeRequired);
+
+
+
+        return new EmployeeSalaryDTO(employeeRequired, date);
     }
 
     public List<Employee> getEmployeesByName(String name)
@@ -114,6 +119,11 @@ public class EmployeeService
             return null;
         List<Employee> employeesUnderManager = employeeRepository.findByManager(manager);
         return EmployeeInfoOnlyDTO.setEmployeeToDTOList(employeesUnderManager);
+    }
+
+    public AttendanceTable getAttendanceTable(long empId)
+    {
+        return getEmployee(empId).getAttendanceTable();
     }
 
 //    public List<EmployeeInfoOnlyDTO> getManagerEmployeesRecursively(long managerId) throws CustomException

@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -51,10 +53,11 @@ public class EmployeeController
 //        return employeeService.modifyEmployee(Long.parseLong(id), employeeModifyCommand);
 //    }
 
-    @GetMapping(value = "/salary/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public EmployeeSalaryDTO getEmployeeSalary(@PathVariable String id) throws CustomException
+    @GetMapping(value = "/salary/{id}/{date}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public EmployeeSalaryDTO getEmployeeSalary(@PathVariable String id, @PathVariable String date) throws CustomException
     {
-        return employeeService.employeeSalary(Long.parseLong(id));
+        // (2018-12-06) date in this format
+        return employeeService.employeeSalary(Long.parseLong(id), LocalDate.parse(date));
     }
 
     @GetMapping("name/{name}")
@@ -73,4 +76,13 @@ public class EmployeeController
     {
         return employeeService.getManagerEmployees(Long.parseLong(id));
     }
+
+    @GetMapping("attendance/{id}")
+    public AttendanceTable getAttendanceTable(@PathVariable String id)
+    {
+        return employeeService.getAttendanceTable(Long.parseLong(id));
+    }
+
+
+
 }

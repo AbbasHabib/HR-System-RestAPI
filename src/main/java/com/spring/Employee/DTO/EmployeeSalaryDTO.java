@@ -2,8 +2,12 @@ package com.spring.Employee.DTO;
 
 import com.spring.Employee.Employee;
 
+import java.sql.Date;
+import java.time.LocalDate;
+
 public class EmployeeSalaryDTO
 {
+    private LocalDate infoDate;
     private Float grossSalary;
     private Float netSalary;
 
@@ -11,9 +15,9 @@ public class EmployeeSalaryDTO
     {
     }
 
-    public EmployeeSalaryDTO(Employee employee)
+    public EmployeeSalaryDTO(Employee employee, LocalDate inoDate)
     {
-
+        infoDate = inoDate;
         this.grossSalary = employee.getGrossSalary();
         this.netSalary = employee.getNetSalary();
     }

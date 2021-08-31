@@ -31,6 +31,8 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -194,13 +196,14 @@ public class EmployeeControllerTests
     @DatabaseSetup("/data.xml")
     public void get_employee_salary() throws Exception, CustomException
     {
+        LocalDate date = LocalDate.of(2000, 1, 1);
         Employee employeeRequired = employeeService.getEmployee(101L);
 
         if (employeeRequired == null)
             throw new NotFoundException("cant find employee");
         String EmployeeId = employeeRequired.getId().toString();
 
-        EmployeeSalaryDTO employeeSalaryDTO = new EmployeeSalaryDTO(employeeRequired);
+        EmployeeSalaryDTO employeeSalaryDTO = new EmployeeSalaryDTO(employeeRequired, date);
 
         ObjectMapper objectMapper = new ObjectMapper();
         String employeeSalaryDTOJson = objectMapper.writeValueAsString(employeeSalaryDTO);
@@ -230,6 +233,7 @@ public class EmployeeControllerTests
                 .andExpect(content().json(employeesUnderManagerJson))
                 .andExpect(status().isOk());
     }
+
 
 
 //    @Test

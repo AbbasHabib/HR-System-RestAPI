@@ -21,9 +21,7 @@ public class Department
     @OneToMany(mappedBy = "department")
     private Set<Employee> employees;
 
-    public Department()
-    {
-    }
+    public Department() { }
 
     public Department(String name)
     {

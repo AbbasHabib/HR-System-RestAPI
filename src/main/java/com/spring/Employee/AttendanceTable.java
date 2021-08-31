@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.Calendar;
+import java.util.Set;
 
 @Entity
 @Table(name = "attendance_table")
@@ -18,33 +19,17 @@ public class AttendanceTable
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private Employee user;
+
     private Integer workingYears;
     private Integer permittedAbsence;
     private Integer absenceDaysInCurrentYear;
     private Integer absenceDaysInCurrentMonth;
 
-    public AttendanceTable(Long id, Employee user, Integer workingYears, Integer permittedAbsence, Integer absenceDaysInCurrentYear, Integer absenceDaysInCurrentMonth)
-    {
-        this.id = id;
-        this.user = user;
-        this.workingYears = workingYears;
-        this.permittedAbsence = permittedAbsence;
-        this.absenceDaysInCurrentYear = absenceDaysInCurrentYear;
-        this.absenceDaysInCurrentMonth = absenceDaysInCurrentMonth;
-    }
+    @JsonIgnore
+    @OneToMany(mappedBy = "attendanceTable")
+    private Set<DailyAttendance> dailyAttendanceList;
 
-    private void addAbsenceInYear(Integer absenceDays)
-    {
-        this.absenceDaysInCurrentYear += absenceDays;
-    }
 
-    public void addAbsenceInMonth(Integer absenceDays)
-    {
-        this.absenceDaysInCurrentMonth += absenceDays;
-        if (this.absenceDaysInCurrentMonth > this.getCurrentMonthDays()) // if input was above what is expected
-            this.absenceDaysInCurrentMonth = this.getCurrentMonthDays();
-        addAbsenceInYear(absenceDays);
-    }
 
     private Integer getPermittedAbsenceDays()
     {
