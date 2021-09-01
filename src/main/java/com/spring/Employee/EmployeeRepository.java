@@ -6,13 +6,15 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Long>
 {
     List<Employee> findByName(String name);
     List<Employee> findByManager(Employee manager);
+    Optional<Employee> findEmployeeByNationalId(String nationalId);
 
-   // @Query(value = Queries.EMPLOYEES_UNDER_MANAGER_RECURSIVE, nativeQuery = true)
+    // @Query(value = Queries.EMPLOYEES_UNDER_MANAGER_RECURSIVE, nativeQuery = true)
    // List<Employee> findManagerEmployeesRecursivelyQueried(@Param("managerId") Long managerId);
 }

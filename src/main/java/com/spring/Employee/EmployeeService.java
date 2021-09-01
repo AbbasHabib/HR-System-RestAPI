@@ -18,6 +18,9 @@ public class EmployeeService
 
     public Employee addEmployee(Employee employee) throws Exception, CustomException
     {
+        if(employeeRepository.findEmployeeByNationalId(employee.getNationalId()).isPresent())
+            throw new CustomException(">>national id already exists?");
+
         if(employee.getId() == null)
             return saveEmployee(employee);
         if (this.getEmployee(employee.getId()) == null)
@@ -26,10 +29,17 @@ public class EmployeeService
         throw new CustomException(">>User ID already exists");
     }
 
-    public Employee saveEmployee(Employee e)
+    public Employee saveEmployee(Employee e) throws CustomException
     {
-        e.setNetSalary(calculateNetSalary(e.getGrossSalary(), e.getAttendanceTable())); // This function calculates employee new salary and return it
-        return employeeRepository.save(e);
+        try
+        {
+            e.setNetSalary(calculateNetSalary(e.getGrossSalary(), e.getAttendanceTable())); // This function calculates employee new salary and return it
+            return employeeRepository.save(e);
+        }
+        catch (Exception ex)
+        {
+            throw new CustomException("saving to database failed ??");
+        }
     }
 
     public boolean deleteEmployee(Long employeeId) throws CustomException
