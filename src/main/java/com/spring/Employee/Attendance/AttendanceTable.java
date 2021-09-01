@@ -24,6 +24,7 @@ public class AttendanceTable
     private Employee employee;
 
     @OneToMany(mappedBy = "currentAttendanceTable") // one manager to many employees
+    @JsonIgnore
     private List<DailyAttendance> dailyAttendanceList;
 
     private Integer workingYears;
@@ -60,6 +61,27 @@ public class AttendanceTable
         return (workingYears < SalariesYearsConstants.SENIOR_YEARS)
                 ? SalariesYearsConstants.AVAILABLE_ABSENCES_JUNIOR
                 : SalariesYearsConstants.AVAILABLE_ABSENCES_SENIOR;
+    }
+
+
+    public Employee getEmployee()
+    {
+        return employee;
+    }
+
+    public void setEmployee(Employee employee)
+    {
+        this.employee = employee;
+    }
+
+    public List<DailyAttendance> getDailyAttendanceList()
+    {
+        return dailyAttendanceList;
+    }
+
+    public void setDailyAttendanceList(List<DailyAttendance> dailyAttendanceList)
+    {
+        this.dailyAttendanceList = dailyAttendanceList;
     }
 
     public AttendanceTable() { }

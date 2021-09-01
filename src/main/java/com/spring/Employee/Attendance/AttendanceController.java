@@ -19,4 +19,11 @@ public class AttendanceController
     {
         return attendanceService.getAttendanceTable(Long.parseLong(id));
     }
+    @GetMapping(value="/employee/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public AttendanceTable getAttendanceTableByEmployeeId(@PathVariable String id) throws CustomException
+    {
+        return attendanceService.getAttendanceTableByEmployeeId(Long.parseLong(id));
+    }
+
+
 }

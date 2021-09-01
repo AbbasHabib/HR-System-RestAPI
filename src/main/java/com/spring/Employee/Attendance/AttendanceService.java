@@ -26,4 +26,15 @@ public class AttendanceService
         else
             return attendanceTableToFind;
     }
+
+    public AttendanceTable getAttendanceTableByEmployeeId(long employeeId) throws CustomException
+    {
+        AttendanceTable attendanceTable = attendanceRepository.findByEmployeeId(employeeId).orElse(null);
+        if(attendanceTable != null)
+            return attendanceTable;
+        throw new CustomException("""
+                *this employee id doesn't exist
+                *or employee doesn't have an attendance table
+                *-->check add attendance table api""");
+    }
 }
