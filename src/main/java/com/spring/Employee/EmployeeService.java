@@ -1,5 +1,6 @@
 package com.spring.Employee;
 
+import com.spring.Employee.Attendance.AttendanceTable;
 import com.spring.Employee.DTO.EmployeeInfoOnlyDTO;
 import com.spring.Employee.DTO.EmployeeSalaryDTO;
 import com.spring.ExceptionsCustom.CustomException;
@@ -63,9 +64,9 @@ public class EmployeeService
         if (employeeSalary != null && employeeSalary != 0)
         {
             float empSalary = employeeSalary * (1 - SalariesYearsConstants.TAXES) - SalariesYearsConstants.DEDUCTED_INSURANCE;
-            float salaryPerDay = empSalary / employeeAttendanceTable.getCurrentMonthDays();
+//            float salaryPerDay = empSalary / employeeAttendanceTable.getCurrentMonthDays();
             // if absence in this month is zero then there wont be any deduction
-            empSalary -= salaryPerDay * employeeAttendanceTable.getAbsenceDaysInCurrentMonth();
+//            empSalary -= salaryPerDay * employeeAttendanceTable.getAbsenceDaysInCurrentMonth();
 
             if (empSalary > 0)
                 return empSalary;
@@ -121,10 +122,9 @@ public class EmployeeService
         return EmployeeInfoOnlyDTO.setEmployeeToDTOList(employeesUnderManager);
     }
 
-    public AttendanceTable getAttendanceTable(long empId)
-    {
-        return getEmployee(empId).getAttendanceTable();
-    }
+
+
+
 
 //    public List<EmployeeInfoOnlyDTO> getManagerEmployeesRecursively(long managerId) throws CustomException
 //    {

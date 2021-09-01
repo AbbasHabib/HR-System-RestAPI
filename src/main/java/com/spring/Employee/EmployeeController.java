@@ -1,15 +1,13 @@
 package com.spring.Employee;
 
+import com.spring.Employee.Attendance.AttendanceTable;
 import com.spring.Employee.DTO.EmployeeInfoOnlyDTO;
-import com.spring.Employee.DTO.EmployeeModifyCommand;
 import com.spring.Employee.DTO.EmployeeSalaryDTO;
 import com.spring.ExceptionsCustom.CustomException;
-import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -77,11 +75,6 @@ public class EmployeeController
         return employeeService.getManagerEmployees(Long.parseLong(id));
     }
 
-    @GetMapping("attendance/{id}")
-    public AttendanceTable getAttendanceTable(@PathVariable String id)
-    {
-        return employeeService.getAttendanceTable(Long.parseLong(id));
-    }
 
 
 

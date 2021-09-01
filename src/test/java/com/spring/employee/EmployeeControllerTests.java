@@ -256,6 +256,12 @@ public class EmployeeControllerTests
 //    }
 
 
+    @Test
+    public void get_employee_absence()
+    {
+
+    }
+
 }
 
 

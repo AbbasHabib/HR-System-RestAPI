@@ -2,6 +2,7 @@ package com.spring.Employee;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.spring.Department.Department;
+import com.spring.Employee.Attendance.AttendanceTable;
 import com.spring.Team.Team;
 
 import javax.persistence.*;
@@ -21,9 +22,9 @@ public class Employee
     private String nationalId;
     @Column(name = "name", nullable = false)
     private String name;
-    @Column(name = "first_name", nullable = false)
+    @Column(name = "first_name")
     private String firstname;
-    @Column(name = "last_name", nullable = false)
+    @Column(name = "last_name")
     private String lastName;
     @Column(name = "degree")
     @Enumerated(EnumType.STRING)
@@ -62,8 +63,8 @@ public class Employee
     @Column(name = "net_salary")
     private Float netSalary;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "attendance_table_id")
     private AttendanceTable attendanceTable;
 
 
@@ -86,10 +87,7 @@ public class Employee
         this.netSalary = netSalary;
     }
 
-    public Employee()
-    {
-
-    }
+    public Employee() { }
 
     public boolean shiftSubordinates()
     {
