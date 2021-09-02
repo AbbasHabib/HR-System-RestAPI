@@ -53,7 +53,7 @@ public class AttendanceService
     }
 
 
-    public String addNewDayInfo(DayDetails dayDetails, Long attendanceTableId) throws CustomException
+    public String addNewDayInfo(Long attendanceTableId, DayDetails dayDetails) throws CustomException
     {
         if (dailyAttendanceRepository.countAllByAttendanceTable_IdAndDate(attendanceTableId, dayDetails.getDate()) > 0)
             throw new CustomException("Info at this date is already stored for this employee");
@@ -87,8 +87,7 @@ public class AttendanceService
             // if month didn't exist before add new Day and Month to attendance Table lists
             monthOfThatDay.setAttendanceTable(attendanceTable);
             attendanceTable.addMonthAndDayDetails(dayDetails, monthOfThatDay);
-        }
-        else
+        } else
             // if month existed just add the day to attendanceTable-> Days List
             attendanceTable.addDay(dayDetails);
 
@@ -120,8 +119,31 @@ public class AttendanceService
         return dailyAttendanceRepository.findFirstByAttendanceTable_IdOrderByDate(attendanceTableId);
     }
 
-    public MonthDetails getMonthData(long AttendanceTableId, LocalDate date)
+    public MonthDetails getMonthData(long AttendanceTableId, LocalDate date) throws CustomException
     {
-        return monthDetailsRepository.findByDateAndAttendanceTable_Id(date, AttendanceTableId).orElse(null);
+        MonthDetails monthData = monthDetailsRepository
+                .findByDateAndAttendanceTable_Id(
+                        LocalDate.of(date.getYear(), date.getMonth(), 1)
+                        , AttendanceTableId)
+                .orElse(null);
+
+        if (monthData == null)
+            throw new CustomException("this month is not found");
+        return monthData;
+    }
+
+    public Integer calcAbsenceDaysInYearTill(long attendanceTableId, LocalDate date) throws CustomException
+    {
+        int absenceDays = 0;
+//        AttendanceTable attendanceTable = getAttendanceTable(attendanceTableId);
+        List<MonthDetails> monthDetails = monthDetailsRepository.findAllByDateBetweenAndAttendanceTable_Id(
+                LocalDate.of(date.getYear(), 1, 1)
+                , LocalDate.of(date.getYear(), date.getMonth(), 1)
+                , attendanceTableId);
+
+        for (MonthDetails md : monthDetails)
+            absenceDays += md.getAbsences();
+
+        return absenceDays;
     }
 }

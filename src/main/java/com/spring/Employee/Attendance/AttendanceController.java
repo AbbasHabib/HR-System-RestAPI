@@ -29,13 +29,19 @@ public class AttendanceController
     @PostMapping(value="/{id}") // ex adding new absence
     public String addNewDayInfo(@RequestBody DayDetails dayDetails, @PathVariable String id) throws CustomException
     {
-        return attendanceService.addNewDayInfo(dayDetails, Long.parseLong(id));
+        return attendanceService.addNewDayInfo(Long.parseLong(id), dayDetails);
     }
 
     @GetMapping(value ="/month/{id}/{date}") // {id} attendance table id
-    public MonthDetails getMonthData(@PathVariable String id, @PathVariable String date)
+    public MonthDetails getMonthData(@PathVariable String id, @PathVariable String date) throws CustomException
     {
         return attendanceService.getMonthData(Long.parseLong(id), LocalDate.parse(date));
+    }
+
+    @GetMapping(value ="/absence/{id}/{date}") // {id} attendance table id
+    public Integer AbsenceDaysInYearTillMonth(@PathVariable String id, @PathVariable String date) throws CustomException
+    {
+        return attendanceService.calcAbsenceDaysInYearTill(Long.parseLong(id), LocalDate.parse(date));
     }
 
 //    @GetMapping(value = "/first-year/{id}")

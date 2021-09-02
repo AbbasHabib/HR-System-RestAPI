@@ -5,9 +5,6 @@ import com.spring.Employee.Employee;
 import com.spring.Employee.SalariesYearsConstants;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.YearMonth;
 import java.util.*;
 
 @Entity
@@ -29,7 +26,7 @@ public class AttendanceTable
     @OneToMany(mappedBy = "attendanceTable") // one manager to many employees
     private List<MonthDetails> monthDetailsList;
 
-    private Integer workingYears;
+    private Integer initialWorkingYears = 0;
 
 
 
@@ -52,13 +49,20 @@ public class AttendanceTable
     }
 
 
-    public Integer getPermittedAbsenceDays()
+    public Integer getPermittedAbsenceDaysWithInitialWorkingDays()
+    {
+        return (initialWorkingYears < SalariesYearsConstants.SENIOR_YEARS)
+                ? SalariesYearsConstants.AVAILABLE_ABSENCES_JUNIOR
+                : SalariesYearsConstants.AVAILABLE_ABSENCES_SENIOR;
+    }
+
+
+    public Integer getPermittedAbsenceDays(int workingYears)
     {
         return (workingYears < SalariesYearsConstants.SENIOR_YEARS)
                 ? SalariesYearsConstants.AVAILABLE_ABSENCES_JUNIOR
                 : SalariesYearsConstants.AVAILABLE_ABSENCES_SENIOR;
     }
-
 
     public Employee getEmployee()
     {
@@ -94,14 +98,10 @@ public class AttendanceTable
         this.id = id;
     }
 
-    public Integer getWorkingYears()
+    public Integer getInitialWorkingYears()
     {
-        return workingYears;
+        return initialWorkingYears;
     }
 
-    public void setWorkingYears(Integer workingYears)
-    {
-        this.workingYears = workingYears;
-    }
 
 }
