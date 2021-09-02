@@ -14,16 +14,14 @@ public class DayDetails
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "date")
-    private LocalDate date;
-
-    private boolean absent = false;
     @ManyToOne
     @JoinColumn(name = "attendance_table_id")
     @JsonIgnore
     AttendanceTable attendanceTable;
 
-    private Float bonusSalary;
+    private LocalDate date;
+    private boolean absent = false;
+    private Float bonusInSalary = 0F;
 
     public DayDetails(LocalDate date)
     {
@@ -40,14 +38,14 @@ public class DayDetails
         this.absent = absent;
     }
 
-    public Float getBonusSalary()
+    public Float getBonusInSalary()
     {
-        return bonusSalary;
+        return bonusInSalary;
     }
 
-    public void setBonusSalary(Float bonusSalary)
+    public void setBonusInSalary(Float bonusSalary)
     {
-        this.bonusSalary = bonusSalary;
+        this.bonusInSalary = bonusSalary;
     }
 
     public DayDetails() { }

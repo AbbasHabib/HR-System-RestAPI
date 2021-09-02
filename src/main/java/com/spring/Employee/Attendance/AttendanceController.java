@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.websocket.server.PathParam;
 import java.time.LocalDate;
 
 @RestController
@@ -25,16 +26,22 @@ public class AttendanceController
         return attendanceService.getAttendanceTableByEmployeeId(Long.parseLong(id));
     }
 
-    @PostMapping(value="/{id}")
-    public String addNewDayDetails(@RequestBody DayDetails dayDetails, @PathVariable String id) throws CustomException
+    @PostMapping(value="/{id}") // ex adding new absence
+    public String addNewDayInfo(@RequestBody DayDetails dayDetails, @PathVariable String id) throws CustomException
     {
-        return attendanceService.addNewDayDetail(dayDetails, Long.parseLong(id));
+        return attendanceService.addNewDayInfo(dayDetails, Long.parseLong(id));
     }
 
-    @GetMapping(value = "/first-year/{id}")
-    public DayDetails findEmployeeFirstYear(@PathVariable String id)
+    @GetMapping(value ="/month/{id}/{date}") // {id} attendance table id
+    public MonthDetails getMonthData(@PathVariable String id, @PathVariable String date)
     {
-        return attendanceService.findEmployeeFirstYear(Long.parseLong(id));
+        return attendanceService.getMonthData(Long.parseLong(id), LocalDate.parse(date));
     }
+
+//    @GetMapping(value = "/first-year/{id}")
+//    public DayDetails findEmployeeFirstYear(@PathVariable String id)
+//    {
+//        return attendanceService.findEmployeeFirstYear(Long.parseLong(id));
+//    }
 
 }

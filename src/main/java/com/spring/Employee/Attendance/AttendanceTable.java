@@ -26,39 +26,31 @@ public class AttendanceTable
 
     @OneToMany(mappedBy = "attendanceTable") // one manager to many employees
     private List<DayDetails> dailyDetailsList;
+    @OneToMany(mappedBy = "attendanceTable") // one manager to many employees
+    private List<MonthDetails> monthDetailsList;
 
     private Integer workingYears;
 
-    public void addNewDayInfo(DayDetails dayDetailsDetail)
+
+
+    public void addMonthAndDayDetails(DayDetails dayDetails, MonthDetails monthDetails) // make sure that this month doesn't exist already
     {
-        if (dailyDetailsList == null)
-            dailyDetailsList = new ArrayList<>();
-        dayDetailsDetail.setAttendanceTable(this);
-//        calcTimeLogic(dayDetailsDetail.getDate());
-        dailyDetailsList.add(new DayDetails(dayDetailsDetail.getDate()));
+        if (this.dailyDetailsList == null)
+            this.dailyDetailsList  = new ArrayList<>();
+        if(this.monthDetailsList == null)
+            this.monthDetailsList  = new ArrayList<>();
+
+        this.dailyDetailsList.add(dayDetails);
+        this.monthDetailsList.add(monthDetails);
     }
 
-//    private DayDetails mostRecentAttendanceData()
-//    {
-//        if (dailyDetailsList.size() < 1)
-//            return null;
-//        return dailyDetailsList.get(dailyDetailsList.size() - 1);
-//    }
-//
-//    private void calcTimeLogic(LocalDate newlyAddedDate)
-//    {
-//        DayDetails mostRecentDate = mostRecentAttendanceData();
-//        if (mostRecentDate == null)
-//            return;
-//        Period period = Period.between(mostRecentDate.getDate(), newlyAddedDate);
-//        if (period.getYears() >= 1)
-//            workingYears += period.getYears();
-//    }
-
-    public Integer calcMonthDays(YearMonth yearMonth)    //YearMonth.of(1999, 2);
+    public void addDay(DayDetails dayDetails)
     {
-        return yearMonth.lengthOfMonth();
+        if (this.dailyDetailsList == null)
+            this.dailyDetailsList  = new ArrayList<>();
+        this.dailyDetailsList.add(dayDetails);
     }
+
 
     public Integer getPermittedAbsenceDays()
     {
