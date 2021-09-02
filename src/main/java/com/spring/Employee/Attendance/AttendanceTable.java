@@ -12,44 +12,48 @@ import java.util.*;
 
 @Entity
 @Table(name = "attendance_table")
+
 public class AttendanceTable
 {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id = 0L;
 
     @OneToOne(mappedBy = "attendanceTable", cascade = CascadeType.ALL)
     @JsonIgnore
     private Employee employee;
 
-    @OneToMany(mappedBy = "currentAttendanceTable") // one manager to many employees
-    @JsonIgnore
-    private List<DailyAttendance> dailyAttendanceList;
+    @OneToMany(mappedBy = "attendanceTable") // one manager to many employees
+    private List<DayDetails> dailyDetailsList;
 
     private Integer workingYears;
 
-    public void addAttendanceData(LocalDate date, boolean attended)
+    public void addNewDayInfo(DayDetails dayDetailsDetail)
     {
-        if (dailyAttendanceList == null)
-            dailyAttendanceList = new ArrayList<>();
-        dailyAttendanceList.add(new DailyAttendance(date, attended));
-        calcTimeLogic(date);
+        if (dailyDetailsList == null)
+            dailyDetailsList = new ArrayList<>();
+        dayDetailsDetail.setAttendanceTable(this);
+//        calcTimeLogic(dayDetailsDetail.getDate());
+        dailyDetailsList.add(new DayDetails(dayDetailsDetail.getDate()));
     }
 
-    private DailyAttendance mostRecentAttendanceData()
-    {
-        return dailyAttendanceList.get(dailyAttendanceList.size() - 1);
-    }
-
-    private void calcTimeLogic(LocalDate newlyAddedDate)
-    {
-        Period period = Period.between(mostRecentAttendanceData().getDate(), newlyAddedDate);
-        if(period.getYears() >= 1)
-        {
-            workingYears += period.getYears();
-        }
-    }
+//    private DayDetails mostRecentAttendanceData()
+//    {
+//        if (dailyDetailsList.size() < 1)
+//            return null;
+//        return dailyDetailsList.get(dailyDetailsList.size() - 1);
+//    }
+//
+//    private void calcTimeLogic(LocalDate newlyAddedDate)
+//    {
+//        DayDetails mostRecentDate = mostRecentAttendanceData();
+//        if (mostRecentDate == null)
+//            return;
+//        Period period = Period.between(mostRecentDate.getDate(), newlyAddedDate);
+//        if (period.getYears() >= 1)
+//            workingYears += period.getYears();
+//    }
 
     public Integer calcMonthDays(YearMonth yearMonth)    //YearMonth.of(1999, 2);
     {
@@ -74,17 +78,19 @@ public class AttendanceTable
         this.employee = employee;
     }
 
-    public List<DailyAttendance> getDailyAttendanceList()
+    public List<DayDetails> getDailyDetailsList()
     {
-        return dailyAttendanceList;
+        return dailyDetailsList;
     }
 
-    public void setDailyAttendanceList(List<DailyAttendance> dailyAttendanceList)
+    public void setDailyDetailsList(List<DayDetails> dailyAttendanceList)
     {
-        this.dailyAttendanceList = dailyAttendanceList;
+        this.dailyDetailsList = dailyAttendanceList;
     }
 
-    public AttendanceTable() { }
+    public AttendanceTable()
+    {
+    }
 
     public Long getId()
     {

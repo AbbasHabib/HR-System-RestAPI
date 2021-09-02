@@ -1,11 +1,11 @@
 package com.spring.Employee.Attendance;
 
-import com.spring.Employee.Employee;
-import com.spring.Employee.EmployeeService;
 import com.spring.ExceptionsCustom.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/attendance")
@@ -25,5 +25,16 @@ public class AttendanceController
         return attendanceService.getAttendanceTableByEmployeeId(Long.parseLong(id));
     }
 
+    @PostMapping(value="/{id}")
+    public String addNewDayDetails(@RequestBody DayDetails dayDetails, @PathVariable String id) throws CustomException
+    {
+        return attendanceService.addNewDayDetail(dayDetails, Long.parseLong(id));
+    }
+
+    @GetMapping(value = "/first-year/{id}")
+    public DayDetails findEmployeeFirstYear(@PathVariable String id)
+    {
+        return attendanceService.findEmployeeFirstYear(Long.parseLong(id));
+    }
 
 }
