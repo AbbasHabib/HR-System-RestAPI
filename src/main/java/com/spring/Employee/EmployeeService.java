@@ -1,5 +1,6 @@
 package com.spring.Employee;
 
+import com.spring.Employee.Attendance.AttendanceService;
 import com.spring.Employee.Attendance.AttendanceTable;
 import com.spring.Employee.DTO.EmployeeInfoOnlyDTO;
 import com.spring.Employee.DTO.EmployeeSalaryDTO;
@@ -18,10 +19,10 @@ public class EmployeeService
 
     public Employee addEmployee(Employee employee) throws Exception, CustomException
     {
-        if(employeeRepository.findEmployeeByNationalId(employee.getNationalId()).isPresent())
+        if (employeeRepository.findEmployeeByNationalId(employee.getNationalId()).isPresent())
             throw new CustomException(">>national id already exists?");
 
-        if(employee.getId() == null)
+        if (employee.getId() == null)
             return saveEmployee(employee);
         if (this.getEmployee(employee.getId()) == null)
             return saveEmployee(employee);
@@ -35,8 +36,7 @@ public class EmployeeService
         {
             e.setNetSalary(calculateNetSalary(e.getGrossSalary(), e.getAttendanceTable())); // This function calculates employee new salary and return it
             return employeeRepository.save(e);
-        }
-        catch (Exception ex)
+        } catch (Exception ex)
         {
             throw new CustomException("saving to database failed ??");
         }
@@ -108,14 +108,6 @@ public class EmployeeService
 //        return saveEmployee(employeeToModify);
 //    }
 
-    public EmployeeSalaryDTO employeeSalary(long employeeId, LocalDate date) throws CustomException
-    {
-        Employee employeeRequired = this.getEmployee(employeeId);
-
-
-
-        return new EmployeeSalaryDTO(employeeRequired, date);
-    }
 
     public List<Employee> getEmployeesByName(String name)
     {
@@ -131,7 +123,6 @@ public class EmployeeService
         List<Employee> employeesUnderManager = employeeRepository.findByManager(manager);
         return EmployeeInfoOnlyDTO.setEmployeeToDTOList(employeesUnderManager);
     }
-
 
 
 

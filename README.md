@@ -8,13 +8,14 @@ this project is an HR system where the of it is managing employees teams, depart
 - return flyway
 - Take care of Recursive Query and return the Commented methods
 
+
 ## Current TodoList
 - [x] Rest Api to get absences through the year till specific month
 - [x] Rest Api to add day with details: [absence, bonusInSalary] + dayDate
-- [ ] Rest Api to get employee salary with calculating deduction[**through the year**] and bonuses[**monthly**]
-- [ ] Api to check with deduction at specific month [checking absences through year till specific month]
+- [x] Rest Api to get employee salary with calculating deduction[**through the year**] and bonuses[**monthly**]
+- [x] Api to check deduction at specific month [checking absences through year till specific month]
 - [ ] Deal with working years [workingYears increase when he has a new year stored]
-- [ ] Api to show salary history
+- [x] Rest Api to show salary history In a month
 
 ## Improving Code _Todo List_
 

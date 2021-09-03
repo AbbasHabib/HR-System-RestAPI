@@ -49,14 +49,6 @@ public class AttendanceTable
     }
 
 
-    public Integer getPermittedAbsenceDaysWithInitialWorkingDays()
-    {
-        return (initialWorkingYears < SalariesYearsConstants.SENIOR_YEARS)
-                ? SalariesYearsConstants.AVAILABLE_ABSENCES_JUNIOR
-                : SalariesYearsConstants.AVAILABLE_ABSENCES_SENIOR;
-    }
-
-
     public Integer getPermittedAbsenceDays(int workingYears)
     {
         return (workingYears < SalariesYearsConstants.SENIOR_YEARS)

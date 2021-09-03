@@ -1,11 +1,11 @@
 package com.spring.Employee.Attendance;
 
+import com.spring.Employee.DTO.EmployeeSalaryDTO;
 import com.spring.ExceptionsCustom.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
 import java.time.LocalDate;
 
 @RestController
@@ -41,8 +41,16 @@ public class AttendanceController
     @GetMapping(value ="/absence/{id}/{date}") // {id} attendance table id
     public Integer AbsenceDaysInYearTillMonth(@PathVariable String id, @PathVariable String date) throws CustomException
     {
-        return attendanceService.calcAbsenceDaysInYearTill(Long.parseLong(id), LocalDate.parse(date));
+        return attendanceService.calcAbsenceDaysInYearTillMonth(Long.parseLong(id), LocalDate.parse(date));
     }
+
+
+    @GetMapping(value = "/employee/salary/{id}/{date}", produces = MediaType.APPLICATION_JSON_VALUE)// {id} employee table id
+    public EmployeeSalaryDTO getEmployeeSalary(@PathVariable String id, @PathVariable String date) throws CustomException
+    {
+        return attendanceService.employeeSalaryAtMonth(Long.parseLong(id), LocalDate.parse(date));
+    }
+
 
 //    @GetMapping(value = "/first-year/{id}")
 //    public DayDetails findEmployeeFirstYear(@PathVariable String id)

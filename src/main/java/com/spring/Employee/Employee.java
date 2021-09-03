@@ -6,7 +6,7 @@ import com.spring.Employee.Attendance.AttendanceTable;
 import com.spring.Team.Team;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Set;
 
 
@@ -32,12 +32,11 @@ public class Employee
     @Column(name = "years_of_experience")
     private Integer yearsOfExperience;
     @Column(name = "birth_date")
-    @Temporal(TemporalType.DATE)
-    private Date birthDate;
+    private LocalDate birthDate;
     @Column(name = "graduation_date")
-    @Temporal(TemporalType.DATE)
-    private Date graduationDate;
+    private LocalDate graduationDate;
     @Column(name = "gender")
+
     @Enumerated(EnumType.STRING)
     private Gender gender;
     @ManyToOne
@@ -66,9 +65,9 @@ public class Employee
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "attendance_table_id")
     private AttendanceTable attendanceTable;
+    private Float salaryRaise;
 
-
-    public Employee(Long id, String nationalId, String firstname, String lastName, Degree degree, Integer yearsOfExperience, Date birthDate, Date graduationDate, Gender gender, Department department, Team team, Employee manager, Set<Employee> subEmployees, Float grossSalary, Float netSalary)
+    public Employee(Long id, String nationalId, String firstname, String lastName, Degree degree, Integer yearsOfExperience, LocalDate birthDate, LocalDate graduationDate, Gender gender, Department department, Team team, Employee manager, Set<Employee> subEmployees, Float grossSalary, Float netSalary)
     {
         this.id = id;
         this.nationalId = nationalId;
@@ -103,6 +102,7 @@ public class Employee
         return true;
     }
 
+
     public AttendanceTable getAttendanceTable()
     {
         return attendanceTable;
@@ -126,6 +126,16 @@ public class Employee
     public String getNationalId()
     {
         return nationalId;
+    }
+
+    public Float getSalaryRaise()
+    {
+        return (salaryRaise == null)?0:salaryRaise;
+    }
+
+    public void setSalaryRaise(Float salaryRaise)
+    {
+        this.salaryRaise = salaryRaise;
     }
 
     public void setNationalId(String nationalId)
@@ -163,22 +173,22 @@ public class Employee
         this.yearsOfExperience = yearsOfExperience;
     }
 
-    public Date getBirthDate()
+    public LocalDate getBirthDate()
     {
         return birthDate;
     }
 
-    public void setBirthDate(Date birthDate)
+    public void setBirthDate(LocalDate birthDate)
     {
         this.birthDate = birthDate;
     }
 
-    public Date getGraduationDate()
+    public LocalDate getGraduationDate()
     {
         return graduationDate;
     }
 
-    public void setGraduationDate(Date graduationDate)
+    public void setGraduationDate(LocalDate graduationDate)
     {
         this.graduationDate = graduationDate;
     }

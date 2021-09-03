@@ -1,6 +1,9 @@
 package com.spring.Employee.Attendance;
 
 
+import com.spring.Employee.DTO.EmployeeSalaryDTO;
+import com.spring.Employee.Employee;
+import com.spring.Employee.SalariesYearsConstants;
 import com.spring.ExceptionsCustom.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +23,7 @@ public class AttendanceService
     @Autowired
     private MonthDetailsRepository monthDetailsRepository;
 
-    public AttendanceTable findAttendanceTable(Long attendanceTableId) throws CustomException
+    public AttendanceTable findAttendanceTable(Long attendanceTableId)
     {
         // if no table with this id is found return null
         return attendanceRepository.findById(attendanceTableId).orElse(null);
@@ -114,11 +117,6 @@ public class AttendanceService
         return monthToFind;
     }
 
-    public DayDetails findEmployeeFirstYear(long attendanceTableId)
-    {
-        return dailyAttendanceRepository.findFirstByAttendanceTable_IdOrderByDate(attendanceTableId);
-    }
-
     public MonthDetails getMonthData(long AttendanceTableId, LocalDate date) throws CustomException
     {
         MonthDetails monthData = monthDetailsRepository
@@ -132,10 +130,14 @@ public class AttendanceService
         return monthData;
     }
 
-    public Integer calcAbsenceDaysInYearTill(long attendanceTableId, LocalDate date) throws CustomException
+    public Long getAttendanceTableIdByUserId(Long employeeId) throws CustomException
+    {
+        return getAttendanceTableByEmployeeId(employeeId).getId();
+    }
+
+    public Integer calcAbsenceDaysInYearTillMonth(long attendanceTableId, LocalDate date) throws CustomException
     {
         int absenceDays = 0;
-//        AttendanceTable attendanceTable = getAttendanceTable(attendanceTableId);
         List<MonthDetails> monthDetails = monthDetailsRepository.findAllByDateBetweenAndAttendanceTable_Id(
                 LocalDate.of(date.getYear(), 1, 1)
                 , LocalDate.of(date.getYear(), date.getMonth(), 1)
@@ -146,4 +148,84 @@ public class AttendanceService
 
         return absenceDays;
     }
+
+
+    public EmployeeSalaryDTO employeeSalaryAtMonth(long employeeId, LocalDate date) throws CustomException
+    {
+        AttendanceTable attendanceTable = getAttendanceTableByEmployeeId(employeeId);
+        Long attendanceTableId = attendanceTable.getId();
+        Employee employee = attendanceTable.getEmployee();
+        MonthDetails monthInquiring = getMonthData(attendanceTableId, date);
+
+        Integer absenceDaysTillMonth = calcAbsenceDaysInYearTillMonth(attendanceTableId, date);
+        Float monthBonuses = monthInquiring.getBonuses();
+        Integer monthAbsences = monthInquiring.getAbsences();
+        Integer workingYearsTillMonth = calculateWorkingYearsTillMonth(date, attendanceTable.getInitialWorkingYears(), attendanceTableId);
+        Integer permittedAbsenceDays = attendanceTable.getPermittedAbsenceDays(workingYearsTillMonth);
+
+        Float netSalary = calculateNetSalary(
+                employee.getGrossSalary()
+                , absenceDaysTillMonth
+                , monthBonuses
+                , employee.getSalaryRaise()
+                , permittedAbsenceDays
+                , date.getMonth().length(true)
+        );
+
+        EmployeeSalaryDTO employeeSalaryDTO = new EmployeeSalaryDTO();
+        employeeSalaryDTO.setInfoDate(date)
+                .setGrossSalary(employee.getGrossSalary())
+                .setNetSalary(netSalary)
+                .setNumberOfAbsencesThroughYear(absenceDaysTillMonth)
+                .setNumberOfAbsencesInMonth(monthAbsences)
+                .setAllowedAbsencesThroughYear(permittedAbsenceDays)
+                .setExceededBy(Math.max(absenceDaysTillMonth - permittedAbsenceDays, 0));
+
+        return employeeSalaryDTO;
+    }
+
+
+    /*
+
+       public Float calculateNetSalary(Float employeeSalary, AttendanceTable employeeAttendanceTable)
+    {
+        if (employeeSalary != null && employeeSalary != 0)
+        {
+            float empSalary = employeeSalary * (1 - SalariesYearsConstants.TAXES) - SalariesYearsConstants.DEDUCTED_INSURANCE;
+//            float salaryPerDay = empSalary / employeeAttendanceTable.getCurrentMonthDays();
+            // if absence in this month is zero then there wont be any deduction
+//            empSalary -= salaryPerDay * employeeAttendanceTable.getAbsenceDaysInCurrentMonth();
+
+            if (empSalary > 0)
+                return empSalary;
+        }
+        return 0.0f;
+    }
+     */
+
+    private float calculateNetSalary(float grossSalary, int absenceDaysTillMonth, float monthBonuses, float salaryRaise, int permittedAbsenceDays, int monthDays)
+    {
+        float netSalary = grossSalary + monthBonuses + salaryRaise;
+        netSalary = netSalary * (1 - SalariesYearsConstants.TAXES) - SalariesYearsConstants.DEDUCTED_INSURANCE;
+
+        if (absenceDaysTillMonth > permittedAbsenceDays)
+        {
+            Float salaryPerDay = netSalary / monthDays;
+            netSalary -= salaryPerDay * absenceDaysTillMonth;
+        }
+        return netSalary;
+
+    }
+
+    private Integer calculateWorkingYearsTillMonth(LocalDate toDate, int employeeInitialYearsAtWork, Long attendanceTableId)
+    {
+        MonthDetails FirstYearAtWorkMonthDetails = monthDetailsRepository.findFirstByAttendanceTable_IdOrderByDateAsc(attendanceTableId);
+
+        int startWorkingYear = FirstYearAtWorkMonthDetails.getDate().getYear();
+
+        // employee working years since join till this month
+        return (startWorkingYear - toDate.getYear()) + employeeInitialYearsAtWork;
+    }
+
+
 }

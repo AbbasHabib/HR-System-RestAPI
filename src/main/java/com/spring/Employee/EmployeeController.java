@@ -51,12 +51,7 @@ public class EmployeeController
 //        return employeeService.modifyEmployee(Long.parseLong(id), employeeModifyCommand);
 //    }
 
-    @GetMapping(value = "/salary/{id}/{date}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public EmployeeSalaryDTO getEmployeeSalary(@PathVariable String id, @PathVariable String date) throws CustomException
-    {
-        // (2018-12-06) date in this format
-        return employeeService.employeeSalary(Long.parseLong(id), LocalDate.parse(date));
-    }
+
 
     @GetMapping("name/{name}")
     public List<Employee> getEmployeesByName(@PathVariable String name)
