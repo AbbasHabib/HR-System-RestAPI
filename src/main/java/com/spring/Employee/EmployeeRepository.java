@@ -20,6 +20,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long>
     @Modifying()
     void deleteById(Long id);
 
-    // @Query(value = Queries.EMPLOYEES_UNDER_MANAGER_RECURSIVE, nativeQuery = true)
-   // List<Employee> findManagerEmployeesRecursivelyQueried(@Param("managerId") Long managerId);
+     @Query(value = Queries.EMPLOYEES_UNDER_MANAGER_RECURSIVE, nativeQuery = true)
+    List<Employee> findManagerEmployeesRecursivelyQueried(@Param("managerId") Long managerId);
 }

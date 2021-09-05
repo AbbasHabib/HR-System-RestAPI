@@ -3,8 +3,10 @@ package com.spring.Employee;
 import com.spring.Employee.Attendance.AttendanceService;
 import com.spring.Employee.Attendance.AttendanceTable;
 import com.spring.Employee.DTO.EmployeeInfoOnlyDTO;
+import com.spring.Employee.DTO.EmployeeModifyCommand;
 import com.spring.Employee.DTO.EmployeeSalaryDTO;
 import com.spring.ExceptionsCustom.CustomException;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -85,28 +87,28 @@ public class EmployeeService
     }
 
 
-//    public boolean checkManagerChange(Employee employeeToModify, Employee goToManager)
-//    {
-//        if (employeeToModify.getId().equals(goToManager.getId()))
-//            return false;
-//        List<Employee> employeesUnderCurrentEmployee = employeeRepository.findManagerEmployeesRecursivelyQueried(employeeToModify.getId());
-//
-//        return employeesUnderCurrentEmployee.stream().noneMatch(o -> o.getId().equals(goToManager.getId())); // if it contains this manager then he cant be my manager
-//    }
+    public boolean checkManagerChange(Employee employeeToModify, Employee goToManager)
+    {
+        if (employeeToModify.getId().equals(goToManager.getId()))
+            return false;
+        List<Employee> employeesUnderCurrentEmployee = employeeRepository.findManagerEmployeesRecursivelyQueried(employeeToModify.getId());
 
-//    public Employee modifyEmployee(long employeeId, EmployeeModifyCommand employeeDto) throws NotFoundException, CustomException
-//    {
-//        Employee employeeToModify = this.getEmployee(employeeId);
-//        if (employeeDto.getManager() != null) // if employee manager is modified check problem could occur
-//        {
-//            if (!checkManagerChange(employeeToModify, employeeDto.getManager())) // if the manager is working underMe he cant be my manager
-//            {
-//                throw new CustomException("Infinite recursive relation between employee and manager");
-//            }
-//        }
-//        employeeDto.dtoToEmployee(employeeDto, employeeToModify); //  copying new data to employee
-//        return saveEmployee(employeeToModify);
-//    }
+        return employeesUnderCurrentEmployee.stream().noneMatch(o -> o.getId().equals(goToManager.getId())); // if it contains this manager then he cant be my manager
+    }
+
+    public Employee modifyEmployee(long employeeId, EmployeeModifyCommand employeeDto) throws NotFoundException, CustomException
+    {
+        Employee employeeToModify = this.getEmployee(employeeId);
+        if (employeeDto.getManager() != null) // if employee manager is modified check problem could occur
+        {
+            if (!checkManagerChange(employeeToModify, employeeDto.getManager())) // if the manager is working underMe he cant be my manager
+            {
+                throw new CustomException("Infinite recursive relation between employee and manager");
+            }
+        }
+        employeeDto.dtoToEmployee(employeeDto, employeeToModify); //  copying new data to employee
+        return saveEmployee(employeeToModify);
+    }
 
 
     public List<Employee> getEmployeesByName(String name)
@@ -125,14 +127,12 @@ public class EmployeeService
     }
 
 
+    public List<EmployeeInfoOnlyDTO> getManagerEmployeesRecursively(long managerId) throws CustomException
+    {
+        if (this.getEmployee(managerId) == null)
+            return null;
+        List<Employee> employeesUnderManagersRecursive = employeeRepository.findManagerEmployeesRecursivelyQueried(managerId);
 
-
-//    public List<EmployeeInfoOnlyDTO> getManagerEmployeesRecursively(long managerId) throws CustomException
-//    {
-//        if (this.getEmployee(managerId) == null)
-//            return null;
-//        List<Employee> employeesUnderManagersRecursive = employeeRepository.findManagerEmployeesRecursivelyQueried(managerId);
-//
-//        return EmployeeInfoOnlyDTO.setEmployeeToDTOList(employeesUnderManagersRecursive);
-//    }
+        return EmployeeInfoOnlyDTO.setEmployeeToDTOList(employeesUnderManagersRecursive);
+    }
 }

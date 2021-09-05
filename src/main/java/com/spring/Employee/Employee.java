@@ -66,26 +66,7 @@ public class Employee implements IdOwner
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "attendance_table_id")
     private AttendanceTable attendanceTable;
-    private Float salaryRaise;
 
-    public Employee(Long id, String nationalId, String firstname, String lastName, Degree degree, Integer yearsOfExperience, LocalDate birthDate, LocalDate graduationDate, Gender gender, Department department, Team team, Employee manager, Set<Employee> subEmployees, Float grossSalary, Float netSalary)
-    {
-        this.id = id;
-        this.nationalId = nationalId;
-        this.firstname = firstname;
-        this.lastName = lastName;
-        this.degree = degree;
-        this.yearsOfExperience = yearsOfExperience;
-        this.birthDate = birthDate;
-        this.graduationDate = graduationDate;
-        this.gender = gender;
-        this.department = department;
-        this.team = team;
-        this.manager = manager;
-        this.subEmployees = subEmployees;
-        this.grossSalary = grossSalary;
-        this.netSalary = netSalary;
-    }
 
     public Employee() { }
 
@@ -127,16 +108,6 @@ public class Employee implements IdOwner
     public String getNationalId()
     {
         return nationalId;
-    }
-
-    public Float getSalaryRaise()
-    {
-        return (salaryRaise == null)?0:salaryRaise;
-    }
-
-    public void setSalaryRaise(Float salaryRaise)
-    {
-        this.salaryRaise = salaryRaise;
     }
 
     public void setNationalId(String nationalId)

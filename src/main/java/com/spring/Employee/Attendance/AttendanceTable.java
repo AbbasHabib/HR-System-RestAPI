@@ -27,15 +27,13 @@ public class AttendanceTable
     private List<MonthDetails> monthDetailsList;
 
     private Integer initialWorkingYears = 0;
-
+    private Integer salaryRaise = 0;
 
 
     public void addMonthAndDayDetails(DayDetails dayDetails, MonthDetails monthDetails) // make sure that this month doesn't exist already
     {
-        if (this.dailyDetailsList == null)
-            this.dailyDetailsList  = new ArrayList<>();
-        if(this.monthDetailsList == null)
-            this.monthDetailsList  = new ArrayList<>();
+        if (this.dailyDetailsList == null) this.dailyDetailsList = new ArrayList<>();
+        if (this.monthDetailsList == null) this.monthDetailsList = new ArrayList<>();
 
         this.dailyDetailsList.add(dayDetails);
         this.monthDetailsList.add(monthDetails);
@@ -43,17 +41,14 @@ public class AttendanceTable
 
     public void addDay(DayDetails dayDetails)
     {
-        if (this.dailyDetailsList == null)
-            this.dailyDetailsList  = new ArrayList<>();
+        if (this.dailyDetailsList == null) this.dailyDetailsList = new ArrayList<>();
         this.dailyDetailsList.add(dayDetails);
     }
 
 
     public Integer getPermittedAbsenceDays(int workingYears)
     {
-        return (workingYears < SalariesYearsConstants.SENIOR_YEARS)
-                ? SalariesYearsConstants.AVAILABLE_ABSENCES_JUNIOR
-                : SalariesYearsConstants.AVAILABLE_ABSENCES_SENIOR;
+        return (workingYears < SalariesYearsConstants.SENIOR_YEARS) ? SalariesYearsConstants.AVAILABLE_ABSENCES_JUNIOR : SalariesYearsConstants.AVAILABLE_ABSENCES_SENIOR;
     }
 
     public Employee getEmployee()
@@ -78,6 +73,31 @@ public class AttendanceTable
 
     public AttendanceTable()
     {
+    }
+
+    public List<MonthDetails> getMonthDetailsList()
+    {
+        return monthDetailsList;
+    }
+
+    public void setMonthDetailsList(List<MonthDetails> monthDetailsList)
+    {
+        this.monthDetailsList = monthDetailsList;
+    }
+
+    public void setInitialWorkingYears(Integer initialWorkingYears)
+    {
+        this.initialWorkingYears = initialWorkingYears;
+    }
+
+    public Integer getSalaryRaise()
+    {
+        return salaryRaise;
+    }
+
+    public void setSalaryRaise(Integer salaryRaise)
+    {
+        this.salaryRaise = salaryRaise;
     }
 
     public Long getId()

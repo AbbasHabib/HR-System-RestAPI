@@ -3,6 +3,7 @@ package com.spring.employee;
 import com.blazebit.persistence.CriteriaBuilderFactory;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.spring.Department.Department;
 import com.spring.Department.DepartmentService;
 import com.spring.Employee.DTO.EmployeeInfoOnlyDTO;
@@ -22,8 +23,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockReset;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -35,7 +36,6 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -147,6 +147,7 @@ public class EmployeeControllerTests
 
     @Test
     @DatabaseSetup("/data.xml")
+//    @ExpectedDatabase(value ="/expectedDatabases/employee_deletion.xml", table = "employee")
     public void delete_employee_with_id() throws Exception
     {
         long deleteUserWithID = 102L;
@@ -173,26 +174,25 @@ public class EmployeeControllerTests
         // Expected modification
         EmployeeModifyCommand employeeModificationDto = new EmployeeModifyCommand();
 
-        //(1) Edit basic employee info
-        employeeModificationDto.setName("reem");
+        // (1) Edit basic employee info
+        employeeModificationDto.setName("reem naser");
         employeeModificationDto.setGender(Gender.FEMALE);
         employeeModificationDto.setGrossSalary(7000.0f);
-
-        //(2) set Department
+        // (2) set Department
         Long departmentId = 102L;
         Department dep = departmentService.getDepartment(departmentId);
         if(dep == null)
             throw new NotFoundException("department is not found");
         employeeModificationDto.setDepartment(dep);
 
-        //(3) set Team
+        // (3) set Team
         Long teamId = 102L;
         Team team = teamService.getTeam(teamId);
         if(team == null)
             throw new NotFoundException("team is not found");
         employeeModificationDto.setTeam(team);
 
-        //(4) Edit employee manager
+        // (4) Edit employee manager
         Long managerId = 102L;
         Employee manager = employeeService.getEmployee(managerId);
         if (manager == null)
@@ -253,24 +253,24 @@ public class EmployeeControllerTests
 
 
 
-//    @Test
-//    @Transactional
-//    @DatabaseSetup("/data.xml")
-//    public void getEmployeesRecursively() throws Exception, CustomException
-//    {
-//        long managerId = 101L;
-//        List<EmployeeInfoOnlyDTO> employeesUnderManager = employeeService.getManagerEmployeesRecursively(managerId);
-//        if (employeesUnderManager == null)
-//            throw new NotFoundException("cant find manager");
-//
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        String employeesUnderManagerJSON = objectMapper.writeValueAsString(employeesUnderManager);
-//
-//        mockMvc.perform(MockMvcRequestBuilders.get("/employee/manager/recursive/" + managerId))
-//                .andExpect(content().json(employeesUnderManagerJSON))
-//                .andExpect(status().isOk());
-//
-//    }
+    @Test
+    @Transactional
+    @DatabaseSetup("/data.xml")
+    public void getEmployeesRecursively() throws Exception, CustomException
+    {
+        long managerId = 101L;
+        List<EmployeeInfoOnlyDTO> employeesUnderManager = employeeService.getManagerEmployeesRecursively(managerId);
+        if (employeesUnderManager == null)
+            throw new NotFoundException("cant find manager");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String employeesUnderManagerJSON = objectMapper.writeValueAsString(employeesUnderManager);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/employee/manager/recursive/" + managerId))
+                .andExpect(content().json(employeesUnderManagerJSON))
+                .andExpect(status().isOk());
+
+    }
 
 
 

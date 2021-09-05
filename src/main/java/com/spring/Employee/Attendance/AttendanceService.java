@@ -167,7 +167,7 @@ public class AttendanceService
                 employee.getGrossSalary()
                 , absenceDaysTillMonth
                 , monthBonuses
-                , employee.getSalaryRaise()
+                , attendanceTable.getSalaryRaise()
                 , permittedAbsenceDays
                 , date.getMonth().length(true)
         );
