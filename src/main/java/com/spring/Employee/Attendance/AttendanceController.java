@@ -1,5 +1,7 @@
 package com.spring.Employee.Attendance;
 
+import com.spring.Employee.Attendance.dayDetails.DayDetails;
+import com.spring.Employee.Attendance.monthDetails.MonthDetails;
 import com.spring.Employee.DTO.EmployeeSalaryDTO;
 import com.spring.ExceptionsCustom.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,10 +54,5 @@ public class AttendanceController
     }
 
 
-//    @GetMapping(value = "/first-year/{id}")
-//    public DayDetails findEmployeeFirstYear(@PathVariable String id)
-//    {
-//        return attendanceService.findEmployeeFirstYear(Long.parseLong(id));
-//    }
 
 }

@@ -1,6 +1,8 @@
 package com.spring.Employee.Attendance;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.spring.Employee.Attendance.dayDetails.DayDetails;
+import com.spring.Employee.Attendance.monthDetails.MonthDetails;
 import com.spring.Employee.Employee;
 import com.spring.Employee.SalariesYearsConstants;
 

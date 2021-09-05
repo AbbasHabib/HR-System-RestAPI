@@ -16,6 +16,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long>
     List<Employee> findByManager(Employee manager);
     Optional<Employee> findEmployeeByNationalId(String nationalId);
 
+    List<Employee> findEmployeesByManager_Id(Long manager_id);
+
     @Query(Queries.DELETE_FROM_EMPLOYEE_BY_ID)
     @Modifying()
     void deleteById(Long id);

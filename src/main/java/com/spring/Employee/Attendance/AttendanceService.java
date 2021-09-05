@@ -1,6 +1,10 @@
 package com.spring.Employee.Attendance;
 
 
+import com.spring.Employee.Attendance.dayDetails.DayDetails;
+import com.spring.Employee.Attendance.dayDetails.DayDetailsRepository;
+import com.spring.Employee.Attendance.monthDetails.MonthDetails;
+import com.spring.Employee.Attendance.monthDetails.MonthDetailsRepository;
 import com.spring.Employee.DTO.EmployeeSalaryDTO;
 import com.spring.Employee.Employee;
 import com.spring.Employee.SalariesYearsConstants;
@@ -99,9 +103,10 @@ public class AttendanceService
     private void insertDayDataToMonth(DayDetails dayDetails, MonthDetails monthOfThatDay)
     {
         if (dayDetails.isAbsent())
-            monthOfThatDay.absences += 1;
+            monthOfThatDay.setAbsences(monthOfThatDay.getAbsences() + 1);
         if (dayDetails.getBonusInSalary() > 0)
-            monthOfThatDay.bonuses += dayDetails.getBonusInSalary();
+            monthOfThatDay.setBonuses(monthOfThatDay.getBonuses() + 1);
+
     }
 
 
@@ -185,34 +190,15 @@ public class AttendanceService
     }
 
 
-    /*
-
-       public Float calculateNetSalary(Float employeeSalary, AttendanceTable employeeAttendanceTable)
-    {
-        if (employeeSalary != null && employeeSalary != 0)
-        {
-            float empSalary = employeeSalary * (1 - SalariesYearsConstants.TAXES) - SalariesYearsConstants.DEDUCTED_INSURANCE;
-//            float salaryPerDay = empSalary / employeeAttendanceTable.getCurrentMonthDays();
-            // if absence in this month is zero then there wont be any deduction
-//            empSalary -= salaryPerDay * employeeAttendanceTable.getAbsenceDaysInCurrentMonth();
-
-            if (empSalary > 0)
-                return empSalary;
-        }
-        return 0.0f;
-    }
-     */
-
     private float calculateNetSalary(float grossSalary, int absenceDaysTillMonth, float monthBonuses, float salaryRaise, int permittedAbsenceDays, int monthDays)
     {
         float netSalary = grossSalary + monthBonuses + salaryRaise;
-        netSalary = netSalary * (1 - SalariesYearsConstants.TAXES) - SalariesYearsConstants.DEDUCTED_INSURANCE;
-
         if (absenceDaysTillMonth > permittedAbsenceDays)
         {
-            Float salaryPerDay = netSalary / monthDays;
+            float salaryPerDay = netSalary / monthDays;
             netSalary -= salaryPerDay * absenceDaysTillMonth;
         }
+        netSalary = netSalary * (1 - SalariesYearsConstants.TAXES) - SalariesYearsConstants.DEDUCTED_INSURANCE;
         return netSalary;
 
     }

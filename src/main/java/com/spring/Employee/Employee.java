@@ -8,6 +8,7 @@ import com.spring.interfaces.IdOwner;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 
@@ -53,9 +54,10 @@ public class Employee implements IdOwner
     @JoinColumn(name = "manager_id", nullable = true)// in case the manager_id is null that means that
     // manager is a a super manager doesn't have a manager above him
     private Employee manager;
+
     @JsonIgnore
     @OneToMany(mappedBy = "manager") // one manager to many employees
-    private Set<Employee> subEmployees;
+    private List<Employee> subEmployees;
 
     @Column(name = "gross_salary")
     private Float grossSalary;
@@ -205,12 +207,12 @@ public class Employee implements IdOwner
         this.manager = manager;
     }
 
-    public Set<Employee> getSubEmployees()
+    public List<Employee> getSubEmployees()
     {
         return subEmployees;
     }
 
-    public void setSubEmployees(Set<Employee> subEmployees)
+    public void setSubEmployees(List<Employee> subEmployees)
     {
         this.subEmployees = subEmployees;
     }

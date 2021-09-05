@@ -1,4 +1,4 @@
-package com.spring.Employee.Attendance;
+package com.spring.Employee.Attendance.dayDetails;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

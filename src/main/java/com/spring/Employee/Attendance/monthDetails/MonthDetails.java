@@ -1,7 +1,8 @@
-package com.spring.Employee.Attendance;
+package com.spring.Employee.Attendance.monthDetails;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.spring.Employee.Attendance.AttendanceTable;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -18,9 +19,9 @@ public class MonthDetails
     @JsonIgnore
     AttendanceTable attendanceTable;
 
-    LocalDate date; // (YYYY, MM, 1)
-    Integer absences = 0;
-    Float bonuses = 0F;
+    private LocalDate date; // (YYYY, MM, 1)
+    private Integer absences = 0;
+    private Float bonuses = 0F;
 
 
     public MonthDetails(LocalDate date)
