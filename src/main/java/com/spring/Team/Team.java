@@ -2,13 +2,14 @@ package com.spring.Team;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.spring.Employee.Employee;
+import com.spring.interfaces.IdOwner;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-public class Team
+public class Team implements IdOwner
 {
     @Id
     @Column(name = "id", nullable = false)
@@ -17,7 +18,7 @@ public class Team
     @Column(name = "team_name")
     private String teamName;
     @JsonIgnore
-    @OneToMany(mappedBy = "team")
+    @OneToMany(mappedBy = "team" ,fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Employee> employees;
 
     public Team() { }

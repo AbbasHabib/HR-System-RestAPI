@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.spring.Department.Department;
 import com.spring.Employee.Attendance.AttendanceTable;
 import com.spring.Team.Team;
+import com.spring.interfaces.IdOwner;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -12,7 +13,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "employee")
-public class Employee
+public class Employee implements IdOwner
 {
     @Id
     @Column(name = "id", nullable = false)

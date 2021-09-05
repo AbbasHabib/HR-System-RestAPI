@@ -3,10 +3,10 @@ package com.spring.department;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.spring.Department.Department;
+import com.spring.Department.DepartmentRepository;
 import com.spring.Department.DepartmentService;
-import com.spring.Employee.Employee;
 import com.spring.ExceptionsCustom.CustomException;
-import org.dbunit.DBTestCase;
+import com.spring.testShortcuts.TestShortcutMethods;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +18,11 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
+import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -38,6 +40,9 @@ public class DepartmentIntegrationTest
     DepartmentService departmentService;
 
     @Autowired
+    DepartmentRepository departmentRepository;
+
+    @Autowired
     MockMvc mockMvc;
 
 
@@ -45,16 +50,23 @@ public class DepartmentIntegrationTest
     @DatabaseSetup("/data.xml")
     public void add_department() throws Exception, CustomException
     {
-        Department department = new Department();
-        department.setName("el a7bab");
-        department.setId(1L); // this id has to be added just to compare it with the received JSON response
+        Department departmentExpected = new Department();
+        departmentExpected.setName("el a7bab");
         ObjectMapper objectMapper = new ObjectMapper();
-        String departmentJSON = objectMapper.writeValueAsString(department);
+        String departmentJSON = objectMapper.writeValueAsString(departmentExpected);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/department/")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/department/")
                 .contentType(MediaType.APPLICATION_JSON).content(departmentJSON))
-                .andExpect(content().json(departmentJSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andReturn();
+
+        TestShortcutMethods<Department> tester = new TestShortcutMethods<Department>();
+        // as departmentExpected id is currently null
+        // we add the id coming from the response to it
+        // then compare the expected object with the the object in DB
+        tester.setObjectIdFromResponseResult(result, departmentExpected);
+        tester.compareWithDataBaseUsingId(result, departmentExpected, departmentRepository);
+
     }
 
     @Test

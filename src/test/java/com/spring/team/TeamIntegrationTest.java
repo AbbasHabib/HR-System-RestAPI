@@ -4,10 +4,13 @@ package com.spring.team;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.spring.Department.Department;
 import com.spring.Employee.DTO.EmployeeInfoOnlyDTO;
 
 import com.spring.Team.Team;
+import com.spring.Team.TeamRepository;
 import com.spring.Team.TeamService;
+import com.spring.testShortcuts.TestShortcutMethods;
 import javassist.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,6 +23,7 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -43,6 +47,8 @@ public class TeamIntegrationTest
 {
     @Autowired
     TeamService teamService;
+    @Autowired
+    TeamRepository teamRepository;
 
     @Autowired
     MockMvc mockMvc;
@@ -52,15 +58,21 @@ public class TeamIntegrationTest
     public void add_team() throws Exception
     {
         Team teamToAdd = new Team();
-        teamToAdd.setId(2L);
         teamToAdd.setTeamName("el 7bayb");
         ObjectMapper objectMapper = new ObjectMapper();
         String teamJson = objectMapper.writeValueAsString(teamToAdd);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/team/")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/team/")
                 .contentType(MediaType.APPLICATION_JSON).content(teamJson))
-                .andExpect(content().json(teamJson))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andReturn();
+
+        TestShortcutMethods<Team> tester = new TestShortcutMethods<Team>();
+        // as departmentExpected id is currently null
+        // we add the id coming from the response to it
+        // then compare the expected object with the the object in DB
+        tester.setObjectIdFromResponseResult(result, teamToAdd);
+        tester.compareWithDataBaseUsingId(result, teamToAdd, teamRepository);
     }
 
     @Test
@@ -76,8 +88,10 @@ public class TeamIntegrationTest
         String teamEmployeesJson = objectMapper.writeValueAsString(teamEmployees);
 
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/team/employees/" + teamId))
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/team/employees/" + teamId))
                 .andExpect(content().json(teamEmployeesJson))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andReturn();
+
     }
 }

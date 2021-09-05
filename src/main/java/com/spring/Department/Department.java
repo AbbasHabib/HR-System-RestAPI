@@ -2,6 +2,7 @@ package com.spring.Department;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.spring.Employee.Employee;
+import com.spring.interfaces.IdOwner;
 import org.aspectj.lang.annotation.Before;
 
 import javax.persistence.*;
@@ -9,12 +10,12 @@ import java.util.Set;
 
 @Entity
 @Table(name = "department")
-public class Department
+public class Department implements IdOwner
 {
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id = 0L;
+    private Long id;
     @Column(name = "name", nullable = false)
     private String name;
     @JsonIgnore

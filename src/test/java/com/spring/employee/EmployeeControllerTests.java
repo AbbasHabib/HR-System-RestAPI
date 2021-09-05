@@ -9,23 +9,27 @@ import com.spring.Employee.DTO.EmployeeInfoOnlyDTO;
 import com.spring.Employee.DTO.EmployeeSalaryDTO;
 import com.spring.Employee.Employee;
 import com.spring.Employee.DTO.EmployeeModifyCommand;
+import com.spring.Employee.EmployeeRepository;
 import com.spring.Employee.EmployeeService;
 import com.spring.Employee.Gender;
 import com.spring.ExceptionsCustom.CustomException;
 import com.spring.Team.Team;
 import com.spring.Team.TeamService;
+import com.spring.testShortcuts.TestShortcutMethods;
 import javassist.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockReset;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -36,7 +40,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -55,6 +59,8 @@ public class EmployeeControllerTests
     EmployeeService employeeService;
     @Autowired
     DepartmentService departmentService;
+    @Autowired
+    EmployeeRepository employeeRepository;
 
     @Autowired
     TeamService teamService;
@@ -126,9 +132,17 @@ public class EmployeeControllerTests
         ObjectMapper objectMapper = new ObjectMapper();
         String employeeJSON = objectMapper.writeValueAsString(employee);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/employee/" + searchForId))
-                .andExpect(content().json(employeeJSON))
-                .andExpect(status().isOk());
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/employee/" + searchForId))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        // as departmentExpected id is currently null
+        // we add the id coming from the response to it
+        // then compare the expected object with the the object in DB
+        TestShortcutMethods<Employee> tester = new TestShortcutMethods<Employee>();
+        tester.setObjectIdFromResponseResult(result, employee);
+        tester.compareWithDataBaseUsingId(result, employee, employeeRepository);
+
     }
 
     @Test
@@ -137,11 +151,14 @@ public class EmployeeControllerTests
     {
         long deleteUserWithID = 102L;
 
-
         mockMvc.perform(MockMvcRequestBuilders.delete("/employee/" + deleteUserWithID))
                 .andExpect(content().string("true"))
                 .andExpect(status().isOk())
                 .andReturn();
+
+        assertNull(employeeService.getEmployee(deleteUserWithID));
+        assertEquals(employeeService.getEmployee(103L).getManager().getId(), 101L);
+        assertEquals(employeeService.getEmployee(104L).getManager().getId(), 101L);
     }
 
     @Test
@@ -256,11 +273,6 @@ public class EmployeeControllerTests
 //    }
 
 
-    @Test
-    public void get_employee_absence()
-    {
-
-    }
 
 }
 

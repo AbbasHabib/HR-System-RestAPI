@@ -15,4 +15,6 @@ public interface Queries
             ")\n" +
             "select * from cte;";
 
+    String DELETE_FROM_EMPLOYEE_BY_ID = "DELETE from Employee e where e.id = ?1";
+
 }
