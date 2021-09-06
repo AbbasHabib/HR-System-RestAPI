@@ -116,7 +116,7 @@ public class EmployeeControllerTests
 
         TestShortcutMethods<Employee> testShortcutMethods = new TestShortcutMethods<>();
         testShortcutMethods.setObjectIdFromResponseResult(response, employeeToAdd);
-        testShortcutMethods.compareWithDataBaseUsingId(response, employeeToAdd, employeeRepository);
+        testShortcutMethods.compareWithDataBaseUsingId(employeeToAdd, employeeRepository);
 
     }
 
@@ -137,7 +137,7 @@ public class EmployeeControllerTests
         // then compare the expected object with the the object in DB
         TestShortcutMethods<Employee> tester = new TestShortcutMethods<Employee>();
         tester.setObjectIdFromResponseResult(result, employee);
-        tester.compareWithDataBaseUsingId(result, employee, employeeRepository);
+        tester.compareWithDataBaseUsingId(employee, employeeRepository);
 
     }
 

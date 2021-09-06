@@ -65,7 +65,7 @@ public class DepartmentIntegrationTest
         // we add the id coming from the response to it
         // then compare the expected object with the the object in DB
         tester.setObjectIdFromResponseResult(result, departmentExpected);
-        tester.compareWithDataBaseUsingId(result, departmentExpected, departmentRepository);
+        tester.compareWithDataBaseUsingId(departmentExpected, departmentRepository);
 
     }
 

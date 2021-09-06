@@ -28,7 +28,7 @@ public class TestShortcutMethods<T extends IdOwner>
 
     }
 
-    public void compareWithDataBaseUsingId(MvcResult result, T expectedResult, JpaRepository<T, Long> repository) throws Exception
+    public void compareWithDataBaseUsingId(T expectedResult, JpaRepository<T, Long> repository) throws Exception
     {
         IdOwner objectFromDb = repository.findById(expectedResult.getId()).orElse(null);
         if(objectFromDb == null)

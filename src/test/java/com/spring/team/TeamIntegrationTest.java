@@ -72,7 +72,7 @@ public class TeamIntegrationTest
         // we add the id coming from the response to it
         // then compare the expected object with the the object in DB
         tester.setObjectIdFromResponseResult(result, teamToAdd);
-        tester.compareWithDataBaseUsingId(result, teamToAdd, teamRepository);
+        tester.compareWithDataBaseUsingId(teamToAdd, teamRepository);
     }
 
     @Test

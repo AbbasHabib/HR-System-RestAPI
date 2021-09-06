@@ -96,7 +96,7 @@ public class AttendanceIntegrationTest
 
         TestShortcutMethods<DayDetails> testShortcutMethods = new TestShortcutMethods<DayDetails>();
         testShortcutMethods.setObjectIdFromResponseResult(result, dayToAdd);
-        testShortcutMethods.compareWithDataBaseUsingId(result, dayToAdd, dayDetailsRepository);
+        testShortcutMethods.compareWithDataBaseUsingId(dayToAdd, dayDetailsRepository);
 
     }
 
