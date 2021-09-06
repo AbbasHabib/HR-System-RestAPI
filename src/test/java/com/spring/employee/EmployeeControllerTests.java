@@ -6,7 +6,6 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.spring.Department.Department;
 import com.spring.Department.DepartmentService;
 import com.spring.Employee.DTO.EmployeeInfoOnlyDTO;
-import com.spring.Employee.DTO.EmployeeSalaryDTO;
 import com.spring.Employee.Employee;
 import com.spring.Employee.DTO.EmployeeModifyCommand;
 import com.spring.Employee.EmployeeRepository;
@@ -19,7 +18,6 @@ import com.spring.testShortcuts.TestShortcutMethods;
 import javassist.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,9 +25,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -37,11 +33,7 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static com.spring.Employee.DTO.EmployeeInfoOnlyDTO.setEmployeeToDTOList;
 import static org.junit.Assert.assertNull;
@@ -116,7 +108,7 @@ public class EmployeeControllerTests
 
         TestShortcutMethods<Employee> testShortcutMethods = new TestShortcutMethods<>();
         testShortcutMethods.setObjectIdFromResponseResult(response, employeeToAdd);
-        testShortcutMethods.compareWithDataBaseUsingId(employeeToAdd, employeeRepository);
+        testShortcutMethods.compareIdOwnerWithDataBase(employeeToAdd, employeeRepository);
 
     }
 
@@ -137,7 +129,7 @@ public class EmployeeControllerTests
         // then compare the expected object with the the object in DB
         TestShortcutMethods<Employee> tester = new TestShortcutMethods<Employee>();
         tester.setObjectIdFromResponseResult(result, employee);
-        tester.compareWithDataBaseUsingId(employee, employeeRepository);
+        tester.compareIdOwnerWithDataBase(employee, employeeRepository);
 
     }
 

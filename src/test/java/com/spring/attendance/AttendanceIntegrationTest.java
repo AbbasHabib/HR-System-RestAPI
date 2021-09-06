@@ -8,13 +8,10 @@ import com.spring.Employee.Attendance.AttendanceTable;
 import com.spring.Employee.Attendance.dayDetails.DayDetails;
 import com.spring.Employee.Attendance.dayDetails.DayDetailsRepository;
 import com.spring.Employee.Attendance.monthDetails.MonthDetails;
-import com.spring.Employee.Employee;
 import com.spring.testShortcuts.TestShortcutMethods;
-import org.springframework.data.annotation.Transient;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.spring.ExceptionsCustom.CustomException;
@@ -27,13 +24,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -96,7 +91,7 @@ public class AttendanceIntegrationTest
 
         TestShortcutMethods<DayDetails> testShortcutMethods = new TestShortcutMethods<DayDetails>();
         testShortcutMethods.setObjectIdFromResponseResult(result, dayToAdd);
-        testShortcutMethods.compareWithDataBaseUsingId(dayToAdd, dayDetailsRepository);
+        testShortcutMethods.compareIdOwnerWithDataBase(dayToAdd, dayDetailsRepository);
 
     }
 

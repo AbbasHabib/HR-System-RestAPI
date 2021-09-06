@@ -2,9 +2,7 @@ package com.spring.team;
 
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.spring.Department.Department;
 import com.spring.Employee.DTO.EmployeeInfoOnlyDTO;
 
 import com.spring.Team.Team;
@@ -72,7 +70,7 @@ public class TeamIntegrationTest
         // we add the id coming from the response to it
         // then compare the expected object with the the object in DB
         tester.setObjectIdFromResponseResult(result, teamToAdd);
-        tester.compareWithDataBaseUsingId(teamToAdd, teamRepository);
+        tester.compareIdOwnerWithDataBase(teamToAdd, teamRepository);
     }
 
     @Test
