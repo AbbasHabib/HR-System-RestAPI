@@ -1,0 +1,6 @@
+<dataset>
+    <attendance_table id="101" initial_working_years="0" salary_raise="0"/>
+
+    <employee id="101"  name="Big rami" attendance_table_id="101" national_id="10101001" gross_salary="100000" gender="MALE"  />
+
+</dataset>

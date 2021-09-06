@@ -106,7 +106,11 @@ public class EmployeeControllerTests
         String employeeJson = objectMapper.writeValueAsString(employeeToAdd); // converts employee object to JSON string
 
         // POST request (.post("/employee/")) takes to be a Json of employee in request Body
-        MvcResult response = mockMvc.perform(MockMvcRequestBuilders.post("/employee/").contentType(MediaType.APPLICATION_JSON).content(employeeJson)).andExpect(status().isOk()).andReturn(); // request is 200 (OK)
+        MvcResult response = mockMvc.perform(MockMvcRequestBuilders.post("/employee/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(employeeJson))
+                .andExpect(status().isOk())
+                .andReturn(); // request is 200 (OK)
 
         employeeToAdd.setNetSalary(employeeService.calculateNetSalary(employeeToAdd.getGrossSalary(), employeeToAdd.getAttendanceTable()));
 

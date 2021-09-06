@@ -2,13 +2,14 @@ package com.spring.Employee.Attendance.dayDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.spring.Employee.Attendance.AttendanceTable;
+import com.spring.interfaces.IdOwner;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "leaves_days")
-public class DayDetails
+@Table(name = "day_details")
+public class DayDetails implements IdOwner
 {
     @Id
     @Column(name = "id")
@@ -22,7 +23,7 @@ public class DayDetails
 
     private LocalDate date;
     private boolean absent = false;
-    private Float bonusInSalary = 0F;
+    private Float bonusInSalary;
 
     public DayDetails(LocalDate date)
     {
@@ -44,9 +45,9 @@ public class DayDetails
         return bonusInSalary;
     }
 
-    public void setBonusInSalary(Float bonusSalary)
+    public void setBonusInSalary(Float bonusInSalary)
     {
-        this.bonusInSalary = bonusSalary;
+        this.bonusInSalary = bonusInSalary;
     }
 
     public DayDetails() { }

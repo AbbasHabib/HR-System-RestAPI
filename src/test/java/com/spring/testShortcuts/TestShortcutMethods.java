@@ -30,13 +30,11 @@ public class TestShortcutMethods<T extends IdOwner>
 
     public void compareWithDataBaseUsingId(MvcResult result, T expectedResult, JpaRepository<T, Long> repository) throws Exception
     {
-        String resultContent = result.getResponse().getContentAsString();
-
         IdOwner objectFromDb = repository.findById(expectedResult.getId()).orElse(null);
         if(objectFromDb == null)
             throw new Exception("didnt find it in DB");
         ObjectMapper objectMapper = new ObjectMapper();
-        assertEquals(resultContent, objectMapper.writeValueAsString(expectedResult));
+        assertEquals(objectMapper.writeValueAsString(objectFromDb), objectMapper.writeValueAsString(expectedResult));
 
     }
 

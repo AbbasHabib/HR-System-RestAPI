@@ -18,36 +18,31 @@ public class AttendanceController
     AttendanceService attendanceService;
 
     @GetMapping(value="/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public AttendanceTable getAttendanceTable(@PathVariable String id) throws CustomException
-    {
-        return attendanceService.getAttendanceTable(Long.parseLong(id));
-    }
-    @GetMapping(value="/employee/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public AttendanceTable getAttendanceTableByEmployeeId(@PathVariable String id) throws CustomException
     {
         return attendanceService.getAttendanceTableByEmployeeId(Long.parseLong(id));
     }
 
-    @PostMapping(value="/{id}") // ex adding new absence
-    public String addNewDayInfo(@RequestBody DayDetails dayDetails, @PathVariable String id) throws CustomException
+    @PostMapping(value="/day/{id}") // ex adding new absence
+    public DayDetails addNewDayData(@RequestBody DayDetails dayDetails, @PathVariable String id) throws CustomException
     {
-        return attendanceService.addNewDayInfo(Long.parseLong(id), dayDetails);
+        return attendanceService.addNewDayData(Long.parseLong(id), dayDetails);
     }
 
-    @GetMapping(value ="/month/{id}/{date}") // {id} attendance table id
+    @GetMapping(value ="/month/{id}/{date}")
     public MonthDetails getMonthData(@PathVariable String id, @PathVariable String date) throws CustomException
     {
         return attendanceService.getMonthData(Long.parseLong(id), LocalDate.parse(date));
     }
 
-    @GetMapping(value ="/absence/{id}/{date}") // {id} attendance table id
+    @GetMapping(value ="/absence/{id}/{date}")
     public Integer AbsenceDaysInYearTillMonth(@PathVariable String id, @PathVariable String date) throws CustomException
     {
         return attendanceService.calcAbsenceDaysInYearTillMonth(Long.parseLong(id), LocalDate.parse(date));
     }
 
 
-    @GetMapping(value = "/employee/salary/{id}/{date}", produces = MediaType.APPLICATION_JSON_VALUE)// {id} employee table id
+    @GetMapping(value = "/salary/{id}/{date}", produces = MediaType.APPLICATION_JSON_VALUE)
     public EmployeeSalaryDTO getEmployeeSalary(@PathVariable String id, @PathVariable String date) throws CustomException
     {
         return attendanceService.employeeSalaryAtMonth(Long.parseLong(id), LocalDate.parse(date));

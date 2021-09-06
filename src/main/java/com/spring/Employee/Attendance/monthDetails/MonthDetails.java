@@ -1,6 +1,5 @@
 package com.spring.Employee.Attendance.monthDetails;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.spring.Employee.Attendance.AttendanceTable;
 
@@ -8,6 +7,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
+@Table(name = "month_details")
 public class MonthDetails
 {
     @Id
@@ -19,9 +19,11 @@ public class MonthDetails
     @JsonIgnore
     AttendanceTable attendanceTable;
 
+    private Float grossSalaryOfMonth = null;
     private LocalDate date; // (YYYY, MM, 1)
     private Integer absences = 0;
     private Float bonuses = 0F;
+
 
 
     public MonthDetails(LocalDate date)
@@ -32,6 +34,27 @@ public class MonthDetails
 
     public MonthDetails()
     {
+    }
+
+
+    public Float getGrossSalaryOfMonth()
+    {
+        return grossSalaryOfMonth;
+    }
+
+    public void setGrossSalaryOfMonth(Float salary)
+    {
+        this.grossSalaryOfMonth = salary;
+    }
+
+    public void addAbsence(int n)
+    {
+        this.absences += n;
+    }
+
+    public void addBonus(float n)
+    {
+        this.bonuses += n;
     }
 
     public Integer getId()
