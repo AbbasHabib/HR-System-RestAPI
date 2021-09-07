@@ -25,6 +25,16 @@ public class DayDetails implements IdOwner
     private boolean absent = false;
     private Float bonusInSalary;
 
+
+    public DayDetails(Long id, AttendanceTable attendanceTable, LocalDate date, boolean absent, Float bonusInSalary)
+    {
+        this.id = id;
+        this.attendanceTable = attendanceTable;
+        this.date = date;
+        this.absent = absent;
+        this.bonusInSalary = bonusInSalary;
+    }
+
     public DayDetails(LocalDate date)
     {
         this.date = date;

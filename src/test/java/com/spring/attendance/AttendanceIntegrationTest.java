@@ -39,6 +39,7 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -90,7 +91,7 @@ public class AttendanceIntegrationTest
     @Test
     @DatabaseSetup("/attendanceData.xml")
     @Transactional
-    public void addNewDayData() throws Exception, CustomException
+    public void add_new_day_data() throws Exception, CustomException
     {
         long employeeId = 101L;
         AttendanceTable attendanceTable = attendanceService.getAttendanceTableByEmployeeId(employeeId);
@@ -106,7 +107,7 @@ public class AttendanceIntegrationTest
         ObjectMapper objectMapper = new ObjectMapper();
         String dayToAddDetailsJson = objectMapper.writeValueAsString(dayToAdd); // converts employee object to JSON string
 
-        MvcResult result = mockMvc.perform(post("/attendance/"+employeeId)
+        MvcResult result = mockMvc.perform(post("/attendance/day")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(dayToAddDetailsJson))
                 .andExpect(status().isOk())
@@ -120,7 +121,7 @@ public class AttendanceIntegrationTest
 
     @Test
     @DatabaseSetup("/attendanceData.xml")
-    public void getMonthData()throws JsonProcessingException, Exception, CustomException
+    public void get_month_data()throws JsonProcessingException, Exception, CustomException
     {
         long employeeId = 101L;
         String month = "2020-01-01";
@@ -160,7 +161,60 @@ public class AttendanceIntegrationTest
         assertEquals(mapExpected.get("bonuses"), mapReceived.get("bonuses"));
     }
 
+    @Test
+    @DatabaseSetup("/attendanceData.xml")
+    @Transactional
+    public void date_insertion_and_getting_absence_days_in_year_till_month() throws Exception, CustomException
+    {
+        String expectedAbsence = "6";
+        long employeeId = 101L;
+        String month = "2020-01-01";
 
+        AttendanceTable attendanceTable = attendanceService.getAttendanceTableByEmployeeId(employeeId);
 
+        List<DayDetails> absenceInDaysList = new ArrayList<>();
+        DayDetails bonusInDay = new DayDetails(null, attendanceTable, LocalDate.of(2020,1,1), false, 0.0f);
+
+        absenceInDaysList.add(new DayDetails(null, attendanceTable, null, true, 0.0f));
+        absenceInDaysList.add(new DayDetails(null, attendanceTable, null, true, 0.0f));
+        absenceInDaysList.add(new DayDetails(null, attendanceTable, null, true, 0.0f));
+        absenceInDaysList.add(new DayDetails(null, attendanceTable, null, true, 0.0f));
+        absenceInDaysList.add(new DayDetails(null, attendanceTable, null, true, 0.0f));
+
+        absenceInDaysList.add(new DayDetails(null, attendanceTable, null, false, 0.0f)); // not absent
+
+        absenceInDaysList.add(new DayDetails(null, attendanceTable, null, true, 0.0f)); // absent
+
+        absenceInDaysList.get(0).setDate(LocalDate.of(2020,1,5));
+        attendanceService.addNewDayData(employeeId, absenceInDaysList.get(0));
+        absenceInDaysList.get(1).setDate(LocalDate.of(2020,1,6));
+        attendanceService.addNewDayData(employeeId, absenceInDaysList.get(1));
+        absenceInDaysList.get(2).setDate(LocalDate.of(2020,1,7));
+        attendanceService.addNewDayData(employeeId, absenceInDaysList.get(2));
+        absenceInDaysList.get(3).setDate(LocalDate.of(2020,1,8));
+        attendanceService.addNewDayData(employeeId, absenceInDaysList.get(3));
+        absenceInDaysList.get(4).setDate(LocalDate.of(2020,1,9));
+        attendanceService.addNewDayData(employeeId, absenceInDaysList.get(4));
+        absenceInDaysList.get(5).setDate(LocalDate.of(2020,1,10));
+        attendanceService.addNewDayData(employeeId, absenceInDaysList.get(5));
+        absenceInDaysList.get(6).setDate(LocalDate.of(2020,1,11));
+        attendanceService.addNewDayData(employeeId, absenceInDaysList.get(6));
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/attendance/absence/"+employeeId+"/"+month))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String resJson = result.getResponse().getContentAsString();
+
+        assertEquals(resJson, expectedAbsence);
+    }
+
+    @Test
+    @DatabaseSetup("/attendanceData.xml")
+    @Transactional
+    public void get_employee_salary()
+    {
+
+    }
 
 }

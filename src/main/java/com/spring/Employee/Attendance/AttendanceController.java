@@ -17,10 +17,10 @@ public class AttendanceController
     @Autowired
     AttendanceService attendanceService;
 
-    @PostMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public DayDetails addNewDayData(@PathVariable String id, @RequestBody DayDetails dayDetails) throws CustomException
+    @PostMapping(value = "/day", produces = MediaType.APPLICATION_JSON_VALUE)
+    public DayDetails addNewDayData( @RequestBody DayDetails dayDetails) throws CustomException
     {
-        return attendanceService.addNewDayData(Long.parseLong(id), dayDetails);
+        return attendanceService.addNewDayData(101L, dayDetails);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -36,7 +36,7 @@ public class AttendanceController
     }
 
     @GetMapping(value = "/absence/{id}/{date}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Integer AbsenceDaysInYearTillMonth(@PathVariable String id, @PathVariable String date) throws CustomException
+    public Integer absenceDaysInYearTillMonth(@PathVariable String id, @PathVariable String date) throws CustomException
     {
         return attendanceService.calcAbsenceDaysInYearTillMonth(Long.parseLong(id), LocalDate.parse(date));
     }
