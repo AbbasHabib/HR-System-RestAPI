@@ -186,7 +186,10 @@ public class EmployeeControllerTests
         ObjectMapper objectMapper = new ObjectMapper();
         String employeeDtoJson = objectMapper.writeValueAsString(employeeModificationDto);
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/employee/" + employeeId).contentType(MediaType.APPLICATION_JSON).content(employeeDtoJson)).andExpect(status().isOk());
+        mockMvc.perform(MockMvcRequestBuilders.put("/employee/" + employeeId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(employeeDtoJson))
+                .andExpect(status().isOk());
     }
 
 
@@ -218,7 +221,9 @@ public class EmployeeControllerTests
         ObjectMapper objectMapper = new ObjectMapper();
         String employeesUnderManagerJSON = objectMapper.writeValueAsString(employeesUnderManager);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/employee/manager/recursive/" + managerId)).andExpect(content().json(employeesUnderManagerJSON)).andExpect(status().isOk());
+        mockMvc.perform(MockMvcRequestBuilders.get("/employee/manager/recursive/" + managerId))
+                .andExpect(content().json(employeesUnderManagerJSON))
+                .andExpect(status().isOk());
 
     }
 

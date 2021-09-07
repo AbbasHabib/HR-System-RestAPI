@@ -1,6 +1,12 @@
 <dataset>
-    <attendance_table id="101" initial_working_years="0" salary_raise="0"/>
+    <attendance_table id="102" initial_working_years="0" salary_raise="0"/>
+    <employee id="102"  name="Big rami" attendance_table_id="102" national_id="5158515" gross_salary="100000" gender="MALE"  />
 
+
+    <attendance_table id="101" initial_working_years="0" salary_raise="0"/>
+    <month_details id="101" absences="0" bonuses="0.0" date="2020-01-01" attendance_table_id="101"/>
     <employee id="101"  name="Big rami" attendance_table_id="101" national_id="10101001" gross_salary="100000" gender="MALE"  />
+
+
 
 </dataset>

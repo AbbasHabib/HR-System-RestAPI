@@ -10,6 +10,8 @@ this project is an HR system where the of it is managing employees teams, depart
 
 
 ## Current TodoList
+- [ ] Test for addNewDayData doesn't work
+- [ ] Add test cases for all attendance table apis
 - [x] Rest Api to get absences through the year till specific month
 - [x] Rest Api to add day with details: [absence, bonusInSalary] + dayDate
 - [x] Rest Api to get employee salary with calculating deduction[**through the year**] and bonuses[**monthly**]

@@ -43,7 +43,8 @@ public class AttendanceTable
 
     public void addDay(DayDetails dayDetails)
     {
-        if (this.dailyDetailsList == null) this.dailyDetailsList = new ArrayList<>();
+        if (this.dailyDetailsList == null)
+            this.dailyDetailsList = new ArrayList<>();
         this.dailyDetailsList.add(dayDetails);
     }
 

@@ -1,5 +1,6 @@
 package com.spring.Employee.Attendance.monthDetails;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.spring.Employee.Attendance.AttendanceTable;
 
@@ -20,6 +21,7 @@ public class MonthDetails
     AttendanceTable attendanceTable;
 
     private Float grossSalaryOfMonth = null;
+
     private LocalDate date; // (YYYY, MM, 1)
     private Integer absences = 0;
     private Float bonuses = 0F;
