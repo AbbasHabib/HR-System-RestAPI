@@ -3,6 +3,7 @@ package com.spring.Employee;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.spring.Department.Department;
 import com.spring.Employee.Attendance.AttendanceTable;
+import com.spring.Security.UserCredentials;
 import com.spring.Team.Team;
 import com.spring.interfaces.IdOwner;
 
@@ -69,6 +70,10 @@ public class Employee implements IdOwner
     @JoinColumn(name = "attendance_table_id")
     private AttendanceTable attendanceTable;
 
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_name_credential")
+    private UserCredentials userCredentials;
 
     public Employee() { }
 
