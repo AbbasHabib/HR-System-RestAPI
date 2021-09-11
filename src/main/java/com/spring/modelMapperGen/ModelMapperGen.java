@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Bean;
 
 public class ModelMapperGen
 {
-
     static ModelMapper modelMapper = null;
 
     public static ModelMapper getModelMapperSingleton()

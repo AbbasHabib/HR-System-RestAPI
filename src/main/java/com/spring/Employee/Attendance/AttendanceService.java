@@ -9,6 +9,7 @@ import com.spring.Employee.DTO.EmployeeSalaryDTO;
 import com.spring.Employee.Employee;
 import com.spring.Employee.SalariesYearsConstants;
 import com.spring.ExceptionsCustom.CustomException;
+import com.spring.modelMapperGen.ModelMapperGen;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -62,7 +63,6 @@ public class AttendanceService
 
     public DayDetails addNewDayData(Long employeeId, DayDetails dayDetails) throws CustomException
     {
-
         // get attendance table to add month and day data into
         AttendanceTable attendanceTable = getAttendanceTableByEmployeeId(employeeId);
 

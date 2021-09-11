@@ -1,6 +1,9 @@
 package com.spring.Employee.Attendance.dayDetails;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.spring.Employee.Attendance.AttendanceTable;
 import com.spring.interfaces.IdOwner;
 
@@ -21,6 +24,8 @@ public class DayDetails implements IdOwner
     @JsonIgnore
     AttendanceTable attendanceTable;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate date;
     private boolean absent = false;
     private Float bonusInSalary;
@@ -72,10 +77,12 @@ public class DayDetails implements IdOwner
         this.id = id;
     }
 
+
     public LocalDate getDate()
     {
         return date;
     }
+
 
     public void setDate(LocalDate date)
     {

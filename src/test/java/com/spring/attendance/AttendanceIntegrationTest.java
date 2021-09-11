@@ -2,8 +2,6 @@ package com.spring.attendance;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.spring.Employee.Attendance.AttendanceService;
@@ -13,16 +11,12 @@ import com.spring.Employee.Attendance.dayDetails.DayDetailsRepository;
 import com.spring.Employee.Attendance.monthDetails.MonthDetails;
 import com.spring.testShortcuts.TestShortcutMethods;
 import org.json.JSONObject;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.autoconfigure.webservices.client.MockWebServiceServerTestExecutionListener;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.event.TransactionalEventListener;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.spring.ExceptionsCustom.CustomException;
@@ -36,7 +30,6 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +37,6 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -81,7 +73,7 @@ public class AttendanceIntegrationTest
         ObjectMapper objectMapper = new ObjectMapper();
         String expectedAttendanceTableJson = objectMapper.writeValueAsString(expectedAttendanceTable);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/attendance/" + employeeId))
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/attendance/employee/" + employeeId))
                 .andExpect(status().isOk())
                 .andReturn();
         String res = result.getResponse().getContentAsString();
@@ -107,7 +99,8 @@ public class AttendanceIntegrationTest
         ObjectMapper objectMapper = new ObjectMapper();
         String dayToAddDetailsJson = objectMapper.writeValueAsString(dayToAdd); // converts employee object to JSON string
 
-        MvcResult result = mockMvc.perform(post("/attendance/day")
+
+        MvcResult result = mockMvc.perform(post("/attendance/day/employee/" + employeeId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(dayToAddDetailsJson))
                 .andExpect(status().isOk())
@@ -142,7 +135,7 @@ public class AttendanceIntegrationTest
 
         Map<String, String> mapExpected = objectMapper.readValue(monthDetailsJson, Map.class);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/attendance/month/"+employeeId+"/"+month))
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/attendance/month/employee/"+employeeId+"/"+month))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -160,6 +153,7 @@ public class AttendanceIntegrationTest
         assertEquals(mapExpected.get("absences"), mapReceived.get("absences"));
         assertEquals(mapExpected.get("bonuses"), mapReceived.get("bonuses"));
     }
+
 
     @Test
     @DatabaseSetup("/attendanceData.xml")
@@ -200,7 +194,7 @@ public class AttendanceIntegrationTest
         absenceInDaysList.get(6).setDate(LocalDate.of(2020,1,11));
         attendanceService.addNewDayData(employeeId, absenceInDaysList.get(6));
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/attendance/absence/"+employeeId+"/"+month))
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/attendance/absence/employee/"+employeeId+"/"+month))
                 .andExpect(status().isOk())
                 .andReturn();
 
