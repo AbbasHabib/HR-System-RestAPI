@@ -9,7 +9,6 @@ import com.spring.Employee.DTO.EmployeeSalaryDTO;
 import com.spring.Employee.Employee;
 import com.spring.Employee.SalariesYearsConstants;
 import com.spring.ExceptionsCustom.CustomException;
-import com.spring.modelMapperGen.ModelMapperGen;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -133,7 +132,7 @@ public class AttendanceService
         MonthDetails monthData = monthDetailsRepository
                 .findByDateAndAttendanceTable_Id(
                         LocalDate.of(date.getYear(), date.getMonth(), 1)
-                        , getAttendanceTableIdByUserId(employeeId))
+                        , getAttendanceTableIdByEmployeeId(employeeId))
                 .orElse(null);
 
         if (monthData == null)
@@ -141,7 +140,7 @@ public class AttendanceService
         return monthData;
     }
 
-    public Long getAttendanceTableIdByUserId(Long employeeId) throws CustomException
+    public Long getAttendanceTableIdByEmployeeId(Long employeeId) throws CustomException
     {
         return getAttendanceTableByEmployeeId(employeeId).getId();
     }
@@ -152,7 +151,7 @@ public class AttendanceService
         List<MonthDetails> monthDetails = monthDetailsRepository.findAllByDateBetweenAndAttendanceTable_Id(
                 LocalDate.of(date.getYear(), 1, 1)
                 , LocalDate.of(date.getYear(), date.getMonth(), 1)
-                , getAttendanceTableIdByUserId(employeeId));
+                , getAttendanceTableIdByEmployeeId(employeeId));
 
         for (MonthDetails md : monthDetails)
             absenceDays += md.getAbsences();
@@ -220,4 +219,9 @@ public class AttendanceService
     }
 
 
+    public List<MonthDetails> getAllSalaryHistory(long employeeID) throws CustomException
+    {
+        Long attendanceTableId = this.getAttendanceTableIdByEmployeeId(employeeID);
+        return monthDetailsRepository.findAllByAttendanceTable_IdAndGrossSalaryOfMonthNotNull(attendanceTableId);
+    }
 }

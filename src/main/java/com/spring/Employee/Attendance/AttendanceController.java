@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/attendance")
@@ -48,5 +49,9 @@ public class AttendanceController
         return attendanceService.employeeSalaryAtMonth(Long.parseLong(id), LocalDate.parse(date));
     }
 
-
+    @GetMapping(value = "/salary/all-history/employee/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<MonthDetails> getSalaryHistory(@PathVariable String id) throws CustomException
+    {
+        return attendanceService.getAllSalaryHistory(Long.parseLong(id));
+    }
 }

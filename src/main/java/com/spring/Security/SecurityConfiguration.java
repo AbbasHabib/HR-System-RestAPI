@@ -12,7 +12,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 @Configuration
 @EnableWebSecurity
-
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 
@@ -28,7 +27,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 authorizeRequests().antMatchers("/employee/**").hasRole(Role.HR.name())
                 .antMatchers("/team/**").hasRole(Role.HR.name())
                 .antMatchers("/department/**").hasRole(Role.HR.name())
-                .antMatchers("/attendance/**").hasRole(Role.HR.name());
+                .antMatchers("/attendance/**").hasRole(Role.HR.name())
+                .and().httpBasic();
     }
     DaoAuthenticationProvider authenticationProvider()
     {

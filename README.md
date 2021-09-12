@@ -2,13 +2,7 @@
 
 this project is an HR system where the of it is managing employees teams, departments, salaries...and so on. System is able to apply CRUD operation on the DB
 
-#### The project will be fully driven by [JavaSpringBoot](https://www.tutorialspoint.com/spring_boot/spring_boot_introduction.htm) ​Framework, and MySql Database.
-
-## Looking forward to 
-- return flyway
-- Take care of Recursive Query and return the Commented methods
-
-
+#### The project will be fully driven by [JavaSpringBoot](https://www.tutorialspoint.com/spring_boot/spring_boot_introduction.htm) ​Framework, and MySql Database
 ## Current TodoList
 - [ ] Test for addNewDayData doesn't work
 - [ ] Add test cases for all attendance table apis
@@ -29,7 +23,6 @@ this project is an HR system where the of it is managing employees teams, depart
 - [x] mapping data from DTO to main entities delete all boilerplate code.
 - [x] **Remove the beautiful magic numbers ✨**
 
-##
 
 
 ## ~~ToDo List~~ 
