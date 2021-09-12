@@ -3,8 +3,10 @@
 this project is an HR system where the of it is managing employees teams, departments, salaries...and so on. System is able to apply CRUD operation on the DB
 
 #### The project will be fully driven by [JavaSpringBoot](https://www.tutorialspoint.com/spring_boot/spring_boot_introduction.htm) ​Framework, and MySql Database
+
 ## Current TodoList
 - [ ] Test for addNewDayData doesn't work
+- [x] Basic Authorization with every request
 - [ ] Add test cases for all attendance table apis
 - [x] Rest Api to get absences through the year till specific month
 - [x] Rest Api to add day with details: [absence, bonusInSalary] + dayDate

@@ -6,6 +6,7 @@ import com.spring.Employee.DTO.EmployeeInfoOnlyDTO;
 import com.spring.Employee.DTO.EmployeeModifyCommand;
 import com.spring.Employee.DTO.EmployeeSalaryDTO;
 import com.spring.ExceptionsCustom.CustomException;
+import com.spring.Security.UserCredentials;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,12 +25,30 @@ public class EmployeeService
         if (employeeRepository.findEmployeeByNationalId(employee.getNationalId()).isPresent())
             throw new CustomException(">>national id already exists?");
 
+        AddAttendanceTable(employee);
+        AddCredentials(employee);
         if (employee.getId() == null)
             return saveEmployee(employee);
         if (this.getEmployee(employee.getId()) == null)
             return saveEmployee(employee);
 
         throw new CustomException(">>User ID already exists");
+    }
+
+    private void AddCredentials(Employee employee)
+    {
+        if(employee.getUserCredentials() == null)
+        {
+            employee.setUserCredentials(new UserCredentials(employee.getName(), employee.getNationalId(), employee.getRole(), employee));
+        }
+    }
+
+    private void AddAttendanceTable(Employee employee)
+    {
+        if(employee.getAttendanceTable() == null)
+        {
+            employee.setAttendanceTable(new AttendanceTable(employee));
+        }
     }
 
     public Employee saveEmployee(Employee e) throws CustomException
@@ -111,9 +130,12 @@ public class EmployeeService
     }
 
 
-    public List<Employee> getEmployeesByName(String name)
+    public Employee getEmployeeByName(String name) throws CustomException
     {
-        return employeeRepository.findByName(name);
+        Employee employeeFound =  employeeRepository.findByName(name).orElse(null);
+        if(employeeFound == null)
+            throw new CustomException("this username doesn't exist");
+        return employeeFound;
     }
 
 

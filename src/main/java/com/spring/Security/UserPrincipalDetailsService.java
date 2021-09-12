@@ -34,7 +34,7 @@ public class UserPrincipalDetailsService implements UserDetailsService
     @Override
     public UserDetails loadUserByUsername(String username)
     {
-        UserCredentials userCredentials = this.userCredentialsRepository.getById(username);
+        UserCredentials userCredentials = this.userCredentialsRepository.findById(username).orElse(null);
         return new UserPrincipal(userCredentials);
     }
 

@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -24,11 +25,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.
-                authorizeRequests().antMatchers("/employee/**").hasRole(Role.HR.name())
-                .antMatchers("/team/**").hasRole(Role.HR.name())
-                .antMatchers("/department/**").hasRole(Role.HR.name())
-                .antMatchers("/attendance/**").hasRole(Role.HR.name())
-                .and().httpBasic();
+                authorizeRequests().antMatchers("/employee/**").hasRole(EmployeeRole.HR.name())
+                .antMatchers("/team/**").hasRole(EmployeeRole.HR.name())
+                .antMatchers("/department/**").hasRole(EmployeeRole.HR.name())
+                .antMatchers("/attendance/**").hasRole(EmployeeRole.HR.name())
+                .and().httpBasic().and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
     DaoAuthenticationProvider authenticationProvider()
     {

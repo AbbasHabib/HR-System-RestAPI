@@ -12,13 +12,21 @@ public class UserCredentials
     private String userName;
     private String password;
     @Enumerated(EnumType.STRING)
-    private Role userRole; // HR , EMPLOYEE
+    private EmployeeRole userRole; // HR , EMPLOYEE
 
     @OneToOne
     @JsonIgnore
     @JoinColumn(name="employee_id")
     private Employee employee;
 
+
+    public UserCredentials(String userName, String password, EmployeeRole userRole, Employee employee)
+    {
+        this.userName = userName;
+        this.password = password;
+        this.userRole = userRole;
+        this.employee = employee;
+    }
 
     public String getUserName()
     {
@@ -40,12 +48,12 @@ public class UserCredentials
         this.password = password;
     }
 
-    public Role getUserRole()
+    public EmployeeRole getUserRole()
     {
         return userRole;
     }
 
-    public void setUserRole(Role userRole)
+    public void setUserRole(EmployeeRole userRole)
     {
         this.userRole = userRole;
     }

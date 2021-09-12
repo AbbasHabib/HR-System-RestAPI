@@ -54,4 +54,5 @@ public class AttendanceController
     {
         return attendanceService.getAllSalaryHistory(Long.parseLong(id));
     }
+
 }

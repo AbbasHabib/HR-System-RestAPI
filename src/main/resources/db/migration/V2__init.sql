@@ -7,8 +7,9 @@ INSERT INTO employee(id,
                      gender,
                      gross_salary,
                      net_salary,
+                     role,
                      years_of_experience)
-VALUES (1, 'SENIOR', 'hamada', 'elgin', 'hamada elgin','2045484841556416','MALE', 10000, 8000,35);
+VALUES (1, 'SENIOR', 'hamada', 'elgin', 'hamada elgin','2045484841556416','MALE', 10000, 8000,'HR',35);
 
 
 INSERT INTO user_credentials(user_name, password, employee_id,user_role)

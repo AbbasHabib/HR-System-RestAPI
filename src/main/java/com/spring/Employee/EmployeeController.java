@@ -1,16 +1,13 @@
 package com.spring.Employee;
 
-import com.spring.Employee.Attendance.AttendanceTable;
 import com.spring.Employee.DTO.EmployeeInfoOnlyDTO;
 import com.spring.Employee.DTO.EmployeeModifyCommand;
-import com.spring.Employee.DTO.EmployeeSalaryDTO;
 import com.spring.ExceptionsCustom.CustomException;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -54,9 +51,9 @@ public class EmployeeController
     }
 
     @GetMapping("name/{name}")
-    public List<Employee> getEmployeesByName(@PathVariable String name)
+    public Employee getEmployeeByName(@PathVariable String name) throws CustomException
     {
-        return employeeService.getEmployeesByName(name);
+        return employeeService.getEmployeeByName(name);
     }
     @GetMapping("manager/recursive/{id}")
     public List<EmployeeInfoOnlyDTO> getEmployeesUnderManagerRecursively(@PathVariable String id) throws CustomException

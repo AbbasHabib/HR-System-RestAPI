@@ -3,6 +3,7 @@ package com.spring.Employee;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.spring.Department.Department;
 import com.spring.Employee.Attendance.AttendanceTable;
+import com.spring.Security.EmployeeRole;
 import com.spring.Security.UserCredentials;
 import com.spring.Team.Team;
 import com.spring.interfaces.IdOwner;
@@ -70,9 +71,11 @@ public class Employee implements IdOwner
     @JoinColumn(name = "attendance_table_id")
     private AttendanceTable attendanceTable;
 
-
     @OneToOne(mappedBy = "employee",cascade = CascadeType.ALL)
     private UserCredentials userCredentials;
+
+    @Enumerated(EnumType.STRING)
+    private EmployeeRole role;
 
     public Employee() { }
 
@@ -90,6 +93,26 @@ public class Employee implements IdOwner
         return true;
     }
 
+
+    public EmployeeRole getRole()
+    {
+        return role;
+    }
+
+    public void setRole(EmployeeRole role)
+    {
+        this.role = role;
+    }
+
+    public UserCredentials getUserCredentials()
+    {
+        return userCredentials;
+    }
+
+    public void setUserCredentials(UserCredentials userCredentials)
+    {
+        this.userCredentials = userCredentials;
+    }
 
     public AttendanceTable getAttendanceTable()
     {
@@ -256,6 +279,13 @@ public class Employee implements IdOwner
 
     public String getName()
     {
+        if(this.name==null || this.name.equals(""))
+        {
+            if(firstname != null)
+                this.name = this.firstname;
+            if(lastName != null)
+                this.name += " " + this.lastName;
+        }
         return this.name;
     }
 }

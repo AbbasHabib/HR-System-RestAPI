@@ -31,6 +31,10 @@ public class AttendanceTable
     private Integer initialWorkingYears = 0;
     private Integer salaryRaise = 0;
 
+    public AttendanceTable(Employee employee)
+    {
+        this.employee = employee;
+    }
 
     public void addMonthAndDayDetails(DayDetails dayDetails, MonthDetails monthDetails) // make sure that this month doesn't exist already
     {

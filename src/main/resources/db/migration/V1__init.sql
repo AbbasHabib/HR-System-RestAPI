@@ -41,6 +41,7 @@ create table employee
     name                varchar(255) not null,
     national_id         varchar(255) not null,
     net_salary          float        null,
+    role                varchar(255) null,
     years_of_experience int          null,
     attendance_table_id bigint       null,
     department_id       bigint       null,
@@ -57,6 +58,8 @@ create table employee
     constraint FKs9qsdavx3eugepb5ija1ykw4u
         foreign key (attendance_table_id) references attendance_table (id)
 );
+
+
 
 
 
