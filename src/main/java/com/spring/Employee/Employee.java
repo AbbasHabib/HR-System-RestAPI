@@ -71,8 +71,7 @@ public class Employee implements IdOwner
     private AttendanceTable attendanceTable;
 
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_name_credential")
+    @OneToOne(mappedBy = "employee",cascade = CascadeType.ALL)
     private UserCredentials userCredentials;
 
     public Employee() { }

@@ -11,9 +11,10 @@ public class UserCredentials
     @Id
     private String userName;
     private String password;
+    @Enumerated(EnumType.STRING)
     private Role userRole; // HR , EMPLOYEE
 
-    @OneToOne(mappedBy = "userCredentials", cascade = CascadeType.ALL)
+    @OneToOne
     @JsonIgnore
     @JoinColumn(name="employee_id")
     private Employee employee;

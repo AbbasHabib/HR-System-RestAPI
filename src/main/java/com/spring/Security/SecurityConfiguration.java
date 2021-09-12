@@ -23,9 +23,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        
+        http.csrf().disable();
+        http.
+                authorizeRequests().antMatchers("/employee/**").hasRole(Role.HR.name())
+                .antMatchers("/team/**").hasRole(Role.HR.name())
+                .antMatchers("/department/**").hasRole(Role.HR.name())
+                .antMatchers("/attendance/**").hasRole(Role.HR.name());
     }
-
     DaoAuthenticationProvider authenticationProvider()
     {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
