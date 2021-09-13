@@ -3,15 +3,13 @@ package com.spring.Department;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.spring.Employee.Employee;
 import com.spring.interfaces.IdOwner;
-import org.aspectj.lang.annotation.Before;
 
 import javax.persistence.*;
 import java.util.Set;
 
 @Entity
 @Table(name = "department")
-public class Department implements IdOwner
-{
+public class Department implements IdOwner {
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,40 +20,34 @@ public class Department implements IdOwner
     @OneToMany(mappedBy = "department")
     private Set<Employee> employees;
 
-    public Department() { }
+    public Department() {
+    }
 
-    public Department(String name)
-    {
+    public Department(String name) {
         this.name = name;
     }
 
-    public Long getId()
-    {
+    public Long getId() {
         return id;
     }
 
-    public String getName()
-    {
-        return name;
-    }
-
-    public Set<Employee> getEmployees()
-    {
-        return employees;
-    }
-
-    public void setId(Long id)
-    {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public void setName(String name)
-    {
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
         this.name = name;
     }
 
-    public void setEmployees(Set<Employee> employees)
-    {
+    public Set<Employee> getEmployees() {
+        return employees;
+    }
+
+    public void setEmployees(Set<Employee> employees) {
         this.employees = employees;
     }
 }

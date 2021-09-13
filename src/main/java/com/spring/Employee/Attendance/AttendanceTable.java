@@ -7,13 +7,13 @@ import com.spring.Employee.Employee;
 import com.spring.Employee.SalariesYearsConstants;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "attendance_table")
 
-public class AttendanceTable
-{
+public class AttendanceTable {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,9 +31,11 @@ public class AttendanceTable
     private Integer initialWorkingYears = 0;
     private Integer salaryRaise = 0;
 
-    public AttendanceTable(Employee employee)
-    {
+    public AttendanceTable(Employee employee) {
         this.employee = employee;
+    }
+
+    public AttendanceTable() {
     }
 
     public void addMonthAndDayDetails(DayDetails dayDetails, MonthDetails monthDetails) // make sure that this month doesn't exist already
@@ -45,83 +47,62 @@ public class AttendanceTable
         this.monthDetailsList.add(monthDetails);
     }
 
-    public void addDay(DayDetails dayDetails)
-    {
+    public void addDay(DayDetails dayDetails) {
         if (this.dailyDetailsList == null)
             this.dailyDetailsList = new ArrayList<>();
         this.dailyDetailsList.add(dayDetails);
     }
 
-
-    public Integer getPermittedAbsenceDays(int workingYears)
-    {
+    public Integer getPermittedAbsenceDays(int workingYears) {
         return (workingYears < SalariesYearsConstants.SENIOR_YEARS) ? SalariesYearsConstants.AVAILABLE_ABSENCES_JUNIOR : SalariesYearsConstants.AVAILABLE_ABSENCES_SENIOR;
     }
 
-    public Employee getEmployee()
-    {
+    public Employee getEmployee() {
         return employee;
     }
 
-    public void setEmployee(Employee employee)
-    {
+    public void setEmployee(Employee employee) {
         this.employee = employee;
     }
 
-    public List<DayDetails> getDailyDetailsList()
-    {
+    public List<DayDetails> getDailyDetailsList() {
         return dailyDetailsList;
     }
 
-    public void setDailyDetailsList(List<DayDetails> dailyAttendanceList)
-    {
+    public void setDailyDetailsList(List<DayDetails> dailyAttendanceList) {
         this.dailyDetailsList = dailyAttendanceList;
     }
 
-    public AttendanceTable()
-    {
-    }
-
-
-
-    public List<MonthDetails> getMonthDetailsList()
-    {
+    public List<MonthDetails> getMonthDetailsList() {
         return monthDetailsList;
     }
 
-    public void setMonthDetailsList(List<MonthDetails> monthDetailsList)
-    {
+    public void setMonthDetailsList(List<MonthDetails> monthDetailsList) {
         this.monthDetailsList = monthDetailsList;
     }
 
-    public void setInitialWorkingYears(Integer initialWorkingYears)
-    {
-        this.initialWorkingYears = initialWorkingYears;
-    }
-
-    public Integer getSalaryRaise()
-    {
+    public Integer getSalaryRaise() {
         return salaryRaise;
     }
 
-    public void setSalaryRaise(Integer salaryRaise)
-    {
+    public void setSalaryRaise(Integer salaryRaise) {
         this.salaryRaise = salaryRaise;
     }
 
-    public Long getId()
-    {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Long id)
-    {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Integer getInitialWorkingYears()
-    {
+    public Integer getInitialWorkingYears() {
         return initialWorkingYears;
+    }
+
+    public void setInitialWorkingYears(Integer initialWorkingYears) {
+        this.initialWorkingYears = initialWorkingYears;
     }
 
 

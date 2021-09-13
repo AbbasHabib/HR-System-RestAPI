@@ -9,26 +9,25 @@ import com.spring.Employee.Attendance.AttendanceTable;
 import com.spring.Employee.Attendance.dayDetails.DayDetails;
 import com.spring.Employee.Attendance.dayDetails.DayDetailsRepository;
 import com.spring.Employee.Attendance.monthDetails.MonthDetails;
+import com.spring.ExceptionsCustom.CustomException;
 import com.spring.testShortcuts.TestShortcutMethods;
 import org.json.JSONObject;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
-
-import com.spring.ExceptionsCustom.CustomException;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -45,14 +44,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @TestExecutionListeners({
         DependencyInjectionTestExecutionListener.class, DbUnitTestExecutionListener.class
-,       TransactionalTestExecutionListener.class})
-public class AttendanceIntegrationTest
-{
+        , TransactionalTestExecutionListener.class})
+public class AttendanceIntegrationTest {
     @Autowired
     AttendanceService attendanceService;
     @Autowired
     DayDetailsRepository dayDetailsRepository;
-
 
 
     @Autowired
@@ -60,8 +57,7 @@ public class AttendanceIntegrationTest
 
     @Test
     @DatabaseSetup("/attendanceData.xml")
-    public void get_attendance_table() throws CustomException, Exception
-    {
+    public void get_attendance_table() throws CustomException, Exception {
         long employeeId = 102;
         AttendanceTable expectedAttendanceTable = new AttendanceTable();
         expectedAttendanceTable.setId(102L);
@@ -83,13 +79,12 @@ public class AttendanceIntegrationTest
     @Test
     @DatabaseSetup("/attendanceData.xml")
     @Transactional
-    public void add_new_day_data() throws Exception, CustomException
-    {
+    public void add_new_day_data() throws Exception, CustomException {
         long employeeId = 101L;
         AttendanceTable attendanceTable = attendanceService.getAttendanceTableByEmployeeId(employeeId);
 
         DayDetails dayToAdd = new DayDetails();
-        dayToAdd.setDate(LocalDate.of(2020,10,1));
+        dayToAdd.setDate(LocalDate.of(2020, 10, 1));
         dayToAdd.setAbsent(true);
         dayToAdd.setId(0L);
         dayToAdd.setAttendanceTable(attendanceTable);
@@ -114,8 +109,7 @@ public class AttendanceIntegrationTest
 
     @Test
     @DatabaseSetup("/attendanceData.xml")
-    public void get_month_data()throws JsonProcessingException, Exception, CustomException
-    {
+    public void get_month_data() throws Exception, CustomException {
         long employeeId = 101L;
         String month = "2020-01-01";
         AttendanceTable attendanceTable = attendanceService.getAttendanceTableByEmployeeId(employeeId);
@@ -123,7 +117,7 @@ public class AttendanceIntegrationTest
 
         MonthDetails monthDetails = new MonthDetails();
         monthDetails.setId(101);
-        monthDetails.setDate(LocalDate.of(2020,1,1));
+        monthDetails.setDate(LocalDate.of(2020, 1, 1));
         monthDetails.setAbsences(0);
         monthDetails.setBonuses(0.0f);
         monthDetails.setAttendanceTable(attendanceTable);
@@ -135,7 +129,7 @@ public class AttendanceIntegrationTest
 
         Map<String, String> mapExpected = objectMapper.readValue(monthDetailsJson, Map.class);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/attendance/month/employee/"+employeeId+"/"+month))
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/attendance/month/employee/" + employeeId + "/" + month))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -158,8 +152,7 @@ public class AttendanceIntegrationTest
     @Test
     @DatabaseSetup("/attendanceData.xml")
     @Transactional
-    public void date_insertion_and_getting_absence_days_in_year_till_month() throws Exception, CustomException
-    {
+    public void date_insertion_and_getting_absence_days_in_year_till_month() throws Exception, CustomException {
         String expectedAbsence = "6";
         long employeeId = 101L;
         String month = "2020-01-01";
@@ -167,7 +160,7 @@ public class AttendanceIntegrationTest
         AttendanceTable attendanceTable = attendanceService.getAttendanceTableByEmployeeId(employeeId);
 
         List<DayDetails> absenceInDaysList = new ArrayList<>();
-        DayDetails bonusInDay = new DayDetails(null, attendanceTable, LocalDate.of(2020,1,1), false, 0.0f);
+        DayDetails bonusInDay = new DayDetails(null, attendanceTable, LocalDate.of(2020, 1, 1), false, 0.0f);
 
         absenceInDaysList.add(new DayDetails(null, attendanceTable, null, true, 0.0f));
         absenceInDaysList.add(new DayDetails(null, attendanceTable, null, true, 0.0f));
@@ -179,22 +172,22 @@ public class AttendanceIntegrationTest
 
         absenceInDaysList.add(new DayDetails(null, attendanceTable, null, true, 0.0f)); // absent
 
-        absenceInDaysList.get(0).setDate(LocalDate.of(2020,1,5));
+        absenceInDaysList.get(0).setDate(LocalDate.of(2020, 1, 5));
         attendanceService.addNewDayData(employeeId, absenceInDaysList.get(0));
-        absenceInDaysList.get(1).setDate(LocalDate.of(2020,1,6));
+        absenceInDaysList.get(1).setDate(LocalDate.of(2020, 1, 6));
         attendanceService.addNewDayData(employeeId, absenceInDaysList.get(1));
-        absenceInDaysList.get(2).setDate(LocalDate.of(2020,1,7));
+        absenceInDaysList.get(2).setDate(LocalDate.of(2020, 1, 7));
         attendanceService.addNewDayData(employeeId, absenceInDaysList.get(2));
-        absenceInDaysList.get(3).setDate(LocalDate.of(2020,1,8));
+        absenceInDaysList.get(3).setDate(LocalDate.of(2020, 1, 8));
         attendanceService.addNewDayData(employeeId, absenceInDaysList.get(3));
-        absenceInDaysList.get(4).setDate(LocalDate.of(2020,1,9));
+        absenceInDaysList.get(4).setDate(LocalDate.of(2020, 1, 9));
         attendanceService.addNewDayData(employeeId, absenceInDaysList.get(4));
-        absenceInDaysList.get(5).setDate(LocalDate.of(2020,1,10));
+        absenceInDaysList.get(5).setDate(LocalDate.of(2020, 1, 10));
         attendanceService.addNewDayData(employeeId, absenceInDaysList.get(5));
-        absenceInDaysList.get(6).setDate(LocalDate.of(2020,1,11));
+        absenceInDaysList.get(6).setDate(LocalDate.of(2020, 1, 11));
         attendanceService.addNewDayData(employeeId, absenceInDaysList.get(6));
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/attendance/absence/employee/"+employeeId+"/"+month))
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/attendance/absence/employee/" + employeeId + "/" + month))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -206,8 +199,7 @@ public class AttendanceIntegrationTest
     @Test
     @DatabaseSetup("/attendanceData.xml")
     @Transactional
-    public void get_employee_salary()
-    {
+    public void get_employee_salary() {
 
     }
 

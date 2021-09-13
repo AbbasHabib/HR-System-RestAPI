@@ -6,8 +6,7 @@ import com.spring.Employee.Employee;
 import javax.persistence.*;
 
 @Entity
-public class UserCredentials
-{
+public class UserCredentials {
     @Id
     private String userName;
     private String password;
@@ -16,59 +15,49 @@ public class UserCredentials
 
     @OneToOne
     @JsonIgnore
-    @JoinColumn(name="employee_id")
+    @JoinColumn(name = "employee_id")
     private Employee employee;
 
 
-    public UserCredentials(String userName, String password, EmployeeRole userRole, Employee employee)
-    {
+    public UserCredentials(String userName, String password, EmployeeRole userRole, Employee employee) {
         this.userName = userName;
         this.password = password;
         this.userRole = userRole;
         this.employee = employee;
     }
 
-    public String getUserName()
-    {
+    public UserCredentials() {
+    }
+
+    public String getUserName() {
         return userName;
     }
 
-    public void setUserName(String userName)
-    {
+    public void setUserName(String userName) {
         this.userName = userName;
     }
 
-    public String getPassword()
-    {
+    public String getPassword() {
         return password;
     }
 
-    public void setPassword(String password)
-    {
+    public void setPassword(String password) {
         this.password = password;
     }
 
-    public EmployeeRole getUserRole()
-    {
+    public EmployeeRole getUserRole() {
         return userRole;
     }
 
-    public void setUserRole(EmployeeRole userRole)
-    {
+    public void setUserRole(EmployeeRole userRole) {
         this.userRole = userRole;
     }
 
-    public Employee getEmployee()
-    {
+    public Employee getEmployee() {
         return employee;
     }
 
-    public void setEmployee(Employee employee)
-    {
+    public void setEmployee(Employee employee) {
         this.employee = employee;
-    }
-
-    public UserCredentials()
-    {
     }
 }

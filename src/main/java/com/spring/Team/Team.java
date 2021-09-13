@@ -9,8 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-public class Team implements IdOwner
-{
+public class Team implements IdOwner {
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,50 +17,43 @@ public class Team implements IdOwner
     @Column(name = "team_name")
     private String teamName;
     @JsonIgnore
-    @OneToMany(mappedBy = "team" ,fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "team", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Employee> employees;
 
-    public Team() { }
+    public Team() {
+    }
 
-    public Team(Long id, String teamName)
-    {
+    public Team(Long id, String teamName) {
         this.id = id;
         this.teamName = teamName;
     }
 
-    public Long getId()
-    {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Long id)
-    {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getTeamName()
-    {
+    public String getTeamName() {
         return teamName;
     }
 
-    public void setTeamName(String teamName)
-    {
+    public void setTeamName(String teamName) {
         this.teamName = teamName;
     }
 
-    public Set<Employee> getEmployees()
-    {
+    public Set<Employee> getEmployees() {
         return employees;
     }
 
-    public void setEmployees(Set<Employee> employees)
-    {
+    public void setEmployees(Set<Employee> employees) {
         this.employees = employees;
     }
 
-    public void addEmployee(Employee e)
-    {
-        if(this.employees == null)
+    public void addEmployee(Employee e) {
+        if (this.employees == null)
             this.employees = new HashSet<>();
         this.employees.add(e);
     }

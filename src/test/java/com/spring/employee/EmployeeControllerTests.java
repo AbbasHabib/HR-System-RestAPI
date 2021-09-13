@@ -6,8 +6,8 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.spring.Department.Department;
 import com.spring.Department.DepartmentService;
 import com.spring.Employee.DTO.EmployeeInfoOnlyDTO;
-import com.spring.Employee.Employee;
 import com.spring.Employee.DTO.EmployeeModifyCommand;
+import com.spring.Employee.Employee;
 import com.spring.Employee.EmployeeRepository;
 import com.spring.Employee.EmployeeService;
 import com.spring.Employee.Gender;
@@ -29,9 +29,8 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.springframework.transaction.annotation.Transactional;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
@@ -47,8 +46,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @TestExecutionListeners({
         DependencyInjectionTestExecutionListener.class, DbUnitTestExecutionListener.class})
-public class EmployeeControllerTests
-{
+public class EmployeeControllerTests {
 
     @Autowired
     EmployeeService employeeService;
@@ -67,8 +65,7 @@ public class EmployeeControllerTests
 
     @Test
     @DatabaseSetup("/data.xml")
-    public void add_employee() throws Exception, CustomException
-    {
+    public void add_employee() throws Exception, CustomException {
         Employee employeeToAdd = new Employee();
         employeeToAdd.setName("saad mhmh");
         employeeToAdd.setGender(Gender.MALE);
@@ -114,8 +111,7 @@ public class EmployeeControllerTests
 
     @Test
     @DatabaseSetup("/data.xml")
-    public void get_employee_with_id() throws Exception, CustomException
-    {
+    public void get_employee_with_id() throws Exception, CustomException {
         Long searchForId = 101L;
 
         Employee employee = employeeService.getEmployee(searchForId);
@@ -136,8 +132,7 @@ public class EmployeeControllerTests
     @Test
     @DatabaseSetup("/data.xml")
 //    @ExpectedDatabase(value ="/expectedDatabases/employee_deletion.xml", table = "employee")
-    public void delete_employee_with_id() throws Exception
-    {
+    public void delete_employee_with_id() throws Exception {
         long deleteUserWithID = 102L;
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/employee/" + deleteUserWithID)).andExpect(content().string("true")).andExpect(status().isOk()).andReturn();
@@ -150,8 +145,7 @@ public class EmployeeControllerTests
     @Test
     @Transactional
     @DatabaseSetup("/data.xml")
-    public void modify_employee() throws Exception, CustomException
-    {
+    public void modify_employee() throws Exception, CustomException {
         // Initial values of the employee
         Long employeeId = 103L; // employee id to modify
         Employee employeeToModify = employeeService.getEmployee(employeeId);
@@ -195,8 +189,7 @@ public class EmployeeControllerTests
 
     @Test
     @DatabaseSetup("/data.xml")
-    public void get_employees_under_manager() throws Exception, CustomException
-    {
+    public void get_employees_under_manager() throws Exception, CustomException {
         Long managerId = 101L;
         List<Employee> employeesUnderManager = employeeRepository.findEmployeesByManager_Id(managerId);
         List<EmployeeInfoOnlyDTO> EmployeeInfoOnlyDTO = setEmployeeToDTOList(employeesUnderManager);
@@ -212,8 +205,7 @@ public class EmployeeControllerTests
 
     @Test
     @DatabaseSetup("/data.xml")
-    public void getEmployeesRecursively() throws Exception, CustomException
-    {
+    public void getEmployeesRecursively() throws Exception, CustomException {
         long managerId = 101L;
         List<EmployeeInfoOnlyDTO> employeesUnderManager = employeeService.getManagerEmployeesRecursively(managerId);
         if (employeesUnderManager == null) throw new NotFoundException("cant find manager");

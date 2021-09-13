@@ -6,11 +6,9 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
-public class CustomExceptionHandler
-{
+public class CustomExceptionHandler {
     @ExceptionHandler(CustomException.class)
-    public ResponseEntity<Object> exceptionResponse(CustomException ce)
-    {
+    public ResponseEntity<Object> exceptionResponse(CustomException ce) {
         return new ResponseEntity<>(ce.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }

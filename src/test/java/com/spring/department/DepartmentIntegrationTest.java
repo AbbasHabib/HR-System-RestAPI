@@ -22,7 +22,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
-import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -34,8 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class
 })
-public class DepartmentIntegrationTest
-{
+public class DepartmentIntegrationTest {
     @Autowired
     DepartmentService departmentService;
 
@@ -48,8 +46,7 @@ public class DepartmentIntegrationTest
 
     @Test
     @DatabaseSetup("/data.xml")
-    public void add_department() throws Exception, CustomException
-    {
+    public void add_department() throws Exception, CustomException {
         Department departmentExpected = new Department();
         departmentExpected.setName("el a7bab");
         ObjectMapper objectMapper = new ObjectMapper();
@@ -71,8 +68,7 @@ public class DepartmentIntegrationTest
 
     @Test
     @DatabaseSetup("/data.xml")
-    public void get_department() throws Exception, CustomException
-    {
+    public void get_department() throws Exception, CustomException {
         Long searchForId = 101L;
 
         Department employee = departmentService.getDepartment(searchForId);

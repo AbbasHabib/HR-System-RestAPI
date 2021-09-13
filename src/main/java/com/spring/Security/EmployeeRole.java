@@ -1,7 +1,6 @@
 package com.spring.Security;
 
-public enum EmployeeRole
-{
+public enum EmployeeRole {
     HR,
     EMPLOYEE
 }

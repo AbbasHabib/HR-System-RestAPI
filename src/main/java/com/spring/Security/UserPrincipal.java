@@ -8,18 +8,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class UserPrincipal implements UserDetails
-{
-    private UserCredentials userCredentials;
+public class UserPrincipal implements UserDetails {
+    private final UserCredentials userCredentials;
 
-    public UserPrincipal(UserCredentials userCredentials)
-    {
+    public UserPrincipal(UserCredentials userCredentials) {
         this.userCredentials = userCredentials;
     }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities()
-    {
+    public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
         GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + this.userCredentials.getUserRole());
         authorities.add(authority);
@@ -27,39 +24,33 @@ public class UserPrincipal implements UserDetails
     }
 
     @Override
-    public String getPassword()
-    {
+    public String getPassword() {
         return this.userCredentials.getPassword();
     }
 
     @Override
-    public String getUsername()
-    {
+    public String getUsername() {
 
         return this.userCredentials.getUserName();
     }
 
     @Override
-    public boolean isAccountNonExpired()
-    {
+    public boolean isAccountNonExpired() {
         return true;
     }
 
     @Override
-    public boolean isAccountNonLocked()
-    {
+    public boolean isAccountNonLocked() {
         return true;
     }
 
     @Override
-    public boolean isCredentialsNonExpired()
-    {
+    public boolean isCredentialsNonExpired() {
         return true;
     }
 
     @Override
-    public boolean isEnabled()
-    {
+    public boolean isEnabled() {
         return true;
     }
 }

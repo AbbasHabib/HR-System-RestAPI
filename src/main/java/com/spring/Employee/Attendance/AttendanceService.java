@@ -16,8 +16,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Service
-public class AttendanceService
-{
+public class AttendanceService {
     @Autowired
     private AttendanceRepository attendanceRepository;
 
@@ -27,14 +26,12 @@ public class AttendanceService
     @Autowired
     private MonthDetailsRepository monthDetailsRepository;
 
-    public AttendanceTable findAttendanceTable(Long attendanceTableId)
-    {
+    public AttendanceTable findAttendanceTable(Long attendanceTableId) {
         // if no table with this id is found return null
         return attendanceRepository.findById(attendanceTableId).orElse(null);
     }
 
-    public AttendanceTable getAttendanceTable(Long attendanceTableId) throws CustomException
-    {
+    public AttendanceTable getAttendanceTable(Long attendanceTableId) throws CustomException {
         AttendanceTable attendanceTableToFind = this.findAttendanceTable(attendanceTableId);
         if (attendanceTableToFind == null)
             throw new CustomException("this table id doesnt exist");
@@ -42,8 +39,7 @@ public class AttendanceService
             return attendanceTableToFind;
     }
 
-    public AttendanceTable getAttendanceTableByEmployeeId(long employeeId) throws CustomException
-    {
+    public AttendanceTable getAttendanceTableByEmployeeId(long employeeId) throws CustomException {
         AttendanceTable attendanceTable = attendanceRepository.findByEmployeeId(employeeId).orElse(null);
         if (attendanceTable != null)
             return attendanceTable;
@@ -54,14 +50,11 @@ public class AttendanceService
     }
 
     // this api return a list of all days info where employee had stored day info
-    public List<DayDetails> findAllStoredDaysInfo(Long attendanceTableId)
-    {
+    public List<DayDetails> findAllStoredDaysInfo(Long attendanceTableId) {
         return dailyAttendanceRepository.findAllByAttendanceTable_Id(attendanceTableId);
     }
 
-
-    public DayDetails addNewDayData(Long employeeId, DayDetails dayDetails) throws CustomException
-    {
+    public DayDetails addNewDayData(Long employeeId, DayDetails dayDetails) throws CustomException {
         // get attendance table to add month and day data into
         AttendanceTable attendanceTable = getAttendanceTableByEmployeeId(employeeId);
 
@@ -85,12 +78,10 @@ public class AttendanceService
         return savedDate;
     }
 
-    public void injectDayAndMonthToAttendanceTable(DayDetails dayDetails, MonthDetails monthOfThatDay, AttendanceTable attendanceTable)
-    {
+    public void injectDayAndMonthToAttendanceTable(DayDetails dayDetails, MonthDetails monthOfThatDay, AttendanceTable attendanceTable) {
         // inject to attendance table dayDetails
         dayDetails.setAttendanceTable(attendanceTable);
-        if (monthOfThatDay.getAttendanceTable() == null)
-        {
+        if (monthOfThatDay.getAttendanceTable() == null) {
             // if month didn't exist before add new Day and Month to attendance Table lists
             monthOfThatDay.setAttendanceTable(attendanceTable);
             attendanceTable.addMonthAndDayDetails(dayDetails, monthOfThatDay);
@@ -100,8 +91,7 @@ public class AttendanceService
 
     }
 
-    private void insertDayDataToMonth(DayDetails dayDetails, MonthDetails monthOfThatDay)
-    {
+    private void insertDayDataToMonth(DayDetails dayDetails, MonthDetails monthOfThatDay) {
         if (dayDetails.isAbsent())
             monthOfThatDay.addAbsence(1);
         if (dayDetails.getBonusInSalary() > 0)
@@ -110,25 +100,21 @@ public class AttendanceService
     }
 
 
-    public MonthDetails getMonthOfDayAndCreateIfNotFound(LocalDate date, AttendanceTable attendanceTable)
-    {
+    public MonthDetails getMonthOfDayAndCreateIfNotFound(LocalDate date, AttendanceTable attendanceTable) {
         // 1 doesn't mean any thing all I care about is month and year
         LocalDate monthDate = LocalDate.of(date.getYear(), date.getMonth(), 1);
         MonthDetails monthToFind = monthDetailsRepository.findByDateAndAttendanceTable_Id(monthDate, attendanceTable.getId()).orElse(null);
-        if (monthToFind == null)
-        {
+        if (monthToFind == null) {
             monthToFind = new MonthDetails(monthDate);
         }
-        if(monthToFind.getGrossSalaryOfMonth() == null)
-        {
+        if (monthToFind.getGrossSalaryOfMonth() == null) {
             // to change the salary later , there will be a change for days and month apis
             monthToFind.setGrossSalaryOfMonth(attendanceTable.getEmployee().getGrossSalary());
         }
         return monthToFind;
     }
 
-    public MonthDetails getMonthData(long employeeId, LocalDate date) throws CustomException
-    {
+    public MonthDetails getMonthData(long employeeId, LocalDate date) throws CustomException {
         MonthDetails monthData = monthDetailsRepository
                 .findByDateAndAttendanceTable_Id(
                         LocalDate.of(date.getYear(), date.getMonth(), 1)
@@ -140,13 +126,11 @@ public class AttendanceService
         return monthData;
     }
 
-    public Long getAttendanceTableIdByEmployeeId(Long employeeId) throws CustomException
-    {
+    public Long getAttendanceTableIdByEmployeeId(Long employeeId) throws CustomException {
         return getAttendanceTableByEmployeeId(employeeId).getId();
     }
 
-    public Integer calcAbsenceDaysInYearTillMonth(long employeeId, LocalDate date) throws CustomException
-    {
+    public Integer calcAbsenceDaysInYearTillMonth(long employeeId, LocalDate date) throws CustomException {
         int absenceDays = 0;
         List<MonthDetails> monthDetails = monthDetailsRepository.findAllByDateBetweenAndAttendanceTable_Id(
                 LocalDate.of(date.getYear(), 1, 1)
@@ -160,8 +144,7 @@ public class AttendanceService
     }
 
 
-    public EmployeeSalaryDTO employeeSalaryAtMonth(long employeeId, LocalDate date) throws CustomException
-    {
+    public EmployeeSalaryDTO employeeSalaryAtMonth(long employeeId, LocalDate date) throws CustomException {
         AttendanceTable attendanceTable = getAttendanceTableByEmployeeId(employeeId);
         Long attendanceTableId = attendanceTable.getId();
         Employee employee = attendanceTable.getEmployee();
@@ -195,11 +178,9 @@ public class AttendanceService
     }
 
 
-    private float calculateNetSalary(float grossSalary, int absenceDaysTillMonth, float monthBonuses, float salaryRaise, int permittedAbsenceDays, int monthDays)
-    {
+    private float calculateNetSalary(float grossSalary, int absenceDaysTillMonth, float monthBonuses, float salaryRaise, int permittedAbsenceDays, int monthDays) {
         float netSalary = grossSalary + monthBonuses + salaryRaise;
-        if (absenceDaysTillMonth > permittedAbsenceDays)
-        {
+        if (absenceDaysTillMonth > permittedAbsenceDays) {
             float salaryPerDay = netSalary / monthDays;
             netSalary -= salaryPerDay * absenceDaysTillMonth;
         }
@@ -208,8 +189,7 @@ public class AttendanceService
 
     }
 
-    private Integer calculateWorkingYearsTillMonth(LocalDate toDate, int employeeInitialYearsAtWork, Long attendanceTableId)
-    {
+    private Integer calculateWorkingYearsTillMonth(LocalDate toDate, int employeeInitialYearsAtWork, Long attendanceTableId) {
         MonthDetails FirstYearAtWorkMonthDetails = monthDetailsRepository.findFirstByAttendanceTable_IdOrderByDateAsc(attendanceTableId);
 
         int startWorkingYear = FirstYearAtWorkMonthDetails.getDate().getYear();
@@ -219,8 +199,7 @@ public class AttendanceService
     }
 
 
-    public List<MonthDetails> getAllSalaryHistory(long employeeID) throws CustomException
-    {
+    public List<MonthDetails> getAllSalaryHistory(long employeeID) throws CustomException {
         Long attendanceTableId = this.getAttendanceTableIdByEmployeeId(employeeID);
         return monthDetailsRepository.findAllByAttendanceTable_IdAndGrossSalaryOfMonthNotNull(attendanceTableId);
     }

@@ -1,7 +1,6 @@
 package com.spring.Employee;
 
-public enum Gender
-{
+public enum Gender {
     FEMALE,
     MALE
 }

@@ -12,18 +12,15 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "day_details")
-public class DayDetails implements IdOwner
-{
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class DayDetails implements IdOwner {
     @ManyToOne
     @JoinColumn(name = "attendance_table_id")
     @JsonIgnore
     AttendanceTable attendanceTable;
-
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate date;
@@ -31,8 +28,7 @@ public class DayDetails implements IdOwner
     private Float bonusInSalary;
 
 
-    public DayDetails(Long id, AttendanceTable attendanceTable, LocalDate date, boolean absent, Float bonusInSalary)
-    {
+    public DayDetails(Long id, AttendanceTable attendanceTable, LocalDate date, boolean absent, Float bonusInSalary) {
         this.id = id;
         this.attendanceTable = attendanceTable;
         this.date = date;
@@ -40,62 +36,52 @@ public class DayDetails implements IdOwner
         this.bonusInSalary = bonusInSalary;
     }
 
-    public DayDetails(LocalDate date)
-    {
+    public DayDetails(LocalDate date) {
         this.date = date;
     }
 
-    public boolean isAbsent()
-    {
+    public DayDetails() {
+    }
+
+    public boolean isAbsent() {
         return absent;
     }
 
-    public void setAbsent(boolean absent)
-    {
+    public void setAbsent(boolean absent) {
         this.absent = absent;
     }
 
-    public Float getBonusInSalary()
-    {
+    public Float getBonusInSalary() {
         return bonusInSalary;
     }
 
-    public void setBonusInSalary(Float bonusInSalary)
-    {
+    public void setBonusInSalary(Float bonusInSalary) {
         this.bonusInSalary = bonusInSalary;
     }
 
-    public DayDetails() { }
-
-    public Long getId()
-    {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Long id)
-    {
+    public void setId(Long id) {
         this.id = id;
     }
 
 
-    public LocalDate getDate()
-    {
+    public LocalDate getDate() {
         return date;
     }
 
 
-    public void setDate(LocalDate date)
-    {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
-    public AttendanceTable getAttendanceTable()
-    {
+    public AttendanceTable getAttendanceTable() {
         return attendanceTable;
     }
 
-    public void setAttendanceTable(AttendanceTable attendanceTable)
-    {
+    public void setAttendanceTable(AttendanceTable attendanceTable) {
         this.attendanceTable = attendanceTable;
     }
 

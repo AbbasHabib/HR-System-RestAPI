@@ -1,9 +1,8 @@
 package com.spring.Employee;
 
-public interface Queries
-{
-    public static final String EMPLOYEES_UNDER_MANAGER_RECURSIVE = "with recursive cte(id, birth_date,  degree,  first_name, gender,  graduation_date,  gross_salary,  last_name,  name,  national_id,  net_salary,  years_of_experience, attendance_table_id, department_id, manager_id, team_id) as (\n" +
-            "  select   id, birth_date,  degree,  first_name, gender,  graduation_date,  gross_salary,  last_name,  name,  national_id,  net_salary,  years_of_experience, attendance_table_id, department_id, manager_id, team_id "+
+public interface Queries {
+    String EMPLOYEES_UNDER_MANAGER_RECURSIVE = "with recursive cte(id, birth_date,  degree,  first_name, gender,  graduation_date,  gross_salary,  last_name,  name,  national_id,  net_salary,  years_of_experience, attendance_table_id, department_id, manager_id, team_id) as (\n" +
+            "  select   id, birth_date,  degree,  first_name, gender,  graduation_date,  gross_salary,  last_name,  name,  national_id,  net_salary,  years_of_experience, attendance_table_id, department_id, manager_id, team_id " +
             "\n" +
             "  from       employee\n" +
             "  where      manager_id = :managerId \n" +

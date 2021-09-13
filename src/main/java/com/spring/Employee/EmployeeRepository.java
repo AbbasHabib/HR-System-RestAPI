@@ -10,10 +10,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface EmployeeRepository extends JpaRepository<Employee, Long>
-{
+public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     Optional<Employee> findByName(String name);
+
     List<Employee> findByManager(Employee manager);
+
     Optional<Employee> findEmployeeByNationalId(String nationalId);
 
     List<Employee> findEmployeesByManager_Id(Long manager_id);
@@ -22,6 +23,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long>
     @Modifying()
     void deleteById(Long id);
 
-     @Query(value = Queries.EMPLOYEES_UNDER_MANAGER_RECURSIVE, nativeQuery = true)
+    @Query(value = Queries.EMPLOYEES_UNDER_MANAGER_RECURSIVE, nativeQuery = true)
     List<Employee> findManagerEmployeesRecursivelyQueried(@Param("managerId") Long managerId);
 }

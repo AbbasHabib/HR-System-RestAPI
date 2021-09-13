@@ -31,22 +31,22 @@ create table employee
 (
     id                  bigint auto_increment
         primary key,
-    birth_date          date         null,
+    birth_date          date null,
     degree              varchar(255) null,
     first_name          varchar(255) null,
     gender              varchar(255) null,
-    graduation_date     date         null,
-    gross_salary        float        null,
+    graduation_date     date null,
+    gross_salary        float null,
     last_name           varchar(255) null,
     name                varchar(255) not null,
     national_id         varchar(255) not null,
-    net_salary          float        null,
+    net_salary          float null,
     role                varchar(255) null,
-    years_of_experience int          null,
-    attendance_table_id bigint       null,
-    department_id       bigint       null,
-    manager_id          bigint       null,
-    team_id             bigint       null,
+    years_of_experience int null,
+    attendance_table_id bigint null,
+    department_id       bigint null,
+    manager_id          bigint null,
+    team_id             bigint null,
     constraint UK_59epvmnko5yc9qssb60euk5q2
         unique (national_id),
     constraint FK8d7lrsr6kwirr93rx0tafnoqa
@@ -60,9 +60,6 @@ create table employee
 );
 
 
-
-
-
 -- auto-generated definition
 create table user_credentials
 (
@@ -70,11 +67,10 @@ create table user_credentials
         primary key,
     password    varchar(255) null,
     user_role   varchar(255) null,
-    employee_id bigint       null,
+    employee_id bigint null,
     constraint FKsxkqqiix7w2r3t9ct3hf5lm0c
         foreign key (employee_id) references employee (id)
 );
-
 
 
 -- auto-generated definition
@@ -82,9 +78,9 @@ create table day_details
 (
     id                  bigint auto_increment
         primary key,
-    absent              bit    not null,
-    bonus_in_salary     float  null,
-    date                date   null,
+    absent              bit not null,
+    bonus_in_salary     float null,
+    date                date null,
     attendance_table_id bigint null,
     constraint FKqctjowluhmubu5ndv399ak0td
         foreign key (attendance_table_id) references attendance_table (id)
@@ -96,11 +92,11 @@ create table month_details
 (
     id                    int auto_increment
         primary key,
-    absences              int    null,
-    bonuses               float  null,
-    date                  date   null,
+    absences              int null,
+    bonuses               float null,
+    date                  date null,
     attendance_table_id   bigint null,
-    gross_salary_of_month float  null,
+    gross_salary_of_month float null,
     constraint FKrygebn9ic30vgr1s8t7a82p0s
         foreign key (attendance_table_id) references attendance_table (id)
 );

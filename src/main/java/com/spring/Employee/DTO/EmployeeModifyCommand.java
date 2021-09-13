@@ -5,17 +5,11 @@ import com.spring.Employee.Employee;
 import com.spring.Employee.Gender;
 import com.spring.Team.Team;
 import com.spring.modelMapperGen.ModelMapperGen;
-import org.hibernate.mapping.Map;
-import org.modelmapper.Conditions;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
-import java.util.Optional;
 import java.util.Set;
 
-public class EmployeeModifyCommand
-{
+public class EmployeeModifyCommand {
     private String name;
     private Team team;
     private Date birthDate;
@@ -27,108 +21,87 @@ public class EmployeeModifyCommand
     private Float grossSalary;
     private Float netSalary;
 
-    public void dtoToEmployee(EmployeeModifyCommand dto, Employee employee)
-    {
+    public void dtoToEmployee(EmployeeModifyCommand dto, Employee employee) {
         ModelMapperGen.getModelMapperSingleton().map(dto, employee);
     }
 
-    public Team getTeam()
-    {
+    public Team getTeam() {
         return team;
     }
 
-    public void setTeam(Team team)
-    {
+    public void setTeam(Team team) {
         this.team = team;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public Date getBirthDate()
-    {
+    public Date getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(Date birthDate)
-    {
+    public void setBirthDate(Date birthDate) {
         this.birthDate = birthDate;
     }
 
-    public Date getGraduationDate()
-    {
+    public Date getGraduationDate() {
         return graduationDate;
     }
 
-    public void setGraduationDate(Date graduationDate)
-    {
+    public void setGraduationDate(Date graduationDate) {
         this.graduationDate = graduationDate;
     }
 
-    public Gender getGender()
-    {
+    public Gender getGender() {
         return gender;
     }
 
-    public void setGender(Gender gender)
-    {
+    public void setGender(Gender gender) {
         this.gender = gender;
     }
 
-    public Department getDepartment()
-    {
+    public Department getDepartment() {
         return department;
     }
 
-    public void setDepartment(Department department)
-    {
+    public void setDepartment(Department department) {
         this.department = department;
     }
 
-    public Employee getManager()
-    {
+    public Employee getManager() {
         return manager;
     }
 
-    public void setManager(Employee manager)
-    {
+    public void setManager(Employee manager) {
         this.manager = manager;
     }
 
-    public Set<Employee> getEmployees()
-    {
+    public Set<Employee> getEmployees() {
         return employees;
     }
 
-    public void setEmployees(Set<Employee> employees)
-    {
+    public void setEmployees(Set<Employee> employees) {
         this.employees = employees;
     }
 
-    public Float getGrossSalary()
-    {
+    public Float getGrossSalary() {
         return grossSalary;
     }
 
-    public void setGrossSalary(Float grossSalary)
-    {
+    public void setGrossSalary(Float grossSalary) {
         this.grossSalary = grossSalary;
     }
 
-    public Float getNetSalary()
-    {
+    public Float getNetSalary() {
         return netSalary;
     }
 
-    public void setNetSalary(Float netSalary)
-    {
+    public void setNetSalary(Float netSalary) {
         this.netSalary = netSalary;
     }
 }

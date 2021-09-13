@@ -4,7 +4,6 @@ package com.spring.team;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.spring.Employee.DTO.EmployeeInfoOnlyDTO;
-
 import com.spring.Team.Team;
 import com.spring.Team.TeamRepository;
 import com.spring.Team.TeamService;
@@ -26,7 +25,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.transaction.Transactional;
-
 import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -41,8 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class
 })
-public class TeamIntegrationTest
-{
+public class TeamIntegrationTest {
     @Autowired
     TeamService teamService;
     @Autowired
@@ -53,8 +50,7 @@ public class TeamIntegrationTest
 
     @Test
     @DatabaseSetup("/data.xml")
-    public void add_team() throws Exception
-    {
+    public void add_team() throws Exception {
         Team teamToAdd = new Team();
         teamToAdd.setTeamName("el 7bayb");
         ObjectMapper objectMapper = new ObjectMapper();
@@ -76,11 +72,10 @@ public class TeamIntegrationTest
     @Test
     @DatabaseSetup("/data.xml")
     @Transactional
-    public void getTeamEmployees() throws Exception
-    {
+    public void getTeamEmployees() throws Exception {
         Long teamId = 101L;
         List<EmployeeInfoOnlyDTO> teamEmployees = teamService.getTeamEmployees(teamId);
-        if(teamEmployees == null)
+        if (teamEmployees == null)
             throw new NotFoundException("no employees in this team");
         ObjectMapper objectMapper = new ObjectMapper();
         String teamEmployeesJson = objectMapper.writeValueAsString(teamEmployees);

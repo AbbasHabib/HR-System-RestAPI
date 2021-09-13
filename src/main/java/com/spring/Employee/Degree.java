@@ -1,7 +1,6 @@
 package com.spring.Employee;
 
-public enum Degree
-{
+public enum Degree {
     FRESH,
     INTERMEDIATE,
     SENIOR,

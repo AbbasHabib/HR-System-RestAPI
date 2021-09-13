@@ -8,10 +8,8 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.junit.Assert.assertEquals;
 
-public class TestShortcutMethods<T extends IdOwner>
-{
-    public void setObjectIdFromResponseResult(MvcResult result, T objectWithId) throws Exception
-    {
+public class TestShortcutMethods<T extends IdOwner> {
+    public void setObjectIdFromResponseResult(MvcResult result, T objectWithId) throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
 
         String resultContent = result.getResponse().getContentAsString();
@@ -24,14 +22,11 @@ public class TestShortcutMethods<T extends IdOwner>
         assertEquals(resultContent, objectMapper.writeValueAsString(objectWithId));
 
 
-
-
     }
 
-    public void compareIdOwnerWithDataBase(T expectedResult, JpaRepository<T, Long> repository) throws Exception
-    {
+    public void compareIdOwnerWithDataBase(T expectedResult, JpaRepository<T, Long> repository) throws Exception {
         IdOwner objectFromDb = repository.findById(expectedResult.getId()).orElse(null);
-        if(objectFromDb == null)
+        if (objectFromDb == null)
             throw new Exception("didnt find it in DB");
         ObjectMapper objectMapper = new ObjectMapper();
         assertEquals(objectMapper.writeValueAsString(objectFromDb), objectMapper.writeValueAsString(expectedResult));

@@ -1,32 +1,26 @@
 package com.spring.Employee;
 
-import com.spring.Employee.Attendance.AttendanceService;
 import com.spring.Employee.Attendance.AttendanceTable;
 import com.spring.Employee.DTO.EmployeeInfoOnlyDTO;
 import com.spring.Employee.DTO.EmployeeModifyCommand;
-import com.spring.Employee.DTO.EmployeeSalaryDTO;
 import com.spring.ExceptionsCustom.CustomException;
 import com.spring.Security.UserCredentials;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
-public class EmployeeService
-{
+public class EmployeeService {
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    public Employee addEmployee(Employee employee) throws Exception, CustomException
-    {
+    public Employee addEmployee(Employee employee) throws Exception, CustomException {
         if (employeeRepository.findEmployeeByNationalId(employee.getNationalId()).isPresent())
             throw new CustomException(">>national id already exists?");
 
-        AddAttendanceTable(employee);
-        AddCredentials(employee);
+
         if (employee.getId() == null)
             return saveEmployee(employee);
         if (this.getEmployee(employee.getId()) == null)
@@ -35,41 +29,33 @@ public class EmployeeService
         throw new CustomException(">>User ID already exists");
     }
 
-    private void AddCredentials(Employee employee)
-    {
-        if(employee.getUserCredentials() == null)
-        {
+    private void AddCredentials(Employee employee) {
+        if (employee.getUserCredentials() == null) {
             employee.setUserCredentials(new UserCredentials(employee.getName(), employee.getNationalId(), employee.getRole(), employee));
         }
     }
 
-    private void AddAttendanceTable(Employee employee)
-    {
-        if(employee.getAttendanceTable() == null)
-        {
+    private void AddAttendanceTable(Employee employee) {
+        if (employee.getAttendanceTable() == null) {
             employee.setAttendanceTable(new AttendanceTable(employee));
         }
     }
 
-    public Employee saveEmployee(Employee e) throws CustomException
-    {
-        try
-        {
-            e.setNetSalary(calculateNetSalary(e.getGrossSalary(), e.getAttendanceTable())); // This function calculates employee new salary and return it
-            return employeeRepository.save(e);
-        } catch (Exception ex)
-        {
+    public Employee saveEmployee(Employee employeeToAdd) throws CustomException {
+        try {
+            employeeToAdd.setNetSalary(calculateNetSalary(employeeToAdd.getGrossSalary(), employeeToAdd.getAttendanceTable())); // This function calculates employee new salary and return it
+            AddAttendanceTable(employeeToAdd);
+            AddCredentials(employeeToAdd);
+            return employeeRepository.save(employeeToAdd);
+        } catch (Exception ex) {
             throw new CustomException("saving to database failed ??");
         }
     }
 
-    public boolean deleteEmployee(Long employeeId) throws CustomException
-    {
+    public boolean deleteEmployee(Long employeeId) throws CustomException {
         Employee employee = this.getEmployee(employeeId);
-        if (employee != null)
-        {
-            if (employee.shiftSubordinates())
-            {
+        if (employee != null) {
+            if (employee.shiftSubordinates()) {
                 employeeRepository.deleteById(employeeId); // if shifting shiftSubordinates process is complete
                 return true;
             }
@@ -78,8 +64,7 @@ public class EmployeeService
     }
 
 
-    public List<Employee> getEmployees()
-    {
+    public List<Employee> getEmployees() {
         return employeeRepository.findAll();
     }
 
@@ -90,10 +75,8 @@ public class EmployeeService
         return null;
     }
 
-    public Float calculateNetSalary(Float employeeSalary, AttendanceTable employeeAttendanceTable)
-    {
-        if (employeeSalary != null && employeeSalary != 0)
-        {
+    public Float calculateNetSalary(Float employeeSalary, AttendanceTable employeeAttendanceTable) {
+        if (employeeSalary != null && employeeSalary != 0) {
             float empSalary = employeeSalary * (1 - SalariesYearsConstants.TAXES) - SalariesYearsConstants.DEDUCTED_INSURANCE;
 //            float salaryPerDay = empSalary / employeeAttendanceTable.getCurrentMonthDays();
             // if absence in this month is zero then there wont be any deduction
@@ -106,8 +89,7 @@ public class EmployeeService
     }
 
 
-    public boolean checkManagerChange(Employee employeeToModify, Employee goToManager)
-    {
+    public boolean checkManagerChange(Employee employeeToModify, Employee goToManager) {
         if (employeeToModify.getId().equals(goToManager.getId()))
             return false;
         List<Employee> employeesUnderCurrentEmployee = employeeRepository.findManagerEmployeesRecursivelyQueried(employeeToModify.getId());
@@ -115,8 +97,7 @@ public class EmployeeService
         return employeesUnderCurrentEmployee.stream().noneMatch(o -> o.getId().equals(goToManager.getId())); // if it contains this manager then he cant be my manager
     }
 
-    public Employee modifyEmployee(long employeeId, EmployeeModifyCommand employeeDto) throws NotFoundException, CustomException
-    {
+    public Employee modifyEmployee(long employeeId, EmployeeModifyCommand employeeDto) throws NotFoundException, CustomException {
         Employee employeeToModify = this.getEmployee(employeeId);
         if (employeeDto.getManager() != null) // if employee manager is modified check problem could occur
         {
@@ -130,17 +111,15 @@ public class EmployeeService
     }
 
 
-    public Employee getEmployeeByName(String name) throws CustomException
-    {
-        Employee employeeFound =  employeeRepository.findByName(name).orElse(null);
-        if(employeeFound == null)
+    public Employee getEmployeeByName(String name) throws CustomException {
+        Employee employeeFound = employeeRepository.findByName(name).orElse(null);
+        if (employeeFound == null)
             throw new CustomException("this username doesn't exist");
         return employeeFound;
     }
 
 
-    public List<EmployeeInfoOnlyDTO> getManagerEmployees(long managerId) throws CustomException
-    {
+    public List<EmployeeInfoOnlyDTO> getManagerEmployees(long managerId) throws CustomException {
         Employee manager = this.getEmployee(managerId);
         if (manager == null)
             return null;
@@ -149,8 +128,7 @@ public class EmployeeService
     }
 
 
-    public List<EmployeeInfoOnlyDTO> getManagerEmployeesRecursively(long managerId) throws CustomException
-    {
+    public List<EmployeeInfoOnlyDTO> getManagerEmployeesRecursively(long managerId) throws CustomException {
         if (this.getEmployee(managerId) == null)
             return null;
         List<Employee> employeesUnderManagersRecursive = employeeRepository.findManagerEmployeesRecursivelyQueried(managerId);

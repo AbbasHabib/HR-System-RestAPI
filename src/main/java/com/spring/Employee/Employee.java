@@ -11,13 +11,11 @@ import com.spring.interfaces.IdOwner;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
 
 @Entity
 @Table(name = "employee")
-public class Employee implements IdOwner
-{
+public class Employee implements IdOwner {
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -71,221 +69,181 @@ public class Employee implements IdOwner
     @JoinColumn(name = "attendance_table_id")
     private AttendanceTable attendanceTable;
 
-    @OneToOne(mappedBy = "employee",cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL)
     private UserCredentials userCredentials;
 
     @Enumerated(EnumType.STRING)
     private EmployeeRole role;
 
-    public Employee() { }
+    public Employee() {
+    }
 
-    public boolean shiftSubordinates()
-    {
+    public boolean shiftSubordinates() {
         Employee managerToShiftTo = this.getManager();
-        if (managerToShiftTo == null)
-        {
+        if (managerToShiftTo == null) {
             return false;
         }
-        for (Employee emp : this.getSubEmployees())
-        {
+        for (Employee emp : this.getSubEmployees()) {
             emp.setManager(managerToShiftTo);
         }
         return true;
     }
 
 
-    public EmployeeRole getRole()
-    {
+    public EmployeeRole getRole() {
         return role;
     }
 
-    public void setRole(EmployeeRole role)
-    {
+    public void setRole(EmployeeRole role) {
         this.role = role;
     }
 
-    public UserCredentials getUserCredentials()
-    {
+    public UserCredentials getUserCredentials() {
         return userCredentials;
     }
 
-    public void setUserCredentials(UserCredentials userCredentials)
-    {
+    public void setUserCredentials(UserCredentials userCredentials) {
         this.userCredentials = userCredentials;
     }
 
-    public AttendanceTable getAttendanceTable()
-    {
+    public AttendanceTable getAttendanceTable() {
         return attendanceTable;
     }
 
-    public void setAttendanceTable(AttendanceTable attendanceTable)
-    {
+    public void setAttendanceTable(AttendanceTable attendanceTable) {
         this.attendanceTable = attendanceTable;
     }
 
-    public Long getId()
-    {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Long id)
-    {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getNationalId()
-    {
+    public String getNationalId() {
         return nationalId;
     }
 
-    public void setNationalId(String nationalId)
-    {
+    public void setNationalId(String nationalId) {
         this.nationalId = nationalId;
     }
 
-    public String getFirstname()
-    {
+    public String getFirstname() {
         return firstname;
     }
 
-    public String getLastName()
-    {
+    public String getLastName() {
         return lastName;
     }
 
-    public Degree getDegree()
-    {
+    public Degree getDegree() {
         return degree;
     }
 
-    public void setDegree(Degree degree)
-    {
+    public void setDegree(Degree degree) {
         this.degree = degree;
     }
 
-    public Integer getYearsOfExperience()
-    {
+    public Integer getYearsOfExperience() {
         return yearsOfExperience;
     }
 
-    public void setYearsOfExperience(Integer yearsOfExperience)
-    {
+    public void setYearsOfExperience(Integer yearsOfExperience) {
         this.yearsOfExperience = yearsOfExperience;
     }
 
-    public LocalDate getBirthDate()
-    {
+    public LocalDate getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(LocalDate birthDate)
-    {
+    public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
 
-    public LocalDate getGraduationDate()
-    {
+    public LocalDate getGraduationDate() {
         return graduationDate;
     }
 
-    public void setGraduationDate(LocalDate graduationDate)
-    {
+    public void setGraduationDate(LocalDate graduationDate) {
         this.graduationDate = graduationDate;
     }
 
-    public Gender getGender()
-    {
+    public Gender getGender() {
         return gender;
     }
 
-    public void setGender(Gender gender)
-    {
+    public void setGender(Gender gender) {
         this.gender = gender;
     }
 
-    public Department getDepartment()
-    {
+    public Department getDepartment() {
         return department;
     }
 
-    public void setDepartment(Department department)
-    {
+    public void setDepartment(Department department) {
         this.department = department;
     }
 
-    public Team getTeam()
-    {
+    public Team getTeam() {
         return team;
     }
 
-    public void setTeam(Team team)
-    {
+    public void setTeam(Team team) {
         this.team = team;
     }
 
-    public Employee getManager()
-    {
+    public Employee getManager() {
         return manager;
     }
 
-    public void setManager(Employee manager)
-    {
+    public void setManager(Employee manager) {
         this.manager = manager;
     }
 
-    public List<Employee> getSubEmployees()
-    {
+    public List<Employee> getSubEmployees() {
         return subEmployees;
     }
 
-    public void setSubEmployees(List<Employee> subEmployees)
-    {
+    public void setSubEmployees(List<Employee> subEmployees) {
         this.subEmployees = subEmployees;
     }
 
-    public Float getGrossSalary()
-    {
+    public Float getGrossSalary() {
         return grossSalary;
     }
 
-    public void setGrossSalary(Float grossSalary)
-    {
+    public void setGrossSalary(Float grossSalary) {
         this.grossSalary = grossSalary;
     }
 
-    public Float getNetSalary()
-    {
+    public Float getNetSalary() {
         return netSalary;
     }
 
-    public void setNetSalary(Float netSalary)
-    {
+    public void setNetSalary(Float netSalary) {
         this.netSalary = netSalary;
     }
 
-    public void setName(String name)
-    {
+    public String getName() {
+        if (this.name == null || this.name.equals("")) {
+            if (firstname != null)
+                this.name = this.firstname;
+            if (lastName != null)
+                this.name += " " + this.lastName;
+        }
+        return this.name;
+    }
+
+    public void setName(String name) {
         this.name = name;
         String[] fullName = name.split("\\s+");
-        if (fullName.length >= 1)
-        {
+        if (fullName.length >= 1) {
             this.firstname = fullName[0];
             if (fullName.length >= 2)
                 this.lastName = fullName[1];
         }
 
-    }
-
-    public String getName()
-    {
-        if(this.name==null || this.name.equals(""))
-        {
-            if(firstname != null)
-                this.name = this.firstname;
-            if(lastName != null)
-                this.name += " " + this.lastName;
-        }
-        return this.name;
     }
 }
