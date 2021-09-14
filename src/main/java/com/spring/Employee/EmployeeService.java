@@ -1,20 +1,31 @@
 package com.spring.Employee;
 
+import com.spring.Employee.Attendance.AttendanceRepository;
+import com.spring.Employee.Attendance.AttendanceService;
 import com.spring.Employee.Attendance.AttendanceTable;
 import com.spring.Employee.DTO.EmployeeInfoOnlyDTO;
 import com.spring.Employee.DTO.EmployeeModifyCommand;
 import com.spring.ExceptionsCustom.CustomException;
 import com.spring.Security.UserCredentials;
+import com.spring.Security.UserCredentialsRepository;
+import com.spring.YearAndTimeGenerator;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Calendar;
 import java.util.List;
 
 @Service
 public class EmployeeService {
     @Autowired
     private EmployeeRepository employeeRepository;
+    @Autowired
+    private AttendanceService attendanceService;
+    @Autowired
+    private AttendanceRepository attendanceRepository;
+    @Autowired
+    private UserCredentialsRepository userCredentialsRepository;
 
     public Employee addEmployee(Employee employee) throws Exception, CustomException {
         if (employeeRepository.findEmployeeByNationalId(employee.getNationalId()).isPresent())
@@ -29,27 +40,36 @@ public class EmployeeService {
         throw new CustomException(">>User ID already exists");
     }
 
-    private void AddCredentials(Employee employee) {
+    public void AddCredentials(Employee employee) {
         if (employee.getUserCredentials() == null) {
-            employee.setUserCredentials(new UserCredentials(employee.getName(), employee.getNationalId(), employee.getRole(), employee));
+            UserCredentials userCredentialForNewEmployee = new UserCredentials(employee.getUserName(), employee.getNationalId(), employee.getRole(), employee);
+            UserCredentials userCredentialResponseFromServer = userCredentialsRepository.save(userCredentialForNewEmployee);
+            employee.setUserCredentials(userCredentialResponseFromServer);
         }
     }
 
-    private void AddAttendanceTable(Employee employee) {
+
+    public void AddAttendanceTable(Employee employee) throws CustomException {
         if (employee.getAttendanceTable() == null) {
-            employee.setAttendanceTable(new AttendanceTable(employee));
+            AttendanceTable attendanceTableForNewEmployee = new AttendanceTable(employee);
+
+            attendanceTableForNewEmployee.setInitialWorkingYears(YearAndTimeGenerator.getTestingYear() - employee.getGraduationDate().getYear());
+            AttendanceTable attendanceTableForNewEmployeeFromServer = attendanceRepository.save(attendanceTableForNewEmployee);
+            employee.setAttendanceTable(attendanceTableForNewEmployeeFromServer);
         }
     }
 
     public Employee saveEmployee(Employee employeeToAdd) throws CustomException {
         try {
             employeeToAdd.setNetSalary(calculateNetSalary(employeeToAdd.getGrossSalary(), employeeToAdd.getAttendanceTable())); // This function calculates employee new salary and return it
-            AddAttendanceTable(employeeToAdd);
-            AddCredentials(employeeToAdd);
-            return employeeRepository.save(employeeToAdd);
+            Employee savedEmployee = employeeRepository.save(employeeToAdd);
+            AddCredentials(savedEmployee);
+            AddAttendanceTable(savedEmployee);
+            return employeeRepository.save(savedEmployee);
         } catch (Exception ex) {
-            throw new CustomException("saving to database failed ??");
+            ex.printStackTrace();
         }
+        return null;
     }
 
     public boolean deleteEmployee(Long employeeId) throws CustomException {
@@ -108,14 +128,6 @@ public class EmployeeService {
         }
         employeeDto.dtoToEmployee(employeeDto, employeeToModify); //  copying new data to employee
         return saveEmployee(employeeToModify);
-    }
-
-
-    public Employee getEmployeeByName(String name) throws CustomException {
-        Employee employeeFound = employeeRepository.findByName(name).orElse(null);
-        if (employeeFound == null)
-            throw new CustomException("this username doesn't exist");
-        return employeeFound;
     }
 
 

@@ -20,12 +20,10 @@ public class DayDetails implements IdOwner {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    @JsonDeserialize(using = LocalDateDeserializer.class)
+    private Long id = 0L;
     private LocalDate date;
     private boolean absent = false;
-    private Float bonusInSalary;
+    private Float bonusInSalary = 0.0F;
 
 
     public DayDetails(Long id, AttendanceTable attendanceTable, LocalDate date, boolean absent, Float bonusInSalary) {
@@ -34,6 +32,13 @@ public class DayDetails implements IdOwner {
         this.date = date;
         this.absent = absent;
         this.bonusInSalary = bonusInSalary;
+    }
+
+
+    public DayDetails(AttendanceTable attendanceTable, LocalDate date)
+    {
+        this.attendanceTable = attendanceTable;
+        this.date = date;
     }
 
     public DayDetails(LocalDate date) {

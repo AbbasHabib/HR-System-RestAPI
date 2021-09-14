@@ -1,6 +1,7 @@
 package com.spring.Employee;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.spring.Department.Department;
 import com.spring.Employee.Attendance.AttendanceTable;
 import com.spring.Security.EmployeeRole;
@@ -22,11 +23,9 @@ public class Employee implements IdOwner {
     private Long id = 0L;
     @Column(name = "national_id", nullable = false, unique = true)
     private String nationalId;
-    @Column(name = "name", nullable = false)
-    private String name;
-    @Column(name = "first_name")
+    @Column(name = "first_name", nullable = false)
     private String firstname;
-    @Column(name = "last_name")
+    @Column(name = "last_name", nullable = false)
     private String lastName;
     @Column(name = "degree")
     @Enumerated(EnumType.STRING)
@@ -89,6 +88,20 @@ public class Employee implements IdOwner {
         return true;
     }
 
+
+    public String getUserName() {
+        return this.firstname + "_" + this.lastName + "_" + this.id;
+    }
+
+
+    public void setFullName(String name) {
+        String[] fullName = name.split("\\s+");
+        if (fullName.length >= 1) {
+            this.firstname = fullName[0];
+            if (fullName.length >= 2)
+                this.lastName = fullName[1];
+        }
+    }
 
     public EmployeeRole getRole() {
         return role;
@@ -224,26 +237,5 @@ public class Employee implements IdOwner {
 
     public void setNetSalary(Float netSalary) {
         this.netSalary = netSalary;
-    }
-
-    public String getName() {
-        if (this.name == null || this.name.equals("")) {
-            if (firstname != null)
-                this.name = this.firstname;
-            if (lastName != null)
-                this.name += " " + this.lastName;
-        }
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-        String[] fullName = name.split("\\s+");
-        if (fullName.length >= 1) {
-            this.firstname = fullName[0];
-            if (fullName.length >= 2)
-                this.lastName = fullName[1];
-        }
-
     }
 }

@@ -49,12 +49,18 @@ public class AttendanceService {
                 *-->check add attendance table api""");
     }
 
+
+    public AttendanceTable saveToDb(AttendanceTable attendanceTable)
+    {
+        return attendanceRepository.save(attendanceTable);
+    }
+
     // this api return a list of all days info where employee had stored day info
     public List<DayDetails> findAllStoredDaysInfo(Long attendanceTableId) {
         return dailyAttendanceRepository.findAllByAttendanceTable_Id(attendanceTableId);
     }
 
-    public DayDetails addNewDayData(Long employeeId, DayDetails dayDetails) throws CustomException {
+    public DayDetails addNewDayDataAndSave(Long employeeId, DayDetails dayDetails) throws CustomException {
         // get attendance table to add month and day data into
         AttendanceTable attendanceTable = getAttendanceTableByEmployeeId(employeeId);
 
@@ -77,6 +83,9 @@ public class AttendanceService {
         attendanceRepository.save(attendanceTable);
         return savedDate;
     }
+
+
+
 
     public void injectDayAndMonthToAttendanceTable(DayDetails dayDetails, MonthDetails monthOfThatDay, AttendanceTable attendanceTable) {
         // inject to attendance table dayDetails
@@ -147,10 +156,9 @@ public class AttendanceService {
     public EmployeeSalaryDTO employeeSalaryAtMonth(long employeeId, LocalDate date) throws CustomException {
         AttendanceTable attendanceTable = getAttendanceTableByEmployeeId(employeeId);
         Long attendanceTableId = attendanceTable.getId();
-        Employee employee = attendanceTable.getEmployee();
-        MonthDetails monthInquiring = getMonthData(attendanceTableId, date);
+        MonthDetails monthInquiring = getMonthData(employeeId, date);
 
-        Integer absenceDaysTillMonth = calcAbsenceDaysInYearTillMonth(attendanceTableId, date);
+        Integer absenceDaysTillMonth = calcAbsenceDaysInYearTillMonth(employeeId, date);
         Float monthBonuses = monthInquiring.getBonuses();
         Integer monthAbsences = monthInquiring.getAbsences();
         Integer workingYearsTillMonth = calculateWorkingYearsTillMonth(date, attendanceTable.getInitialWorkingYears(), attendanceTableId);
@@ -195,12 +203,13 @@ public class AttendanceService {
         int startWorkingYear = FirstYearAtWorkMonthDetails.getDate().getYear();
 
         // employee working years since join till this month
+        // I was told to make employeeInitialYearsAtWork starting from his graduation date..
         return (startWorkingYear - toDate.getYear()) + employeeInitialYearsAtWork;
     }
 
 
     public List<MonthDetails> getAllSalaryHistory(long employeeID) throws CustomException {
         Long attendanceTableId = this.getAttendanceTableIdByEmployeeId(employeeID);
-        return monthDetailsRepository.findAllByAttendanceTable_IdAndGrossSalaryOfMonthNotNull(attendanceTableId);
+        return monthDetailsRepository.findAllByAttendanceTable_IdAndGrossSalaryOfMonthNotNullOrderByDateAsc(attendanceTableId);
     }
 }

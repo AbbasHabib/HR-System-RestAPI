@@ -19,7 +19,7 @@ public class AttendanceController {
 
     @PostMapping(value = "/day/employee/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public DayDetails addNewDayData(@PathVariable String id, @RequestBody DayDetails dayDetails) throws CustomException {
-        return attendanceService.addNewDayData(Long.parseLong(id), dayDetails);
+        return attendanceService.addNewDayDataAndSave(Long.parseLong(id), dayDetails);
     }
 
     @GetMapping(value = "/employee/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -39,7 +39,7 @@ public class AttendanceController {
 
 
     @GetMapping(value = "/salary/employee/{id}/{date}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public EmployeeSalaryDTO getEmployeeSalary(@PathVariable String id, @PathVariable String date) throws CustomException {
+    public EmployeeSalaryDTO getEmployeeSalaryAtMonth(@PathVariable String id, @PathVariable String date) throws CustomException {
         return attendanceService.employeeSalaryAtMonth(Long.parseLong(id), LocalDate.parse(date));
     }
 

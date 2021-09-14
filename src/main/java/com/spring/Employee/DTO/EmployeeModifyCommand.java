@@ -10,7 +10,8 @@ import java.util.Date;
 import java.util.Set;
 
 public class EmployeeModifyCommand {
-    private String name;
+    private String lastName;
+    private String firstName;
     private Team team;
     private Date birthDate;
     private Date graduationDate;
@@ -25,20 +26,28 @@ public class EmployeeModifyCommand {
         ModelMapperGen.getModelMapperSingleton().map(dto, employee);
     }
 
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
     public Team getTeam() {
         return team;
     }
 
     public void setTeam(Team team) {
         this.team = team;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public Date getBirthDate() {

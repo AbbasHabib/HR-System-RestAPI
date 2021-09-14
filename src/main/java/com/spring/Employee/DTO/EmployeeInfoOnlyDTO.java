@@ -3,6 +3,7 @@ package com.spring.Employee.DTO;
 import com.spring.Department.Department;
 import com.spring.Employee.Employee;
 import com.spring.Employee.Gender;
+import com.spring.Security.EmployeeRole;
 import com.spring.modelMapperGen.ModelMapperGen;
 
 import java.util.ArrayList;
@@ -11,13 +12,14 @@ import java.util.List;
 
 public class EmployeeInfoOnlyDTO {
     private Long id;
-    private String name;
+    private String firstName;
+    private String lastName;
     private Date birthDate;
     private Date graduationDate;
     private Gender gender;
-    private Department department;
     private Float grossSalary;
     private Float netSalary;
+    private EmployeeRole role;
 
     public static void setEmployeeToDTO(Employee e, EmployeeInfoOnlyDTO DTO) {
         ModelMapperGen.getModelMapperSingleton().map(e, DTO);
@@ -42,12 +44,20 @@ public class EmployeeInfoOnlyDTO {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public Date getBirthDate() {
@@ -74,14 +84,6 @@ public class EmployeeInfoOnlyDTO {
         this.gender = gender;
     }
 
-    public Department getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(Department department) {
-        this.department = department;
-    }
-
     public Float getGrossSalary() {
         return grossSalary;
     }
@@ -96,5 +98,13 @@ public class EmployeeInfoOnlyDTO {
 
     public void setNetSalary(Float netSalary) {
         this.netSalary = netSalary;
+    }
+
+    public EmployeeRole getRole() {
+        return role;
+    }
+
+    public void setRole(EmployeeRole role) {
+        this.role = role;
     }
 }

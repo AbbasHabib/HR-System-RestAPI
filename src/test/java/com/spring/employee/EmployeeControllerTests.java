@@ -3,6 +3,8 @@ package com.spring.employee;
 import com.blazebit.persistence.CriteriaBuilderFactory;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.ExpectedDatabase;
+import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import com.spring.Department.Department;
 import com.spring.Department.DepartmentService;
 import com.spring.Employee.DTO.EmployeeInfoOnlyDTO;
@@ -32,11 +34,13 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static com.spring.Employee.DTO.EmployeeInfoOnlyDTO.setEmployeeToDTOList;
 import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -64,13 +68,15 @@ public class EmployeeControllerTests {
     private CriteriaBuilderFactory criteriaBuilderFactory;
 
     @Test
-    @DatabaseSetup("/data.xml")
-    public void add_employee() throws Exception, CustomException {
+    @DatabaseSetup("/hr-only.xml")
+    @ExpectedDatabase(assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED, value ="/expectedDatabases/expected-after-employee-insertion.xml")
+    public void add_employee_by_hr() throws Exception, CustomException {
         Employee employeeToAdd = new Employee();
-        employeeToAdd.setName("saad mhmh");
+        employeeToAdd.setFullName("ahmed safty");
         employeeToAdd.setGender(Gender.MALE);
-        employeeToAdd.setGrossSalary(10025f);
-        employeeToAdd.setNationalId("12345611");
+        employeeToAdd.setGrossSalary(10000f);
+        employeeToAdd.setGraduationDate(LocalDate.of(2012,1,1));
+        employeeToAdd.setNationalId("1234");
         // set Department to employee
         Long departmentId = 101L;
         Department dep = departmentService.getDepartment(departmentId);
@@ -85,40 +91,32 @@ public class EmployeeControllerTests {
         if (team == null) throw new NotFoundException("team is not found");
         employeeToAdd.setTeam(team);
 
-        Long managerId = 101L;
-        Employee manager = employeeService.getEmployee(managerId);
-        if (manager == null) throw new NotFoundException("manager not found");
-        employeeToAdd.setManager(manager);
 
         // Is expected to return same object it receives
         ObjectMapper objectMapper = new ObjectMapper();
         String employeeJson = objectMapper.writeValueAsString(employeeToAdd); // converts employee object to JSON string
 
         // POST request (.post("/employee/")) takes to be a Json of employee in request Body
-        MvcResult response = mockMvc.perform(MockMvcRequestBuilders.post("/employee/")
+        mockMvc.perform(MockMvcRequestBuilders.post("/employee/")
+                .with(httpBasic("abbas_habib_1","123"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(employeeJson))
-                .andExpect(status().isOk())
-                .andReturn(); // request is 200 (OK)
-
-        employeeToAdd.setNetSalary(employeeService.calculateNetSalary(employeeToAdd.getGrossSalary(), employeeToAdd.getAttendanceTable()));
-
-        TestShortcutMethods<Employee> testShortcutMethods = new TestShortcutMethods<>();
-        testShortcutMethods.setObjectIdFromResponseResult(response, employeeToAdd);
-        testShortcutMethods.compareIdOwnerWithDataBase(employeeToAdd, employeeRepository);
-
+                .andExpect(status().isOk());
     }
 
     @Test
     @DatabaseSetup("/data.xml")
-    public void get_employee_with_id() throws Exception, CustomException {
+    public void get_employee_with_id_by_hr() throws Exception, CustomException {
         Long searchForId = 101L;
 
         Employee employee = employeeService.getEmployee(searchForId);
         ObjectMapper objectMapper = new ObjectMapper();
         String employeeJSON = objectMapper.writeValueAsString(employee);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/employee/" + searchForId)).andExpect(status().isOk()).andReturn();
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/employee/" + searchForId)
+                .with(httpBasic("abbas_habib_10","123")))
+                .andExpect(status().isOk())
+                .andReturn();
 
         // as departmentExpected id is currently null
         // we add the id coming from the response to it
@@ -132,10 +130,13 @@ public class EmployeeControllerTests {
     @Test
     @DatabaseSetup("/data.xml")
 //    @ExpectedDatabase(value ="/expectedDatabases/employee_deletion.xml", table = "employee")
-    public void delete_employee_with_id() throws Exception {
+    public void delete_employee_with_id_by_hr() throws Exception {
         long deleteUserWithID = 102L;
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/employee/" + deleteUserWithID)).andExpect(content().string("true")).andExpect(status().isOk()).andReturn();
+        mockMvc.perform(MockMvcRequestBuilders.delete("/employee/" + deleteUserWithID)
+                .with(httpBasic("abbas_habib_10","123")))
+                .andExpect(content().string("true"))
+                .andExpect(status().isOk()).andReturn();
 
         assertNull(employeeService.getEmployee(deleteUserWithID));
         assertEquals(employeeService.getEmployee(103L).getManager().getId(), 101L);
@@ -145,7 +146,7 @@ public class EmployeeControllerTests {
     @Test
     @Transactional
     @DatabaseSetup("/data.xml")
-    public void modify_employee() throws Exception, CustomException {
+    public void modify_employee_by_hr() throws Exception, CustomException {
         // Initial values of the employee
         Long employeeId = 103L; // employee id to modify
         Employee employeeToModify = employeeService.getEmployee(employeeId);
@@ -154,7 +155,8 @@ public class EmployeeControllerTests {
         EmployeeModifyCommand employeeModificationDto = new EmployeeModifyCommand();
 
         // (1) Edit basic employee info
-        employeeModificationDto.setName("reem naser");
+        employeeModificationDto.setFirstName("reem");
+        employeeModificationDto.setLastName("naser");
         employeeModificationDto.setGender(Gender.FEMALE);
         employeeModificationDto.setGrossSalary(7000.0f);
         // (2) set Department
@@ -181,6 +183,7 @@ public class EmployeeControllerTests {
         String employeeDtoJson = objectMapper.writeValueAsString(employeeModificationDto);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/employee/" + employeeId)
+                .with(httpBasic("abbas_habib_10","123"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(employeeDtoJson))
                 .andExpect(status().isOk());
@@ -189,7 +192,7 @@ public class EmployeeControllerTests {
 
     @Test
     @DatabaseSetup("/data.xml")
-    public void get_employees_under_manager() throws Exception, CustomException {
+    public void get_employees_under_manager_by_hr() throws Exception, CustomException {
         Long managerId = 101L;
         List<Employee> employeesUnderManager = employeeRepository.findEmployeesByManager_Id(managerId);
         List<EmployeeInfoOnlyDTO> EmployeeInfoOnlyDTO = setEmployeeToDTOList(employeesUnderManager);
@@ -197,7 +200,8 @@ public class EmployeeControllerTests {
         ObjectMapper objectMapper = new ObjectMapper();
         String employeeDtoJson = objectMapper.writeValueAsString(EmployeeInfoOnlyDTO);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/employee/manager/" + managerId))
+        mockMvc.perform(MockMvcRequestBuilders.get("/employee/manager/" + managerId)
+                .with(httpBasic("abbas_habib_10","123")))
                 .andExpect(content().json(employeeDtoJson))
                 .andExpect(status().isOk());
     }
@@ -205,7 +209,7 @@ public class EmployeeControllerTests {
 
     @Test
     @DatabaseSetup("/data.xml")
-    public void getEmployeesRecursively() throws Exception, CustomException {
+    public void get_employees_recursively_by_hr() throws Exception, CustomException {
         long managerId = 101L;
         List<EmployeeInfoOnlyDTO> employeesUnderManager = employeeService.getManagerEmployeesRecursively(managerId);
         if (employeesUnderManager == null) throw new NotFoundException("cant find manager");
@@ -213,7 +217,8 @@ public class EmployeeControllerTests {
         ObjectMapper objectMapper = new ObjectMapper();
         String employeesUnderManagerJSON = objectMapper.writeValueAsString(employeesUnderManager);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/employee/manager/recursive/" + managerId))
+        mockMvc.perform(MockMvcRequestBuilders.get("/employee/manager/recursive/" + managerId)
+                .with(httpBasic("abbas_habib_10","123")))
                 .andExpect(content().json(employeesUnderManagerJSON))
                 .andExpect(status().isOk());
 

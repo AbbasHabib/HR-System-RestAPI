@@ -14,7 +14,7 @@ public interface MonthDetailsRepository extends JpaRepository<MonthDetails, Long
 
     List<MonthDetails> findAllByDateBetweenAndAttendanceTable_Id(LocalDate date_from, LocalDate date_to, Long attendanceTable_id);
 
-    List<MonthDetails> findAllByAttendanceTable_IdAndGrossSalaryOfMonthNotNull(Long attendanceTable_id);
+    List<MonthDetails> findAllByAttendanceTable_IdAndGrossSalaryOfMonthNotNullOrderByDateAsc(Long attendanceTable_id);
 
     //    List<MonthDetails> findAllByDateWithin();
     MonthDetails findFirstByAttendanceTable_IdOrderByDateAsc(Long attendanceTable_id);

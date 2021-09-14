@@ -1,7 +1,6 @@
 package com.spring.attendance;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.spring.Employee.Attendance.AttendanceService;
@@ -173,19 +172,19 @@ public class AttendanceIntegrationTest {
         absenceInDaysList.add(new DayDetails(null, attendanceTable, null, true, 0.0f)); // absent
 
         absenceInDaysList.get(0).setDate(LocalDate.of(2020, 1, 5));
-        attendanceService.addNewDayData(employeeId, absenceInDaysList.get(0));
+        attendanceService.addNewDayDataAndSave(employeeId, absenceInDaysList.get(0));
         absenceInDaysList.get(1).setDate(LocalDate.of(2020, 1, 6));
-        attendanceService.addNewDayData(employeeId, absenceInDaysList.get(1));
+        attendanceService.addNewDayDataAndSave(employeeId, absenceInDaysList.get(1));
         absenceInDaysList.get(2).setDate(LocalDate.of(2020, 1, 7));
-        attendanceService.addNewDayData(employeeId, absenceInDaysList.get(2));
+        attendanceService.addNewDayDataAndSave(employeeId, absenceInDaysList.get(2));
         absenceInDaysList.get(3).setDate(LocalDate.of(2020, 1, 8));
-        attendanceService.addNewDayData(employeeId, absenceInDaysList.get(3));
+        attendanceService.addNewDayDataAndSave(employeeId, absenceInDaysList.get(3));
         absenceInDaysList.get(4).setDate(LocalDate.of(2020, 1, 9));
-        attendanceService.addNewDayData(employeeId, absenceInDaysList.get(4));
+        attendanceService.addNewDayDataAndSave(employeeId, absenceInDaysList.get(4));
         absenceInDaysList.get(5).setDate(LocalDate.of(2020, 1, 10));
-        attendanceService.addNewDayData(employeeId, absenceInDaysList.get(5));
+        attendanceService.addNewDayDataAndSave(employeeId, absenceInDaysList.get(5));
         absenceInDaysList.get(6).setDate(LocalDate.of(2020, 1, 11));
-        attendanceService.addNewDayData(employeeId, absenceInDaysList.get(6));
+        attendanceService.addNewDayDataAndSave(employeeId, absenceInDaysList.get(6));
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/attendance/absence/employee/" + employeeId + "/" + month))
                 .andExpect(status().isOk())

@@ -45,10 +45,6 @@ public class EmployeeController {
         return employeeService.modifyEmployee(Long.parseLong(id), employeeModifyCommand);
     }
 
-    @GetMapping("name/{name}")
-    public Employee getEmployeeByName(@PathVariable String name) throws CustomException {
-        return employeeService.getEmployeeByName(name);
-    }
 
     @GetMapping("manager/recursive/{id}")
     public List<EmployeeInfoOnlyDTO> getEmployeesUnderManagerRecursively(@PathVariable String id) throws CustomException {

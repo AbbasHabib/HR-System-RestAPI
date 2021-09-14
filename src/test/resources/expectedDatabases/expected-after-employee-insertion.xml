@@ -1,0 +1,21 @@
+<dataset>
+    <team id="101" team_name="el shabab"/>
+
+    <department id="101" name="btats"/>
+
+
+    <attendance_table id="1" initial_working_years="9" salary_raise="0"/>
+
+    <employee id="1"  first_name="abbas" last_name="habib" graduation_date="2012-01-01" attendance_table_id="1" national_id="123" gross_salary="100000" gender="MALE" department_id="101" team_id="101" role="HR" />
+
+    <user_credentials user_name="abbas_habib_1" password="$2a$12$AMsg.IGBdS3blFFG7K58wu3D2MuI/fPtvcKMD/FWLFHgA75b3mOcy" employee_id="1"  user_role="HR" />
+
+
+    <!-- inserted -->
+    <attendance_table id="2" initial_working_years="9" salary_raise="0"/>
+
+    <employee id="2" first_name="ahmed" last_name="safty" national_id="1234" gross_salary="10000" graduation_date="2012-01-01" gender="MALE" department_id="101" team_id="101"/>
+
+    <user_credentials user_name="ahmed_safty_2" password="$2a$12$fNLcuY0S6KE2qjlt96GaseSEyftooV8kquRrgmASn9x2ZTWEtx99e" employee_id="2"  user_role="EMPLOYEE" />
+
+</dataset>
