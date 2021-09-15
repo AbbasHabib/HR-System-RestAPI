@@ -1,13 +1,9 @@
 package com.spring.Employee.Attendance.dayDetails;
 
-import com.spring.Employee.Attendance.monthDetails.MonthDTO;
-import com.spring.Employee.Attendance.monthDetails.MonthDetails;
 import com.spring.interfaces.IdOwner;
 import com.spring.modelMapperGen.ModelMapperGen;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Date;
 
 public class DayDetailsCommand implements IdOwner {
 
@@ -16,11 +12,21 @@ public class DayDetailsCommand implements IdOwner {
     private boolean absent = false;
     private Float bonusInSalary = 0.0F;
 
-    public static void mapDayCommandToDayDetails( DayDetailsCommand dayDetailsCommand, DayDetails dayDetails) {
+    public static void mapDayCommandToDayDetails(DayDetailsCommand dayDetailsCommand, DayDetails dayDetails) {
         ModelMapperGen.getModelMapperSingleton().map(dayDetailsCommand, dayDetails);
         dayDetails.setDate(LocalDate.parse(dayDetailsCommand.date));
     }
 
+
+    public DayDetailsCommand() {
+    }
+
+    public DayDetailsCommand(Long id, String date, boolean absent, Float bonusInSalary) {
+        this.id = id;
+        this.date = date;
+        this.absent = absent;
+        this.bonusInSalary = bonusInSalary;
+    }
 
     public Long getId() {
         return id;

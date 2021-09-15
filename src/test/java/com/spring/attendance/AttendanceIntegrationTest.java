@@ -154,55 +154,45 @@ public class AttendanceIntegrationTest {
         assertEquals(monthDetailsJson, responseJson);
 
     }
-//
-//
-//    @Test
-//    @DatabaseSetup("/attendanceData.xml")
-//    @Transactional
-//    public void date_insertion_and_getting_absence_days_in_year_till_month_by_hr() throws Exception, CustomException {
-//        String expectedAbsence = "6";
-//        long employeeId = 101L;
-//        String month = "2020-01-01";
-//
-//        AttendanceTable attendanceTable = attendanceService.getAttendanceTableByEmployeeId(employeeId);
-//
-//        List<DayDetailsCommand> absenceInDaysList = new ArrayList<>();
-//        DayDetails bonusInDay = new DayDetails(null, attendanceTable, LocalDate.of(2020, 1, 1), false, 0.0f);
-//
-//        absenceInDaysList.add(new DayDetails(null, attendanceTable, null, true, 0.0f));
-//        absenceInDaysList.add(new DayDetails(null, attendanceTable, null, true, 0.0f));
-//        absenceInDaysList.add(new DayDetails(null, attendanceTable, null, true, 0.0f));
-//        absenceInDaysList.add(new DayDetails(null, attendanceTable, null, true, 0.0f));
-//        absenceInDaysList.add(new DayDetails(null, attendanceTable, null, true, 0.0f));
-//
-//        absenceInDaysList.add(new DayDetails(null, attendanceTable, null, false, 0.0f)); // not absent
-//
-//        absenceInDaysList.add(new DayDetails(null, attendanceTable, null, true, 0.0f)); // absent
-//
-//        absenceInDaysList.get(0).setDate(LocalDate.of(2020, 1, 5));
-//        attendanceService.addNewDayDataAndSave(employeeId, absenceInDaysList.get(0));
-//        absenceInDaysList.get(1).setDate(LocalDate.of(2020, 1, 6));
-//        attendanceService.addNewDayDataAndSave(employeeId, absenceInDaysList.get(1));
-//        absenceInDaysList.get(2).setDate(LocalDate.of(2020, 1, 7));
-//        attendanceService.addNewDayDataAndSave(employeeId, absenceInDaysList.get(2));
-//        absenceInDaysList.get(3).setDate(LocalDate.of(2020, 1, 8));
-//        attendanceService.addNewDayDataAndSave(employeeId, absenceInDaysList.get(3));
-//        absenceInDaysList.get(4).setDate(LocalDate.of(2020, 1, 9));
-//        attendanceService.addNewDayDataAndSave(employeeId, absenceInDaysList.get(4));
-//        absenceInDaysList.get(5).setDate(LocalDate.of(2020, 1, 10));
-//        attendanceService.addNewDayDataAndSave(employeeId, absenceInDaysList.get(5));
-//        absenceInDaysList.get(6).setDate(LocalDate.of(2020, 1, 11));
-//        attendanceService.addNewDayDataAndSave(employeeId, absenceInDaysList.get(6));
-//
-//        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/attendance/absence/employee/" + employeeId + "/" + month)
-//                .with(httpBasic("abbas_habib_1", "123")))
-//                .andExpect(status().isOk())
-//                .andReturn();
-//
-//        String resJson = result.getResponse().getContentAsString();
-//
-//        assertEquals(resJson, expectedAbsence);
-//    }
+
+
+    @Test
+    @DatabaseSetup("/attendanceData.xml")
+    @Transactional
+    public void date_insertion_and_getting_absence_days_in_year_till_month_by_hr() throws Exception, CustomException {
+        String expectedAbsence = "6";
+        long employeeId = 101L;
+        String month = "2020-01-01";
+
+        AttendanceTable attendanceTable = attendanceService.getAttendanceTableByEmployeeId(employeeId);
+
+        List<DayDetailsCommand> absenceInDaysList = new ArrayList<>();
+ 
+        absenceInDaysList.add(new DayDetailsCommand(null, "2020-01-01", true, 0.0f));
+        absenceInDaysList.add(new DayDetailsCommand(null, "2020-01-02", true, 0.0f));
+        absenceInDaysList.add(new DayDetailsCommand(null, "2020-01-03", true, 0.0f));
+        absenceInDaysList.add(new DayDetailsCommand(null, "2020-01-04", true, 0.0f));
+        absenceInDaysList.add(new DayDetailsCommand(null, "2020-01-05", true, 0.0f));
+        absenceInDaysList.add(new DayDetailsCommand(null, "2020-01-06", false, 0.0f)); // not absent
+        absenceInDaysList.add(new DayDetailsCommand(null, "2020-01-07", true, 0.0f)); // absent
+
+        attendanceService.addNewDayDataAndSave(employeeId, absenceInDaysList.get(0));
+        attendanceService.addNewDayDataAndSave(employeeId, absenceInDaysList.get(1));
+        attendanceService.addNewDayDataAndSave(employeeId, absenceInDaysList.get(2));
+        attendanceService.addNewDayDataAndSave(employeeId, absenceInDaysList.get(3));
+        attendanceService.addNewDayDataAndSave(employeeId, absenceInDaysList.get(4));
+        attendanceService.addNewDayDataAndSave(employeeId, absenceInDaysList.get(5));
+        attendanceService.addNewDayDataAndSave(employeeId, absenceInDaysList.get(6));
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/attendance/absence/employee/" + employeeId + "/" + month)
+                .with(httpBasic("abbas_habib_1", "123")))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String resJson = result.getResponse().getContentAsString();
+
+        assertEquals(resJson, expectedAbsence);
+    }
 
 
 }
