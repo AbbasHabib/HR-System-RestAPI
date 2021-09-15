@@ -1,25 +1,14 @@
-package com.spring.team;
+package com.spring.TestsByHr.team;
 
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.spring.Employee.DTO.EmployeeInfoOnlyDTO;
+import com.spring.IntegrationTest;
 import com.spring.Team.Team;
-import com.spring.Team.TeamRepository;
-import com.spring.Team.TeamService;
-import com.spring.testShortcuts.TestShortcutMethods;
+import com.spring.TestsByHr.testShortcuts.TestShortcutMethods;
 import javassist.NotFoundException;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,22 +21,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureMockMvc
-@ExtendWith(SpringExtension.class)
-@ActiveProfiles("test")
-@TestExecutionListeners({
-        DependencyInjectionTestExecutionListener.class,
-        DbUnitTestExecutionListener.class
-})
-public class TeamIntegrationTest {
-    @Autowired
-    TeamService teamService;
-    @Autowired
-    TeamRepository teamRepository;
+public class TeamIntegrationTest extends IntegrationTest {
 
-    @Autowired
-    MockMvc mockMvc;
 
     @Test
     @DatabaseSetup("/data.xml")
@@ -57,7 +32,7 @@ public class TeamIntegrationTest {
         ObjectMapper objectMapper = new ObjectMapper();
         String teamJson = objectMapper.writeValueAsString(teamToAdd);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/team/")
+        MvcResult result = getMockMvc().perform(MockMvcRequestBuilders.post("/team/")
                 .with(httpBasic("abbas_habib_10", "123"))
                 .contentType(MediaType.APPLICATION_JSON).content(teamJson))
                 .andExpect(status().isOk())
@@ -68,7 +43,7 @@ public class TeamIntegrationTest {
         // we add the id coming from the response to it
         // then compare the expected object with the the object in DB
         tester.setObjectIdFromResponseResult(result, teamToAdd);
-        tester.compareIdOwnerWithDataBase(teamToAdd, teamRepository);
+        tester.compareIdOwnerWithDataBase(teamToAdd, getTeamRepository());
     }
 
     @Test
@@ -76,7 +51,7 @@ public class TeamIntegrationTest {
     @Transactional
     public void getTeamEmployees_by_hr() throws Exception {
         Long teamId = 101L;
-        List<EmployeeInfoOnlyDTO> teamEmployees = teamService.getTeamEmployees(teamId);
+        List<EmployeeInfoOnlyDTO> teamEmployees = getTeamService().getTeamEmployees(teamId);
         if (teamEmployees == null)
             throw new NotFoundException("no employees in this team");
 
@@ -84,7 +59,7 @@ public class TeamIntegrationTest {
         String teamEmployeesJson = objectMapper.writeValueAsString(teamEmployees);
 
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/team/employees/" + teamId)
+        getMockMvc().perform(MockMvcRequestBuilders.get("/team/employees/" + teamId)
                 .with(httpBasic("abbas_habib_10", "123")))
                 .andExpect(content().json(teamEmployeesJson))
                 .andExpect(status().isOk())

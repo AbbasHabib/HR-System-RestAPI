@@ -1,7 +1,6 @@
-package com.spring.attendance;
+package com.spring.TestsByHr.attendance;
 
 
-import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.spring.Employee.Attendance.AttendanceTable;
 import com.spring.Employee.Attendance.dayDetails.DayDetails;
@@ -11,7 +10,7 @@ import com.spring.Employee.Attendance.monthDetails.MonthDTO;
 import com.spring.Employee.Attendance.monthDetails.MonthDetails;
 import com.spring.ExceptionsCustom.CustomException;
 import com.spring.IntegrationTest;
-import com.spring.testShortcuts.TestShortcutMethods;
+import com.spring.TestsByHr.testShortcuts.TestShortcutMethods;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;

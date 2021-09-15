@@ -1,9 +1,15 @@
 package com.spring;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.spring.Department.DepartmentRepository;
+import com.spring.Department.DepartmentService;
 import com.spring.Employee.Attendance.AttendanceService;
 import com.spring.Employee.Attendance.dayDetails.DayDetailsRepository;
+import com.spring.Employee.EmployeeRepository;
 import com.spring.Employee.EmployeeService;
+import com.spring.Security.UserCredentialsRepository;
+import com.spring.Team.TeamRepository;
+import com.spring.Team.TeamService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,10 +43,28 @@ public class IntegrationTest {
     private EmployeeService employeeService;
 
     @Autowired
+    private DepartmentService departmentService;
+
+    @Autowired
+    private DepartmentRepository departmentRepository;
+
+    @Autowired
+    private EmployeeRepository employeeRepository;
+
+    @Autowired
+    private TeamService teamService;
+
+    @Autowired
     private MockMvc mockMvc;
 
     @Autowired
+    private TeamRepository teamRepository;
+
+    @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    UserCredentialsRepository userCredentialsRepository;
 
     @AfterEach
     public void deleteAllTables() {
@@ -50,6 +74,30 @@ public class IntegrationTest {
         jdbcTemplate.execute("delete from employee; ");
         jdbcTemplate.execute("delete from attendance_table; ");
         jdbcTemplate.execute("commit ");
+    }
+
+    public UserCredentialsRepository getUserCredentialsRepository() {
+        return userCredentialsRepository;
+    }
+
+    public TeamRepository getTeamRepository() {
+        return teamRepository;
+    }
+
+    public EmployeeRepository getEmployeeRepository() {
+        return employeeRepository;
+    }
+
+    public TeamService getTeamService() {
+        return teamService;
+    }
+
+    public DepartmentService getDepartmentService() {
+        return departmentService;
+    }
+
+    public DepartmentRepository getDepartmentRepository() {
+        return departmentRepository;
     }
 
     public AttendanceService getAttendanceService() {

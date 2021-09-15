@@ -1,4 +1,4 @@
-package com.spring.testShortcuts;
+package com.spring.TestsByHr.testShortcuts;
 
 import com.spring.interfaces.IdOwner;
 import org.json.JSONObject;

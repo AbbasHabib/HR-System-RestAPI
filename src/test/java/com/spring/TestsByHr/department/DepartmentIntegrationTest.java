@@ -1,23 +1,12 @@
-package com.spring.department;
+package com.spring.TestsByHr.department;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.spring.Department.Department;
-import com.spring.Department.DepartmentRepository;
-import com.spring.Department.DepartmentService;
 import com.spring.ExceptionsCustom.CustomException;
-import com.spring.testShortcuts.TestShortcutMethods;
+import com.spring.IntegrationTest;
+import com.spring.TestsByHr.testShortcuts.TestShortcutMethods;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,23 +15,8 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureMockMvc
-@ExtendWith(SpringExtension.class)
-@ActiveProfiles("test")
-@TestExecutionListeners({
-        DependencyInjectionTestExecutionListener.class,
-        DbUnitTestExecutionListener.class
-})
-public class DepartmentIntegrationTest {
-    @Autowired
-    DepartmentService departmentService;
+public class DepartmentIntegrationTest extends IntegrationTest {
 
-    @Autowired
-    DepartmentRepository departmentRepository;
-
-    @Autowired
-    MockMvc mockMvc;
 
 
     @Test
@@ -53,7 +27,7 @@ public class DepartmentIntegrationTest {
         ObjectMapper objectMapper = new ObjectMapper();
         String departmentJSON = objectMapper.writeValueAsString(departmentExpected);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/department/")
+        MvcResult result = getMockMvc().perform(MockMvcRequestBuilders.post("/department/")
                 .with(httpBasic("abbas_habib_10", "123"))
                 .contentType(MediaType.APPLICATION_JSON).content(departmentJSON))
                 .andExpect(status().isOk())
@@ -64,7 +38,7 @@ public class DepartmentIntegrationTest {
         // we add the id coming from the response to it
         // then compare the expected object with the the object in DB
         tester.setObjectIdFromResponseResult(result, departmentExpected);
-        tester.compareIdOwnerWithDataBase(departmentExpected, departmentRepository);
+        tester.compareIdOwnerWithDataBase(departmentExpected, getDepartmentRepository());
 
     }
 
@@ -73,11 +47,11 @@ public class DepartmentIntegrationTest {
     public void get_department_by_hr() throws Exception, CustomException {
         Long searchForId = 101L;
 
-        Department employee = departmentService.getDepartment(searchForId);
+        Department employee = getDepartmentService().getDepartment(searchForId);
         ObjectMapper objectMapper = new ObjectMapper();
         String employeeJSON = objectMapper.writeValueAsString(employee);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/department/" + searchForId)
+        getMockMvc().perform(MockMvcRequestBuilders.get("/department/" + searchForId)
                 .with(httpBasic("abbas_habib_10", "123")))
                 .andExpect(content().json(employeeJSON))
                 .andExpect(status().isOk());
