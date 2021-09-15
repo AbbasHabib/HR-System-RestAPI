@@ -1,33 +1,20 @@
 package com.spring.attendance;
 
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.spring.Employee.Attendance.AttendanceService;
 import com.spring.Employee.Attendance.AttendanceTable;
 import com.spring.Employee.Attendance.dayDetails.DayDetails;
 import com.spring.Employee.Attendance.dayDetails.DayDetailsCommand;
 import com.spring.Employee.Attendance.dayDetails.DayDetailsDTO;
-import com.spring.Employee.Attendance.dayDetails.DayDetailsRepository;
 import com.spring.Employee.Attendance.monthDetails.MonthDTO;
 import com.spring.Employee.Attendance.monthDetails.MonthDetails;
-import com.spring.Employee.EmployeeRepository;
-import com.spring.Employee.EmployeeService;
 import com.spring.ExceptionsCustom.CustomException;
+import com.spring.IntegrationTest;
 import com.spring.testShortcuts.TestShortcutMethods;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,70 +23,26 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureMockMvc
-@ExtendWith(SpringExtension.class)
-@ActiveProfiles("test")
-@TestExecutionListeners({
-        DependencyInjectionTestExecutionListener.class, DbUnitTestExecutionListener.class
-        , TransactionalTestExecutionListener.class})
-public class AttendanceIntegrationTest {
-    @Autowired
-    AttendanceService attendanceService;
-    @Autowired
-    DayDetailsRepository dayDetailsRepository;
-
-    @Autowired
-    EmployeeService employeeService;
-
-    @Autowired
-    MockMvc mockMvc;
+public class AttendanceIntegrationTest extends IntegrationTest {
 
     @Test
-    @DatabaseSetup("/attendanceData.xml")
-    public void get_attendance_table_by_hr() throws CustomException, Exception {
-        long employeeId = 102;
-        AttendanceTable expectedAttendanceTable = new AttendanceTable();
-        expectedAttendanceTable.setId(102L);
-        expectedAttendanceTable.setInitialWorkingYears(9);
-        expectedAttendanceTable.setSalaryRaise(0);
-        expectedAttendanceTable.setMonthDetailsList(new ArrayList<MonthDetails>());
-        expectedAttendanceTable.setDailyDetailsList(new ArrayList<DayDetails>());
-        expectedAttendanceTable.setEmployee(employeeService.getEmployee(employeeId));
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        String expectedAttendanceTableJson = objectMapper.writeValueAsString(expectedAttendanceTable);
-
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/attendance/employee/" + employeeId)
-                .with(httpBasic("abbas_habib_1", "123")))
-                .andExpect(status().isOk())
-                .andReturn();
-        String res = result.getResponse().getContentAsString();
-        assertEquals(expectedAttendanceTableJson, res);
-    }
-
-    @Test
-    @DatabaseSetup("/attendanceData.xml")
     @Transactional
+    @DatabaseSetup("/attendanceData.xml")
     public void add_new_day_data_by_hr() throws Exception, CustomException {
         long employeeId = 101L;
-        AttendanceTable attendanceTable = attendanceService.getAttendanceTableByEmployeeId(employeeId);
+        AttendanceTable attendanceTable = getAttendanceService().getAttendanceTableByEmployeeId(employeeId);
 
         DayDetails dayToAdd = new DayDetails();
         dayToAdd.setDate(LocalDate.of(2020, 10, 1));
         dayToAdd.setAbsent(true);
         dayToAdd.setAttendanceTable(attendanceTable);
         attendanceTable.addDay(dayToAdd);
-
-
 
         DayDetailsCommand dayDetailsCommand = new DayDetailsCommand();
 
@@ -111,17 +54,12 @@ public class AttendanceIntegrationTest {
         String dayToAddDetailsCommandJson = objectMapper.writeValueAsString(dayDetailsCommand); // converts employee object to JSON string
 
 
-
-
-
-        MvcResult responseDTO = mockMvc.perform(post("/attendance/day/employee/" + employeeId)
+        MvcResult responseDTO = getMockMvc().perform(post("/attendance/day/employee/" + employeeId)
                 .with(httpBasic("abbas_habib_1", "123"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(dayToAddDetailsCommandJson))
                 .andExpect(status().isOk())
                 .andReturn();
-
-
 
         DayDetailsDTO expectedDTOResponse = new DayDetailsDTO();
         DayDetailsDTO.setDayDetailsToDTO(dayToAdd, expectedDTOResponse);
@@ -132,19 +70,44 @@ public class AttendanceIntegrationTest {
         assertEquals(objectMapper.writeValueAsString(expectedDTOResponse), responseDTO.getResponse().getContentAsString());
     }
 
+    @Test
+    @Transactional
+    @DatabaseSetup("/attendanceData.xml")
+    public void get_attendance_with_employee_id_table_by_hr() throws CustomException, Exception {
+        long employeeId = 102;
+        AttendanceTable expectedAttendanceTable = new AttendanceTable();
+        expectedAttendanceTable.setId(102L);
+        expectedAttendanceTable.setInitialWorkingYears(9);
+        expectedAttendanceTable.setSalaryRaise(0);
+        expectedAttendanceTable.setMonthDetailsList(new ArrayList<MonthDetails>());
+        expectedAttendanceTable.setDailyDetailsList(new ArrayList<DayDetails>());
+        expectedAttendanceTable.setEmployee(getEmployeeService().getEmployee(employeeId));
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String expectedAttendanceTableJson = objectMapper.writeValueAsString(expectedAttendanceTable);
+
+        MvcResult result = getMockMvc().perform(MockMvcRequestBuilders.get("/attendance/employee/" + employeeId)
+                .with(httpBasic("abbas_habib_1", "123")))
+                .andExpect(status().isOk())
+                .andReturn();
+        String res = result.getResponse().getContentAsString();
+        assertEquals(expectedAttendanceTableJson, res);
+    }
+
 
     @Test
+    @Transactional
     @DatabaseSetup("/attendanceData.xml")
     public void get_month_data_by_hr() throws Exception, CustomException {
         long employeeId = 101L;
 
-        LocalDate monthToFind = LocalDate.of(2021,1,1);
-        MonthDTO monthDTOFromDb = attendanceService.getMonthDetailsDTO(employeeId, monthToFind);
+        LocalDate monthToFind = LocalDate.of(2021, 1, 1);
+        MonthDTO monthDTOFromDb = getAttendanceService().getMonthDetailsDTO(employeeId, monthToFind);
 
         ObjectMapper objectMapper = new ObjectMapper();
         String monthDetailsJson = objectMapper.writeValueAsString(monthDTOFromDb); // converts employee object to JSON string
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/attendance/month/employee/" + employeeId + "/" +monthToFind.toString())
+        MvcResult result = getMockMvc().perform(MockMvcRequestBuilders.get("/attendance/month/employee/" + employeeId + "/" + monthToFind.toString())
                 .with(httpBasic("abbas_habib_1", "123")))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -157,17 +120,17 @@ public class AttendanceIntegrationTest {
 
 
     @Test
-    @DatabaseSetup("/attendanceData.xml")
     @Transactional
+    @DatabaseSetup("/attendanceData.xml")
     public void date_insertion_and_getting_absence_days_in_year_till_month_by_hr() throws Exception, CustomException {
         String expectedAbsence = "6";
         long employeeId = 101L;
         String month = "2020-01-01";
 
-        AttendanceTable attendanceTable = attendanceService.getAttendanceTableByEmployeeId(employeeId);
+        AttendanceTable attendanceTable = getAttendanceService().getAttendanceTableByEmployeeId(employeeId);
 
         List<DayDetailsCommand> absenceInDaysList = new ArrayList<>();
- 
+
         absenceInDaysList.add(new DayDetailsCommand(null, "2020-01-01", true, 0.0f));
         absenceInDaysList.add(new DayDetailsCommand(null, "2020-01-02", true, 0.0f));
         absenceInDaysList.add(new DayDetailsCommand(null, "2020-01-03", true, 0.0f));
@@ -176,15 +139,16 @@ public class AttendanceIntegrationTest {
         absenceInDaysList.add(new DayDetailsCommand(null, "2020-01-06", false, 0.0f)); // not absent
         absenceInDaysList.add(new DayDetailsCommand(null, "2020-01-07", true, 0.0f)); // absent
 
-        attendanceService.addNewDayDataAndSave(employeeId, absenceInDaysList.get(0));
-        attendanceService.addNewDayDataAndSave(employeeId, absenceInDaysList.get(1));
-        attendanceService.addNewDayDataAndSave(employeeId, absenceInDaysList.get(2));
-        attendanceService.addNewDayDataAndSave(employeeId, absenceInDaysList.get(3));
-        attendanceService.addNewDayDataAndSave(employeeId, absenceInDaysList.get(4));
-        attendanceService.addNewDayDataAndSave(employeeId, absenceInDaysList.get(5));
-        attendanceService.addNewDayDataAndSave(employeeId, absenceInDaysList.get(6));
+        getAttendanceService().addNewDayDataAndSave(employeeId, absenceInDaysList.get(0));
+        getAttendanceService().addNewDayDataAndSave(employeeId, absenceInDaysList.get(1));
+        getAttendanceService().addNewDayDataAndSave(employeeId, absenceInDaysList.get(2));
+        getAttendanceService().addNewDayDataAndSave(employeeId, absenceInDaysList.get(3));
+        getAttendanceService().addNewDayDataAndSave(employeeId, absenceInDaysList.get(4));
+        getAttendanceService().addNewDayDataAndSave(employeeId, absenceInDaysList.get(5));
+        getAttendanceService().addNewDayDataAndSave(employeeId, absenceInDaysList.get(6));
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/attendance/absence/employee/" + employeeId + "/" + month)
+
+        MvcResult result = getMockMvc().perform(MockMvcRequestBuilders.get("/attendance/absence/employee/" + employeeId + "/" + month)
                 .with(httpBasic("abbas_habib_1", "123")))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -192,6 +156,51 @@ public class AttendanceIntegrationTest {
         String resJson = result.getResponse().getContentAsString();
 
         assertEquals(resJson, expectedAbsence);
+    }
+
+
+    @Test
+    @Transactional
+    @DatabaseSetup( value = "/absencesTestsThroughYearTables.xml")
+    public void generate_random_absences_at_year_by_hr() throws CustomException, Exception {
+        int[] absencesInYearMonths = new int[12];
+        long employeeId = 101L;
+        String dayStr;
+        String monthStr;
+
+
+        String year = "2021";
+        for (int month = 1; month <= 12; month++) {
+            for (int dayInMonth = 1; dayInMonth <= 27; dayInMonth++) {
+                if (((int) (Math.random() * 10) % 2) == 0) { // if true score absence
+                    dayStr = (dayInMonth < 10) ? "0" + dayInMonth : dayInMonth + "";
+                    monthStr = (month < 10) ? "0" + month : month + "";
+                    String dayDate = year + "-" + monthStr + "-" + dayStr;
+                    DayDetailsCommand dayDetailsToAddCommand = new DayDetailsCommand(null, dayDate, true, 0.0f);
+                    getAttendanceService().addNewDayDataAndSave(employeeId, dayDetailsToAddCommand);
+                    absencesInYearMonths[month-1] += 1;
+                }
+            }
+        }
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        for(int monthInYear=1;monthInYear<=12;monthInYear++)
+        {
+            monthStr = (monthInYear < 10) ? "0" + monthInYear : monthInYear + "";
+            String monthDate =year+"-"+monthStr+"-10";
+
+            MvcResult result = getMockMvc().perform(MockMvcRequestBuilders.get("/attendance/month/employee/" + employeeId + "/" + monthDate)
+                    .with(httpBasic("abbas_habib_1", "123")))
+                    .andExpect(status().isOk())
+                    .andReturn();
+
+            String resultContent = result.getResponse().getContentAsString();
+            JSONObject jsonObject = new JSONObject(resultContent);
+            int absenceFromDB = jsonObject.getInt("absences");
+
+            assertEquals(absencesInYearMonths[monthInYear-1], absenceFromDB);
+        }
     }
 
 

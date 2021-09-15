@@ -1,0 +1,9 @@
+<dataset>
+    <attendance_table id= "1" initial_working_years="9" salary_raise="0"/>
+    <attendance_table id="101" initial_working_years="9" salary_raise="0"/>
+
+    <employee id="1"  first_name="abbas" graduation_date="2012-01-01" last_name="habib" national_id="123" gross_salary="100000" gender="MALE" role="HR" attendance_table_id="1"/>
+    <employee id="101"  first_name="Big"  graduation_date="2012-01-01" last_name="rami" attendance_table_id="101" national_id="10101001" gross_salary="100000" gender="MALE" role="EMPLOYEE" />
+
+    <user_credentials user_name="abbas_habib_1" password="$2a$12$AMsg.IGBdS3blFFG7K58wu3D2MuI/fPtvcKMD/FWLFHgA75b3mOcy" employee_id="1"  user_role="HR" />
+</dataset>
