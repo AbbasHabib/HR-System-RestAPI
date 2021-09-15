@@ -27,6 +27,7 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import javax.transaction.Transactional;
 import java.util.List;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -57,6 +58,7 @@ public class TeamIntegrationTest {
         String teamJson = objectMapper.writeValueAsString(teamToAdd);
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/team/")
+                .with(httpBasic("abbas_habib_10", "123"))
                 .contentType(MediaType.APPLICATION_JSON).content(teamJson))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -82,7 +84,8 @@ public class TeamIntegrationTest {
         String teamEmployeesJson = objectMapper.writeValueAsString(teamEmployees);
 
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/team/employees/" + teamId))
+        mockMvc.perform(MockMvcRequestBuilders.get("/team/employees/" + teamId)
+                .with(httpBasic("abbas_habib_10", "123")))
                 .andExpect(content().json(teamEmployeesJson))
                 .andExpect(status().isOk())
                 .andReturn();
