@@ -19,9 +19,6 @@ public class TestShortcutMethods<T extends IdOwner> {
 
         objectWithId.setId(idFromDB); // expected Result
 
-        assertEquals(resultContent, objectMapper.writeValueAsString(objectWithId));
-
-
     }
 
     public void compareIdOwnerWithDataBase(T expectedResult, JpaRepository<T, Long> repository) throws Exception {

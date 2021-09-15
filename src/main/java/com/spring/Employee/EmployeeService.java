@@ -11,9 +11,9 @@ import com.spring.Security.UserCredentialsRepository;
 import com.spring.YearAndTimeGenerator;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Calendar;
 import java.util.List;
 
 @Service
@@ -26,6 +26,8 @@ public class EmployeeService {
     private AttendanceRepository attendanceRepository;
     @Autowired
     private UserCredentialsRepository userCredentialsRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public Employee addEmployee(Employee employee) throws Exception, CustomException {
         if (employeeRepository.findEmployeeByNationalId(employee.getNationalId()).isPresent())
@@ -40,9 +42,14 @@ public class EmployeeService {
         throw new CustomException(">>User ID already exists");
     }
 
+
     public void AddCredentials(Employee employee) {
         if (employee.getUserCredentials() == null) {
-            UserCredentials userCredentialForNewEmployee = new UserCredentials(employee.getUserName(), employee.getNationalId(), employee.getRole(), employee);
+            UserCredentials userCredentialForNewEmployee = new UserCredentials(employee.getUserName()
+                    , employee.getNationalId().hashCode()+""
+                    , employee.getRole()
+                    , employee);
+
             UserCredentials userCredentialResponseFromServer = userCredentialsRepository.save(userCredentialForNewEmployee);
             employee.setUserCredentials(userCredentialResponseFromServer);
         }
@@ -52,8 +59,7 @@ public class EmployeeService {
     public void AddAttendanceTable(Employee employee) throws CustomException {
         if (employee.getAttendanceTable() == null) {
             AttendanceTable attendanceTableForNewEmployee = new AttendanceTable(employee);
-
-            attendanceTableForNewEmployee.setInitialWorkingYears(YearAndTimeGenerator.getTestingYear() - employee.getGraduationDate().getYear());
+            attendanceTableForNewEmployee.setInitialWorkingYears(YearAndTimeGenerator.getTestingYear() - employee.calcGraduationYear());
             AttendanceTable attendanceTableForNewEmployeeFromServer = attendanceRepository.save(attendanceTableForNewEmployee);
             employee.setAttendanceTable(attendanceTableForNewEmployeeFromServer);
         }
@@ -61,7 +67,7 @@ public class EmployeeService {
 
     public Employee saveEmployee(Employee employeeToAdd) throws CustomException {
         try {
-            employeeToAdd.setNetSalary(calculateNetSalary(employeeToAdd.getGrossSalary(), employeeToAdd.getAttendanceTable())); // This function calculates employee new salary and return it
+            employeeToAdd.setNetSalary(calculateNetSalary(employeeToAdd.getGrossSalary())); // This function calculates employee new salary and return it
             Employee savedEmployee = employeeRepository.save(employeeToAdd);
             AddCredentials(savedEmployee);
             AddAttendanceTable(savedEmployee);
@@ -95,13 +101,9 @@ public class EmployeeService {
         return null;
     }
 
-    public Float calculateNetSalary(Float employeeSalary, AttendanceTable employeeAttendanceTable) {
+    public Float calculateNetSalary(Float employeeSalary) {
         if (employeeSalary != null && employeeSalary != 0) {
             float empSalary = employeeSalary * (1 - SalariesYearsConstants.TAXES) - SalariesYearsConstants.DEDUCTED_INSURANCE;
-//            float salaryPerDay = empSalary / employeeAttendanceTable.getCurrentMonthDays();
-            // if absence in this month is zero then there wont be any deduction
-//            empSalary -= salaryPerDay * employeeAttendanceTable.getAbsenceDaysInCurrentMonth();
-
             if (empSalary > 0)
                 return empSalary;
         }

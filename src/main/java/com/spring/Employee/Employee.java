@@ -1,5 +1,6 @@
 package com.spring.Employee;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.spring.Department.Department;
@@ -10,7 +11,9 @@ import com.spring.Team.Team;
 import com.spring.interfaces.IdOwner;
 
 import javax.persistence.*;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 
@@ -35,7 +38,8 @@ public class Employee implements IdOwner {
     @Column(name = "birth_date")
     private LocalDate birthDate;
     @Column(name = "graduation_date")
-    private LocalDate graduationDate;
+    @JsonFormat(pattern="yyyy-MM-dd")
+    private Date graduationDate;
     @Column(name = "gender")
 
     @Enumerated(EnumType.STRING)
@@ -175,11 +179,18 @@ public class Employee implements IdOwner {
         this.birthDate = birthDate;
     }
 
-    public LocalDate getGraduationDate() {
+    public Date getGraduationDate() {
         return graduationDate;
     }
 
-    public void setGraduationDate(LocalDate graduationDate) {
+    public int calcGraduationYear()
+    {
+        SimpleDateFormat getYearFormat = new SimpleDateFormat("yyyy");
+        String year = getYearFormat.format(this.graduationDate);
+        return Integer.parseInt(year);
+    }
+
+    public void setGraduationDate(Date graduationDate) {
         this.graduationDate = graduationDate;
     }
 

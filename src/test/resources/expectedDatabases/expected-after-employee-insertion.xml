@@ -14,8 +14,8 @@
     <!-- inserted -->
     <attendance_table id="2" initial_working_years="9" salary_raise="0"/>
 
-    <employee id="2" first_name="ahmed" last_name="safty" national_id="1234" gross_salary="10000" graduation_date="2012-01-01" gender="MALE" department_id="101" team_id="101"/>
+    <employee id="2" first_name="ahmed" last_name="safty" national_id="1234" attendance_table_id="2" gross_salary="10000" graduation_date="2012-01-01" gender="MALE" department_id="101" team_id="101"/>
 
-    <user_credentials user_name="ahmed_safty_2" password="$2a$12$fNLcuY0S6KE2qjlt96GaseSEyftooV8kquRrgmASn9x2ZTWEtx99e" employee_id="2"  user_role="EMPLOYEE" />
+    <user_credentials user_name="ahmed_safty_2" password="1509442" employee_id="2"  user_role="EMPLOYEE" />
 
 </dataset>
