@@ -1,6 +1,7 @@
 package com.spring.Employee.Attendance;
 
 import com.spring.Employee.Attendance.dayDetails.DayDetails;
+import com.spring.Employee.Attendance.monthDetails.MonthDTO;
 import com.spring.Employee.Attendance.monthDetails.MonthDetails;
 import com.spring.Employee.DTO.EmployeeSalaryDTO;
 import com.spring.ExceptionsCustom.CustomException;
@@ -28,8 +29,8 @@ public class AttendanceController {
     }
 
     @GetMapping(value = "/month/employee/{id}/{date}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public MonthDetails getMonthData(@PathVariable String id, @PathVariable String date) throws CustomException {
-        return attendanceService.getMonthData(Long.parseLong(id), LocalDate.parse(date));
+    public MonthDTO getMonthData(@PathVariable String id, @PathVariable String date) throws CustomException {
+        return attendanceService.getMonthDetailsDTO(Long.parseLong(id), LocalDate.parse(date));
     }
 
     @GetMapping(value = "/absence/employee/{id}/{date}", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -51,7 +51,7 @@ public class TeamIntegrationTest {
 
     @Test
     @DatabaseSetup("/data.xml")
-    public void add_team() throws Exception {
+    public void add_team_by_hr() throws Exception {
         Team teamToAdd = new Team();
         teamToAdd.setTeamName("el 7bayb");
         ObjectMapper objectMapper = new ObjectMapper();
@@ -74,7 +74,7 @@ public class TeamIntegrationTest {
     @Test
     @DatabaseSetup("/data.xml")
     @Transactional
-    public void getTeamEmployees() throws Exception {
+    public void getTeamEmployees_by_hr() throws Exception {
         Long teamId = 101L;
         List<EmployeeInfoOnlyDTO> teamEmployees = teamService.getTeamEmployees(teamId);
         if (teamEmployees == null)

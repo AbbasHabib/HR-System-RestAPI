@@ -3,6 +3,7 @@ package com.spring.Employee.Attendance;
 
 import com.spring.Employee.Attendance.dayDetails.DayDetails;
 import com.spring.Employee.Attendance.dayDetails.DayDetailsRepository;
+import com.spring.Employee.Attendance.monthDetails.MonthDTO;
 import com.spring.Employee.Attendance.monthDetails.MonthDetails;
 import com.spring.Employee.Attendance.monthDetails.MonthDetailsRepository;
 import com.spring.Employee.DTO.EmployeeSalaryDTO;
@@ -123,7 +124,20 @@ public class AttendanceService {
         return monthToFind;
     }
 
-    public MonthDetails getMonthData(long employeeId, LocalDate date) throws CustomException {
+    public MonthDetails getMonthDetails(long employeeId, LocalDate date) throws CustomException {
+        MonthDetails monthDetails = monthDetailsRepository
+                .findByDateAndAttendanceTable_Id(
+                        LocalDate.of(date.getYear(), date.getMonth(), 1)
+                        , getAttendanceTableIdByEmployeeId(employeeId))
+                .orElse(null);
+
+        if (monthDetails == null)
+            throw new CustomException("this month is not found");
+
+        return monthDetails;
+    }
+
+    public MonthDTO getMonthDetailsDTO(long employeeId, LocalDate date) throws CustomException {
         MonthDetails monthData = monthDetailsRepository
                 .findByDateAndAttendanceTable_Id(
                         LocalDate.of(date.getYear(), date.getMonth(), 1)
@@ -132,7 +146,9 @@ public class AttendanceService {
 
         if (monthData == null)
             throw new CustomException("this month is not found");
-        return monthData;
+        MonthDTO monthDTO = new MonthDTO();
+        MonthDTO.setMonthDetailsToDTO(monthData, monthDTO);
+        return monthDTO;
     }
 
     public Long getAttendanceTableIdByEmployeeId(Long employeeId) throws CustomException {
@@ -156,7 +172,7 @@ public class AttendanceService {
     public EmployeeSalaryDTO employeeSalaryAtMonth(long employeeId, LocalDate date) throws CustomException {
         AttendanceTable attendanceTable = getAttendanceTableByEmployeeId(employeeId);
         Long attendanceTableId = attendanceTable.getId();
-        MonthDetails monthInquiring = getMonthData(employeeId, date);
+        MonthDetails monthInquiring = getMonthDetails(employeeId, date);
 
         Integer absenceDaysTillMonth = calcAbsenceDaysInYearTillMonth(employeeId, date);
         Float monthBonuses = monthInquiring.getBonuses();

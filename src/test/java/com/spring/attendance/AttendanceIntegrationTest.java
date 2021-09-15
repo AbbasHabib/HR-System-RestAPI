@@ -7,7 +7,10 @@ import com.spring.Employee.Attendance.AttendanceService;
 import com.spring.Employee.Attendance.AttendanceTable;
 import com.spring.Employee.Attendance.dayDetails.DayDetails;
 import com.spring.Employee.Attendance.dayDetails.DayDetailsRepository;
+import com.spring.Employee.Attendance.monthDetails.MonthDTO;
 import com.spring.Employee.Attendance.monthDetails.MonthDetails;
+import com.spring.Employee.EmployeeRepository;
+import com.spring.Employee.EmployeeService;
 import com.spring.ExceptionsCustom.CustomException;
 import com.spring.testShortcuts.TestShortcutMethods;
 import org.json.JSONObject;
@@ -34,7 +37,9 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -50,25 +55,29 @@ public class AttendanceIntegrationTest {
     @Autowired
     DayDetailsRepository dayDetailsRepository;
 
+    @Autowired
+    EmployeeService employeeService;
 
     @Autowired
     MockMvc mockMvc;
 
     @Test
     @DatabaseSetup("/attendanceData.xml")
-    public void get_attendance_table() throws CustomException, Exception {
+    public void get_attendance_table_by_hr() throws CustomException, Exception {
         long employeeId = 102;
         AttendanceTable expectedAttendanceTable = new AttendanceTable();
         expectedAttendanceTable.setId(102L);
-        expectedAttendanceTable.setInitialWorkingYears(0);
+        expectedAttendanceTable.setInitialWorkingYears(9);
         expectedAttendanceTable.setSalaryRaise(0);
         expectedAttendanceTable.setMonthDetailsList(new ArrayList<MonthDetails>());
         expectedAttendanceTable.setDailyDetailsList(new ArrayList<DayDetails>());
+        expectedAttendanceTable.setEmployee(employeeService.getEmployee(employeeId));
 
         ObjectMapper objectMapper = new ObjectMapper();
         String expectedAttendanceTableJson = objectMapper.writeValueAsString(expectedAttendanceTable);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/attendance/employee/" + employeeId))
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/attendance/employee/" + employeeId)
+                .with(httpBasic("abbas_habib_1", "123")))
                 .andExpect(status().isOk())
                 .andReturn();
         String res = result.getResponse().getContentAsString();
@@ -78,7 +87,7 @@ public class AttendanceIntegrationTest {
     @Test
     @DatabaseSetup("/attendanceData.xml")
     @Transactional
-    public void add_new_day_data() throws Exception, CustomException {
+    public void add_new_day_data_by_hr() throws Exception, CustomException {
         long employeeId = 101L;
         AttendanceTable attendanceTable = attendanceService.getAttendanceTableByEmployeeId(employeeId);
 
@@ -95,6 +104,7 @@ public class AttendanceIntegrationTest {
 
 
         MvcResult result = mockMvc.perform(post("/attendance/day/employee/" + employeeId)
+                .with(httpBasic("abbas_habib_1", "123"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(dayToAddDetailsJson))
                 .andExpect(status().isOk())
@@ -108,50 +118,31 @@ public class AttendanceIntegrationTest {
 
     @Test
     @DatabaseSetup("/attendanceData.xml")
-    public void get_month_data() throws Exception, CustomException {
+    public void get_month_data_by_hr() throws Exception, CustomException {
         long employeeId = 101L;
-        String month = "2020-01-01";
-        AttendanceTable attendanceTable = attendanceService.getAttendanceTableByEmployeeId(employeeId);
 
-
-        MonthDetails monthDetails = new MonthDetails();
-        monthDetails.setId(101);
-        monthDetails.setDate(LocalDate.of(2020, 1, 1));
-        monthDetails.setAbsences(0);
-        monthDetails.setBonuses(0.0f);
-        monthDetails.setAttendanceTable(attendanceTable);
-
+        LocalDate monthToFind = LocalDate.of(2021,1,1);
+        MonthDTO monthDTOFromDb = attendanceService.getMonthDetailsDTO(employeeId, monthToFind);
 
         ObjectMapper objectMapper = new ObjectMapper();
+        String monthDetailsJson = objectMapper.writeValueAsString(monthDTOFromDb); // converts employee object to JSON string
 
-        String monthDetailsJson = objectMapper.writeValueAsString(monthDetails); // converts employee object to JSON string
-
-        Map<String, String> mapExpected = objectMapper.readValue(monthDetailsJson, Map.class);
-
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/attendance/month/employee/" + employeeId + "/" + month))
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/attendance/month/employee/" + employeeId + "/" +monthToFind.toString())
+                .with(httpBasic("abbas_habib_1", "123")))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        String resJson = result.getResponse().getContentAsString();
-        JSONObject jsonObject = new JSONObject(resJson);
-        String dateReceived = jsonObject.getString("date");
-        Map<String, String> mapReceived = objectMapper.readValue(monthDetailsJson, Map.class);
+        String responseJson = result.getResponse().getContentAsString();
 
+        assertEquals(monthDetailsJson, responseJson);
 
-        assertEquals(mapExpected.get("id"), mapReceived.get("id"));
-        assertEquals(mapExpected.get("grossSalaryOfMonth"), mapReceived.get("grossSalaryOfMonth"));
-        // for some reason date received and and expected date object differ in inner object value
-        // therefore iam comparing them as strings
-        assertEquals(month, dateReceived);
-        assertEquals(mapExpected.get("absences"), mapReceived.get("absences"));
-        assertEquals(mapExpected.get("bonuses"), mapReceived.get("bonuses"));
     }
 
 
     @Test
     @DatabaseSetup("/attendanceData.xml")
     @Transactional
-    public void date_insertion_and_getting_absence_days_in_year_till_month() throws Exception, CustomException {
+    public void date_insertion_and_getting_absence_days_in_year_till_month_by_hr() throws Exception, CustomException {
         String expectedAbsence = "6";
         long employeeId = 101L;
         String month = "2020-01-01";
@@ -186,7 +177,8 @@ public class AttendanceIntegrationTest {
         absenceInDaysList.get(6).setDate(LocalDate.of(2020, 1, 11));
         attendanceService.addNewDayDataAndSave(employeeId, absenceInDaysList.get(6));
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/attendance/absence/employee/" + employeeId + "/" + month))
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/attendance/absence/employee/" + employeeId + "/" + month)
+                .with(httpBasic("abbas_habib_1", "123")))
                 .andExpect(status().isOk())
                 .andReturn();
 

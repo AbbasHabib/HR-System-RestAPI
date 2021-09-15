@@ -47,7 +47,7 @@ public class DepartmentIntegrationTest {
 
     @Test
     @DatabaseSetup("/data.xml")
-    public void add_department() throws Exception, CustomException {
+    public void add_department_by_hr() throws Exception, CustomException {
         Department departmentExpected = new Department();
         departmentExpected.setName("el a7bab");
         ObjectMapper objectMapper = new ObjectMapper();
@@ -70,7 +70,7 @@ public class DepartmentIntegrationTest {
 
     @Test
     @DatabaseSetup("/data.xml")
-    public void get_department() throws Exception, CustomException {
+    public void get_department_by_hr() throws Exception, CustomException {
         Long searchForId = 101L;
 
         Department employee = departmentService.getDepartment(searchForId);
