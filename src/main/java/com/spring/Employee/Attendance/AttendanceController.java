@@ -1,6 +1,8 @@
 package com.spring.Employee.Attendance;
 
 import com.spring.Employee.Attendance.dayDetails.DayDetails;
+import com.spring.Employee.Attendance.dayDetails.DayDetailsCommand;
+import com.spring.Employee.Attendance.dayDetails.DayDetailsDTO;
 import com.spring.Employee.Attendance.monthDetails.MonthDTO;
 import com.spring.Employee.Attendance.monthDetails.MonthDetails;
 import com.spring.Employee.DTO.EmployeeSalaryDTO;
@@ -19,8 +21,8 @@ public class AttendanceController {
     AttendanceService attendanceService;
 
     @PostMapping(value = "/day/employee/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public DayDetails addNewDayData(@PathVariable String id, @RequestBody DayDetails dayDetails) throws CustomException {
-        return attendanceService.addNewDayDataAndSave(Long.parseLong(id), dayDetails);
+    public DayDetailsDTO addNewDayData(@PathVariable String id, @RequestBody DayDetailsCommand dayDetailsCommand) throws CustomException {
+        return attendanceService.addNewDayDataAndSave(Long.parseLong(id), dayDetailsCommand);
     }
 
     @GetMapping(value = "/employee/{id}", produces = MediaType.APPLICATION_JSON_VALUE)

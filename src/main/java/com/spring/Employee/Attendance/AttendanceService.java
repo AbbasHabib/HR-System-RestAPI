@@ -2,6 +2,8 @@ package com.spring.Employee.Attendance;
 
 
 import com.spring.Employee.Attendance.dayDetails.DayDetails;
+import com.spring.Employee.Attendance.dayDetails.DayDetailsCommand;
+import com.spring.Employee.Attendance.dayDetails.DayDetailsDTO;
 import com.spring.Employee.Attendance.dayDetails.DayDetailsRepository;
 import com.spring.Employee.Attendance.monthDetails.MonthDTO;
 import com.spring.Employee.Attendance.monthDetails.MonthDetails;
@@ -61,8 +63,14 @@ public class AttendanceService {
         return dailyAttendanceRepository.findAllByAttendanceTable_Id(attendanceTableId);
     }
 
-    public DayDetails addNewDayDataAndSave(Long employeeId, DayDetails dayDetails) throws CustomException {
+    public DayDetailsDTO addNewDayDataAndSave(Long employeeId, DayDetailsCommand dayDetailsCommand) throws CustomException {
         // get attendance table to add month and day data into
+
+        DayDetails dayDetails = new DayDetails();
+
+        DayDetailsCommand.mapDayCommandToDayDetails(dayDetailsCommand, dayDetails);
+
+
         AttendanceTable attendanceTable = getAttendanceTableByEmployeeId(employeeId);
 
         if (dailyAttendanceRepository.countAllByAttendanceTable_IdAndDate(attendanceTable.getId(), dayDetails.getDate()) > 0)
@@ -79,10 +87,13 @@ public class AttendanceService {
 
 
         // save month, day and attendance table into database
-        DayDetails savedDate = dailyAttendanceRepository.save(dayDetails);
+        DayDetails savedDayDetails = dailyAttendanceRepository.save(dayDetails);
         monthDetailsRepository.save(monthOfThatDay);
         attendanceRepository.save(attendanceTable);
-        return savedDate;
+
+        DayDetailsDTO responseDayDetailsDTO = new DayDetailsDTO();
+        DayDetailsDTO.setDayDetailsToDTO(savedDayDetails,responseDayDetailsDTO);
+        return responseDayDetailsDTO;
     }
 
 
