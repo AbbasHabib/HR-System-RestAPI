@@ -38,7 +38,7 @@ public class Employee implements IdOwner {
     @Column(name = "birth_date")
     private LocalDate birthDate;
     @Column(name = "graduation_date")
-    @JsonFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date graduationDate;
     @Column(name = "gender")
 

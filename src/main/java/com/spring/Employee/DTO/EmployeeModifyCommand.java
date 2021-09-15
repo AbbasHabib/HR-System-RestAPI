@@ -1,5 +1,6 @@
 package com.spring.Employee.DTO;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.spring.Department.Department;
 import com.spring.Employee.Employee;
 import com.spring.Employee.Gender;
@@ -14,6 +15,7 @@ public class EmployeeModifyCommand {
     private String firstName;
     private Team team;
     private Date birthDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date graduationDate;
     private Gender gender;
     private Department department;

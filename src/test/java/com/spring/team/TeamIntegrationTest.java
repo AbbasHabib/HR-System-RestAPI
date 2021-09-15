@@ -77,11 +77,12 @@ public class TeamIntegrationTest {
         List<EmployeeInfoOnlyDTO> teamEmployees = teamService.getTeamEmployees(teamId);
         if (teamEmployees == null)
             throw new NotFoundException("no employees in this team");
+
         ObjectMapper objectMapper = new ObjectMapper();
         String teamEmployeesJson = objectMapper.writeValueAsString(teamEmployees);
 
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/team/employees/" + teamId))
+        mockMvc.perform(MockMvcRequestBuilders.get("/team/employees/" + teamId))
                 .andExpect(content().json(teamEmployeesJson))
                 .andExpect(status().isOk())
                 .andReturn();

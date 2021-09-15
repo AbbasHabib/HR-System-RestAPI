@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -53,6 +54,7 @@ public class DepartmentIntegrationTest {
         String departmentJSON = objectMapper.writeValueAsString(departmentExpected);
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/department/")
+                .with(httpBasic("abbas_habib_10", "123"))
                 .contentType(MediaType.APPLICATION_JSON).content(departmentJSON))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -75,7 +77,8 @@ public class DepartmentIntegrationTest {
         ObjectMapper objectMapper = new ObjectMapper();
         String employeeJSON = objectMapper.writeValueAsString(employee);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/department/" + searchForId))
+        mockMvc.perform(MockMvcRequestBuilders.get("/department/" + searchForId)
+                .with(httpBasic("abbas_habib_10", "123")))
                 .andExpect(content().json(employeeJSON))
                 .andExpect(status().isOk());
     }
