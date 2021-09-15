@@ -46,7 +46,7 @@ public class EmployeeService {
     public void AddCredentials(Employee employee) {
         if (employee.getUserCredentials() == null) {
             UserCredentials userCredentialForNewEmployee = new UserCredentials(employee.getUserName()
-                    , employee.getNationalId().hashCode()+""
+                    , passwordEncoder.encode(employee.getNationalId())
                     , employee.getRole()
                     , employee);
 

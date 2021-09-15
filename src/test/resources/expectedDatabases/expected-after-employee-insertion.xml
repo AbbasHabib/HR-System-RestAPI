@@ -16,6 +16,6 @@
 
     <employee id="2" first_name="ahmed" last_name="safty" national_id="1234" attendance_table_id="2" gross_salary="10000" graduation_date="2012-01-01" gender="MALE" department_id="101" team_id="101"/>
 
-    <user_credentials user_name="ahmed_safty_2" password="1509442" employee_id="2"  user_role="EMPLOYEE" />
+    <user_credentials user_name="ahmed_safty_2" password="$2a$10$tmmGSmHrqJNnfwVwH3cBSOI8ezFhLLun.1oSz5Yrhmh5zZw7WmiAq" employee_id="2"  user_role="EMPLOYEE" />
 
 </dataset>

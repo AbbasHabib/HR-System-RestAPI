@@ -195,11 +195,5 @@ public class AttendanceIntegrationTest {
         assertEquals(resJson, expectedAbsence);
     }
 
-    @Test
-    @DatabaseSetup("/attendanceData.xml")
-    @Transactional
-    public void get_employee_salary() {
-
-    }
 
 }

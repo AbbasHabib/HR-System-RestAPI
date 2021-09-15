@@ -5,6 +5,7 @@ this project is an HR system where the of it is managing employees teams, depart
 #### The project will be fully driven by [JavaSpringBoot](https://www.tutorialspoint.com/spring_boot/spring_boot_introduction.htm) ​Framework, and MySql Database
 
 ## Current TodoList
+- [ ] working on attendance apis
 - [ ] Test for addNewDayData doesn't work
 - [x] Basic Authorization with every request
 - [ ] Add test cases for all attendance table apis
