@@ -12,8 +12,6 @@ public class MonthDTO {
     private Float bonuses = 0F;
 
 
-
-
     public static void setMonthDetailsToDTO(MonthDetails m, MonthDTO DTO) {
         ModelMapperGen.getModelMapperSingleton().map(m, DTO);
         DTO.date = Date.valueOf(m.getDate());

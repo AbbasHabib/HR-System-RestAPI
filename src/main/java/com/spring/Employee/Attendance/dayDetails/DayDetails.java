@@ -1,9 +1,6 @@
 package com.spring.Employee.Attendance.dayDetails;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.spring.Employee.Attendance.AttendanceTable;
 import com.spring.interfaces.IdOwner;
 
@@ -35,8 +32,7 @@ public class DayDetails implements IdOwner {
     }
 
 
-    public DayDetails(AttendanceTable attendanceTable, LocalDate date)
-    {
+    public DayDetails(AttendanceTable attendanceTable, LocalDate date) {
         this.attendanceTable = attendanceTable;
         this.date = date;
     }

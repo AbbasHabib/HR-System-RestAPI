@@ -106,14 +106,6 @@ public class Employee implements IdOwner {
         }
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
     public EmployeeRole getRole() {
         return role;
     }
@@ -158,8 +150,16 @@ public class Employee implements IdOwner {
         return firstName;
     }
 
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
     public String getLastName() {
         return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public Degree getDegree() {
@@ -190,15 +190,14 @@ public class Employee implements IdOwner {
         return graduationDate;
     }
 
-    public int calcGraduationYear()
-    {
+    public void setGraduationDate(Date graduationDate) {
+        this.graduationDate = graduationDate;
+    }
+
+    public int calcGraduationYear() {
         SimpleDateFormat getYearFormat = new SimpleDateFormat("yyyy");
         String year = getYearFormat.format(this.graduationDate);
         return Integer.parseInt(year);
-    }
-
-    public void setGraduationDate(Date graduationDate) {
-        this.graduationDate = graduationDate;
     }
 
     public Gender getGender() {

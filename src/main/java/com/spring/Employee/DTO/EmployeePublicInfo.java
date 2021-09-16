@@ -5,19 +5,18 @@ import com.spring.Employee.Gender;
 import com.spring.Security.EmployeeRole;
 import com.spring.modelMapperGen.ModelMapperGen;
 
-public class EmployeePublicInfo implements IEmployeeInfoDTO{
+public class EmployeePublicInfo implements IEmployeeInfoDTO {
     private String firstName;
     private String lastName;
     private Gender gender;
     private EmployeeRole role;
 
 
-    public void setEmployeeToDTO(Employee employeeFullData) {
-        ModelMapperGen.getModelMapperSingleton().map(employeeFullData, this);
+    public EmployeePublicInfo() {
     }
 
-
-    public EmployeePublicInfo() {
+    public void setEmployeeToDTO(Employee employeeFullData) {
+        ModelMapperGen.getModelMapperSingleton().map(employeeFullData, this);
     }
 
     public String getFirstName() {

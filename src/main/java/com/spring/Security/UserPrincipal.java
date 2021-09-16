@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class UserPrincipal implements UserDetails {
-    private UserCredentials userCredentials;
+    private final UserCredentials userCredentials;
 
     public UserPrincipal(UserCredentials userCredentials) {
         this.userCredentials = userCredentials;

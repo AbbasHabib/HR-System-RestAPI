@@ -1,8 +1,9 @@
 package com.spring.Employee;
 
 import com.spring.Employee.COMMANDS.EmployeeModificationByLoggedUserCommand;
-import com.spring.Employee.DTO.EmployeeInfoDTO;
 import com.spring.Employee.COMMANDS.EmployeeModifyCommand;
+import com.spring.Employee.DTO.EmployeeBasicInfoDTO;
+import com.spring.Employee.DTO.EmployeeInfoDTO;
 import com.spring.ExceptionsCustom.CustomException;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,12 +48,12 @@ public class EmployeeController {
 
 
     @GetMapping("/employee/manager/recursive/{id}")
-    public List<EmployeeInfoDTO> getEmployeesUnderManagerRecursively(@PathVariable String id) throws CustomException {
+    public List<EmployeeBasicInfoDTO> getEmployeesUnderManagerRecursively(@PathVariable String id) throws CustomException {
         return employeeService.getManagerEmployeesRecursively(Long.parseLong(id));
     }
 
     @GetMapping("/employee/manager/{id}")
-    public List<EmployeeInfoDTO> getEmployeesUnderManager(@PathVariable String id) throws CustomException {
+    public List<EmployeeBasicInfoDTO> getEmployeesUnderManager(@PathVariable String id) throws CustomException {
         return employeeService.getManagerEmployees(Long.parseLong(id));
     }
 
@@ -68,8 +69,13 @@ public class EmployeeController {
 
 
     @PutMapping(value = "/profile/employee", produces = MediaType.APPLICATION_JSON_VALUE)
-    public EmployeeInfoDTO modifyEmployee(@RequestBody EmployeeModificationByLoggedUserCommand employeeModifyCommand) throws NotFoundException, CustomException {
+    public EmployeeInfoDTO modifyEmployeeByLoggedUSer(@RequestBody EmployeeModificationByLoggedUserCommand employeeModifyCommand) throws NotFoundException, CustomException {
         return employeeService.modifyEmployeeByLoggedUser(employeeModifyCommand);
+    }
+
+    @GetMapping(value = "/profile/employee/all-sub-employees", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<EmployeeBasicInfoDTO> getEmployeesUnderManagerByLoggedUser() throws CustomException {
+        return employeeService.getManagerEmployeesByLoggedUser();
     }
 
 }

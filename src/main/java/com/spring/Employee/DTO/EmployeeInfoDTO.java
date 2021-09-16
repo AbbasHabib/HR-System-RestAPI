@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class EmployeeInfoDTO implements IdOwner, IEmployeeInfoDTO{
+public class EmployeeInfoDTO implements IdOwner, IEmployeeInfoDTO {
     private Long id;
     private String firstName;
     private String lastName;
@@ -25,7 +25,7 @@ public class EmployeeInfoDTO implements IdOwner, IEmployeeInfoDTO{
     private Float netSalary;
     private EmployeeRole role;
     private EmployeePublicInfo managerPublicInfo;
-    private List<EmployeeInfoDTO> SubEmployeesBasicInfo;
+    private List<EmployeeBasicInfoDTO> SubEmployeesBasicInfo;
 
     public void setEmployeeToDTO(Employee employeeFullData) {
         ModelMapperGen.getModelMapperSingleton().map(employeeFullData, this);
@@ -35,15 +35,14 @@ public class EmployeeInfoDTO implements IdOwner, IEmployeeInfoDTO{
         }
         if (employeeFullData.getSubEmployees().size() > 0) {
             int i = 0;
-            SubEmployeesBasicInfo = new ArrayList<EmployeeInfoDTO>();
+            SubEmployeesBasicInfo = new ArrayList<EmployeeBasicInfoDTO>();
 
             for (Employee subEmployee : employeeFullData.getSubEmployees()) {
-                SubEmployeesBasicInfo.add(new EmployeeInfoDTO());
+                SubEmployeesBasicInfo.add(new EmployeeBasicInfoDTO());
                 ModelMapperGen.getModelMapperSingleton().map(subEmployee, SubEmployeesBasicInfo.get(i++));
             }
         }
     }
-
     public static List<EmployeeInfoDTO> setEmployeeToDTOList(List<Employee> employees) {
         List<EmployeeInfoDTO> employeesDTO = new ArrayList<>();
         for (Employee emp : employees) {
@@ -54,6 +53,8 @@ public class EmployeeInfoDTO implements IdOwner, IEmployeeInfoDTO{
         return employeesDTO;
     }
 
+
+
     public EmployeePublicInfo getManagerPublicInfo() {
         return managerPublicInfo;
     }
@@ -62,11 +63,11 @@ public class EmployeeInfoDTO implements IdOwner, IEmployeeInfoDTO{
         this.managerPublicInfo = managerPublicInfo;
     }
 
-    public List<EmployeeInfoDTO> getSubEmployeesBasicInfo() {
+    public List<EmployeeBasicInfoDTO> getSubEmployeesBasicInfo() {
         return SubEmployeesBasicInfo;
     }
 
-    public void setSubEmployeesBasicInfo(List<EmployeeInfoDTO> subEmployeesBasicInfo) {
+    public void setSubEmployeesBasicInfo(List<EmployeeBasicInfoDTO> subEmployeesBasicInfo) {
         SubEmployeesBasicInfo = subEmployeesBasicInfo;
     }
 
@@ -107,6 +108,10 @@ public class EmployeeInfoDTO implements IdOwner, IEmployeeInfoDTO{
         return gender;
     }
 
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
     public String getBirthDate() {
         return birthDate;
     }
@@ -121,10 +126,6 @@ public class EmployeeInfoDTO implements IdOwner, IEmployeeInfoDTO{
 
     public void setGraduationDate(Date graduationDate) {
         this.graduationDate = graduationDate;
-    }
-
-    public void setGender(Gender gender) {
-        this.gender = gender;
     }
 
     public Float getGrossSalary() {

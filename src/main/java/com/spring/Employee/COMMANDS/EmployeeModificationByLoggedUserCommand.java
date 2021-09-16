@@ -6,16 +6,11 @@ import com.spring.modelMapperGen.ModelMapperGen;
 
 import java.util.Date;
 
-public class EmployeeModificationByLoggedUserCommand {
+public class EmployeeModificationByLoggedUserCommand implements IEmployeeInfoCommand {
     private String firstName;
     private String lastName;
     private Date birthDate;
     private Gender gender;
-
-    public void commandToEmployee(Employee employee) {
-        ModelMapperGen.getModelMapperSingleton().map(this, employee);
-        System.out.println(employee);
-    }
 
     public EmployeeModificationByLoggedUserCommand() {
     }
@@ -25,6 +20,11 @@ public class EmployeeModificationByLoggedUserCommand {
         this.lastName = lastName;
         this.birthDate = birthDate;
         this.gender = gender;
+    }
+
+    public void commandToEmployee(Employee employee) {
+        ModelMapperGen.getModelMapperSingleton().map(this, employee);
+        System.out.println(employee);
     }
 
     public String getLastName() {

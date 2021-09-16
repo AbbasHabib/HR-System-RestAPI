@@ -1,6 +1,5 @@
 package com.spring.Employee.COMMANDS;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.spring.Department.Department;
 import com.spring.Employee.Employee;
 import com.spring.Employee.Gender;
@@ -10,7 +9,7 @@ import com.spring.modelMapperGen.ModelMapperGen;
 import java.util.Date;
 import java.util.Set;
 
-public class EmployeeModifyCommand {
+public class EmployeeModifyCommand implements IEmployeeInfoCommand {
     private String firstName;
     private String lastName;
     private Team team;

@@ -5,6 +5,7 @@ import com.spring.Employee.Attendance.AttendanceService;
 import com.spring.Employee.Attendance.AttendanceTable;
 import com.spring.Employee.COMMANDS.EmployeeModificationByLoggedUserCommand;
 import com.spring.Employee.COMMANDS.EmployeeModifyCommand;
+import com.spring.Employee.DTO.EmployeeBasicInfoDTO;
 import com.spring.Employee.DTO.EmployeeInfoDTO;
 import com.spring.ExceptionsCustom.CustomException;
 import com.spring.Security.UserCredentials;
@@ -111,8 +112,7 @@ public class EmployeeService {
         Employee employee = null;
         if (employeeId != null)
             employee = employeeRepository.findById(employeeId).orElse(null);
-        if(employee != null)
-        {
+        if (employee != null) {
             EmployeeInfoDTO employeeInfoDTO = new EmployeeInfoDTO();
             employeeInfoDTO.setEmployeeToDTO(employee);
             return employeeInfoDTO;
@@ -164,21 +164,33 @@ public class EmployeeService {
     }
 
 
-    public List<EmployeeInfoDTO> getManagerEmployees(long managerId) throws CustomException {
-        Employee manager = this.getEmployee(managerId);
-        if (manager == null)
-            return null;
-        List<Employee> employeesUnderManager = employeeRepository.findByManager(manager);
-        return EmployeeInfoDTO.setEmployeeToDTOList(employeesUnderManager);
+    public List<EmployeeBasicInfoDTO> getManagerEmployees(Long managerId) throws CustomException {
+        if (managerId == null)
+            throw new CustomException("Id is null");
+
+        List<Employee> employeesUnderManager = employeeRepository.findByManager_Id(managerId);
+        EmployeeBasicInfoDTO employeeBasicInfoDTO = new EmployeeBasicInfoDTO();
+
+        return employeeBasicInfoDTO.generateDTOListFromEmployeeList(employeesUnderManager);
     }
 
 
-    public List<EmployeeInfoDTO> getManagerEmployeesRecursively(long managerId) throws CustomException {
+    public List<EmployeeBasicInfoDTO> getManagerEmployeesByLoggedUser() throws CustomException {
+        Long managerId = getEmployeeIdFromAuthentication();
+        if (managerId == null)
+            throw new CustomException("this employee Id does not exist");
+        List<Employee> employeesUnderManager = employeeRepository.findByManager_Id(managerId);
+        EmployeeBasicInfoDTO employeeBasicInfoDTO = new EmployeeBasicInfoDTO();
+        return employeeBasicInfoDTO.generateDTOListFromEmployeeList(employeesUnderManager);
+    }
+
+    public List<EmployeeBasicInfoDTO> getManagerEmployeesRecursively(long managerId) throws CustomException {
         if (this.getEmployee(managerId) == null)
             return null;
         List<Employee> employeesUnderManagersRecursive = employeeRepository.findManagerEmployeesRecursivelyQueried(managerId);
+        EmployeeBasicInfoDTO employeeBasicInfoDTO = new EmployeeBasicInfoDTO();
 
-        return EmployeeInfoDTO.setEmployeeToDTOList(employeesUnderManagersRecursive);
+        return employeeBasicInfoDTO.generateDTOListFromEmployeeList(employeesUnderManagersRecursive);
     }
 
     public Long getEmployeeIdFromAuthentication() throws CustomException {

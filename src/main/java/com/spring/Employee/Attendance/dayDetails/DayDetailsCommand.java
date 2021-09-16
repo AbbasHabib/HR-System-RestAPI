@@ -12,20 +12,20 @@ public class DayDetailsCommand implements IdOwner {
     private boolean absent = false;
     private Float bonusInSalary = 0.0F;
 
-    public static void mapDayCommandToDayDetails(DayDetailsCommand dayDetailsCommand, DayDetails dayDetails) {
-        ModelMapperGen.getModelMapperSingleton().map(dayDetailsCommand, dayDetails);
-        dayDetails.setDate(LocalDate.parse(dayDetailsCommand.date));
-    }
-
-
     public DayDetailsCommand() {
     }
+
 
     public DayDetailsCommand(Long id, String date, boolean absent, Float bonusInSalary) {
         this.id = id;
         this.date = date;
         this.absent = absent;
         this.bonusInSalary = bonusInSalary;
+    }
+
+    public static void mapDayCommandToDayDetails(DayDetailsCommand dayDetailsCommand, DayDetails dayDetails) {
+        ModelMapperGen.getModelMapperSingleton().map(dayDetailsCommand, dayDetails);
+        dayDetails.setDate(LocalDate.parse(dayDetailsCommand.date));
     }
 
     public Long getId() {

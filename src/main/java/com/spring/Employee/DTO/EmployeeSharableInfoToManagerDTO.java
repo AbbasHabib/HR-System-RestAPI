@@ -8,9 +8,8 @@ import com.spring.Security.EmployeeRole;
 import com.spring.modelMapperGen.ModelMapperGen;
 
 import java.util.Date;
-import java.util.List;
 
-public class EmployeeSharableInfoToManagerDTO implements IEmployeeInfoDTO{
+public class EmployeeSharableInfoToManagerDTO implements IEmployeeInfoDTO {
     private Long id;
     private String firstName;
     private String lastName;

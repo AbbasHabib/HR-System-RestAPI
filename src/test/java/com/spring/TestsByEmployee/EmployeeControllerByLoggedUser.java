@@ -43,9 +43,7 @@ public class EmployeeControllerByLoggedUser extends IntegrationTest {
         ObjectMapper objectMapper = new ObjectMapper();
         String expectedEmployeeInfoDTOJSON = objectMapper.writeValueAsString(expectedEmployeeInfoDTO);
 
-
         Assertions.assertEquals(expectedEmployeeInfoDTOJSON, result.getResponse().getContentAsString());
-
     }
 
     @Test
@@ -77,6 +75,21 @@ public class EmployeeControllerByLoggedUser extends IntegrationTest {
         String responseJson = result.getResponse().getContentAsString();
         Assertions.assertEquals(expectedEmployeeInfoDTOJSON, responseJson);
     }
+
+
+    @Test
+    @DatabaseSetup("/ManagerWithSubEmployees.xml")
+    public void get_employee_employees_by_logged_user()
+    {
+
+
+    }
+
+
+
+
+
+
 }
 
 

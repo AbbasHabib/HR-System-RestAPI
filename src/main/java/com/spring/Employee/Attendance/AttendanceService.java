@@ -9,7 +9,6 @@ import com.spring.Employee.Attendance.monthDetails.MonthDTO;
 import com.spring.Employee.Attendance.monthDetails.MonthDetails;
 import com.spring.Employee.Attendance.monthDetails.MonthDetailsRepository;
 import com.spring.Employee.DTO.EmployeeSalaryDTO;
-import com.spring.Employee.Employee;
 import com.spring.Employee.SalariesYearsConstants;
 import com.spring.ExceptionsCustom.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,8 +52,7 @@ public class AttendanceService {
     }
 
 
-    public AttendanceTable saveToDb(AttendanceTable attendanceTable)
-    {
+    public AttendanceTable saveToDb(AttendanceTable attendanceTable) {
         return attendanceRepository.save(attendanceTable);
     }
 
@@ -92,11 +90,9 @@ public class AttendanceService {
         attendanceRepository.save(attendanceTable);
 
         DayDetailsDTO responseDayDetailsDTO = new DayDetailsDTO();
-        DayDetailsDTO.setDayDetailsToDTO(savedDayDetails,responseDayDetailsDTO);
+        DayDetailsDTO.setDayDetailsToDTO(savedDayDetails, responseDayDetailsDTO);
         return responseDayDetailsDTO;
     }
-
-
 
 
     public void injectDayAndMonthToAttendanceTable(DayDetails dayDetails, MonthDetails monthOfThatDay, AttendanceTable attendanceTable) {

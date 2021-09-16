@@ -4,6 +4,7 @@ import com.blazebit.persistence.CriteriaBuilderFactory;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.spring.Department.Department;
 import com.spring.Employee.COMMANDS.EmployeeModifyCommand;
+import com.spring.Employee.DTO.EmployeeBasicInfoDTO;
 import com.spring.Employee.DTO.EmployeeInfoDTO;
 import com.spring.Employee.Employee;
 import com.spring.Employee.Gender;
@@ -26,8 +27,6 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
-import static com.spring.Employee.DTO.EmployeeInfoDTO.setEmployeeToDTOList;
 import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
@@ -196,7 +195,8 @@ public class EmployeeControllerTests extends IntegrationTest {
     public void get_employees_under_manager_by_hr() throws Exception, CustomException {
         Long managerId = 101L;
         List<Employee> employeesUnderManager = getEmployeeRepository().findEmployeesByManager_Id(managerId);
-        List<EmployeeInfoDTO> EmployeeInfoDTO = setEmployeeToDTOList(employeesUnderManager);
+        EmployeeBasicInfoDTO employeeBasicInfoDTO = new EmployeeBasicInfoDTO();
+        List<EmployeeBasicInfoDTO> EmployeeInfoDTO = employeeBasicInfoDTO.generateDTOListFromEmployeeList(employeesUnderManager);
 
         ObjectMapper objectMapper = new ObjectMapper();
         String employeeDtoJson = objectMapper.writeValueAsString(EmployeeInfoDTO);
@@ -212,7 +212,7 @@ public class EmployeeControllerTests extends IntegrationTest {
     @DatabaseSetup("/data.xml")
     public void get_employees_recursively_by_hr() throws Exception, CustomException {
         long managerId = 101L;
-        List<EmployeeInfoDTO> employeesUnderManager = getEmployeeService().getManagerEmployeesRecursively(managerId);
+        List<EmployeeBasicInfoDTO> employeesUnderManager = getEmployeeService().getManagerEmployeesRecursively(managerId);
         if (employeesUnderManager == null) throw new NotFoundException("cant find manager");
 
         ObjectMapper objectMapper = new ObjectMapper();
