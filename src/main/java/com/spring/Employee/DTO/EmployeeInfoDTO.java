@@ -1,34 +1,47 @@
 package com.spring.Employee.DTO;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.spring.Department.Department;
 import com.spring.Employee.Employee;
 import com.spring.Employee.Gender;
 import com.spring.Security.EmployeeRole;
+import com.spring.interfaces.IdOwner;
 import com.spring.modelMapperGen.ModelMapperGen;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class EmployeeInfoDTO {
+public class EmployeeInfoDTO implements IdOwner, IEmployeeInfoDTO{
     private Long id;
     private String firstName;
     private String lastName;
     private String birthDate;
-    private String graduationDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private Date graduationDate;
     private Department department;
     private Gender gender;
     private Float grossSalary;
     private Float netSalary;
     private EmployeeRole role;
-//    private EmployeeBasicInfoDTO managerBasicInfo;
-//    private List<EmployeeInfoDTO> SubEmployeesBasicInfo;
+    private EmployeePublicInfo managerPublicInfo;
+    private List<EmployeeInfoDTO> SubEmployeesBasicInfo;
 
     public void setEmployeeToDTO(Employee employeeFullData) {
         ModelMapperGen.getModelMapperSingleton().map(employeeFullData, this);
-//        ModelMapperGen.getModelMapperSingleton().map(employeeFullData.getManager(), this.managerBasicInfo);
-//        ModelMapperGen.getModelMapperSingleton().map(employeeFullData.getSubEmployees(), DTO.SubEmployeesBasicInfo);
+        if (employeeFullData.getManager() != null) {
+            managerPublicInfo = new EmployeePublicInfo();
+            managerPublicInfo.setEmployeeToDTO(employeeFullData.getManager());
+        }
+        if (employeeFullData.getSubEmployees().size() > 0) {
+            int i = 0;
+            SubEmployeesBasicInfo = new ArrayList<EmployeeInfoDTO>();
 
+            for (Employee subEmployee : employeeFullData.getSubEmployees()) {
+                SubEmployeesBasicInfo.add(new EmployeeInfoDTO());
+                ModelMapperGen.getModelMapperSingleton().map(subEmployee, SubEmployeesBasicInfo.get(i++));
+            }
+        }
     }
 
     public static List<EmployeeInfoDTO> setEmployeeToDTOList(List<Employee> employees) {
@@ -41,6 +54,22 @@ public class EmployeeInfoDTO {
         return employeesDTO;
     }
 
+    public EmployeePublicInfo getManagerPublicInfo() {
+        return managerPublicInfo;
+    }
+
+    public void setManagerPublicInfo(EmployeePublicInfo managerPublicInfo) {
+        this.managerPublicInfo = managerPublicInfo;
+    }
+
+    public List<EmployeeInfoDTO> getSubEmployeesBasicInfo() {
+        return SubEmployeesBasicInfo;
+    }
+
+    public void setSubEmployeesBasicInfo(List<EmployeeInfoDTO> subEmployeesBasicInfo) {
+        SubEmployeesBasicInfo = subEmployeesBasicInfo;
+    }
+
     public Department getDepartment() {
         return department;
     }
@@ -49,13 +78,6 @@ public class EmployeeInfoDTO {
         this.department = department;
     }
 
-//    public EmployeeBasicInfoDTO getManagerBasicInfo() {
-//        return managerBasicInfo;
-//    }
-//
-//    public void setManagerBasicInfo(EmployeeBasicInfoDTO managerBasicInfo) {
-//        this.managerBasicInfo = managerBasicInfo;
-//    }
 
     public Long getId() {
         return id;
@@ -93,11 +115,11 @@ public class EmployeeInfoDTO {
         this.birthDate = birthDate;
     }
 
-    public String getGraduationDate() {
+    public Date getGraduationDate() {
         return graduationDate;
     }
 
-    public void setGraduationDate(String graduationDate) {
+    public void setGraduationDate(Date graduationDate) {
         this.graduationDate = graduationDate;
     }
 

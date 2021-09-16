@@ -4,8 +4,8 @@ import com.spring.Employee.Attendance.AttendanceRepository;
 import com.spring.Employee.Attendance.AttendanceService;
 import com.spring.Employee.Attendance.AttendanceTable;
 import com.spring.Employee.COMMANDS.EmployeeModificationByLoggedUserCommand;
-import com.spring.Employee.DTO.EmployeeInfoDTO;
 import com.spring.Employee.COMMANDS.EmployeeModifyCommand;
+import com.spring.Employee.DTO.EmployeeInfoDTO;
 import com.spring.ExceptionsCustom.CustomException;
 import com.spring.Security.UserCredentials;
 import com.spring.Security.UserCredentialsRepository;
@@ -105,11 +105,18 @@ public class EmployeeService {
         return null;
     }
 
-    public Employee getEmployeeByUserFromAuthentication() throws CustomException // send path parameter
+    public EmployeeInfoDTO getEmployeeByUserFromAuthentication() throws CustomException // send path parameter
     {
         Long employeeId = getEmployeeIdFromAuthentication();
+        Employee employee = null;
         if (employeeId != null)
-            return employeeRepository.findById(employeeId).orElse(null);
+            employee = employeeRepository.findById(employeeId).orElse(null);
+        if(employee != null)
+        {
+            EmployeeInfoDTO employeeInfoDTO = new EmployeeInfoDTO();
+            employeeInfoDTO.setEmployeeToDTO(employee);
+            return employeeInfoDTO;
+        }
         return null;
     }
 
@@ -177,7 +184,7 @@ public class EmployeeService {
     public Long getEmployeeIdFromAuthentication() throws CustomException {
         String userName = userPrincipalDetailsService.getLoggedUserName();
         UserCredentials userCredentials = userCredentialsRepository.findById(userName).orElse(null);
-        if(userCredentials == null)
+        if (userCredentials == null)
             throw new CustomException("this userName doesn't exist");
         return userCredentials.getEmployee().getId();
     }

@@ -26,6 +26,9 @@ public class EmployeeControllerByLoggedUser extends IntegrationTest {
         Long searchForId = 1L;
         Employee employeeExpected = getEmployeeService().getEmployee(searchForId);
 
+        EmployeeInfoDTO expectedEmployeeInfoDTO = new EmployeeInfoDTO();
+        expectedEmployeeInfoDTO.setEmployeeToDTO(employeeExpected);
+
         MvcResult result = getMockMvc().perform(MockMvcRequestBuilders.get("/profile/employee/")
                 .with(httpBasic("ahmed_habib_1", "123")))
                 .andExpect(status().isOk())
@@ -34,9 +37,14 @@ public class EmployeeControllerByLoggedUser extends IntegrationTest {
         // as departmentExpected id is currently null
         // we add the id coming from the response to it
         // then compare the expected object with the the object in DB
-        TestShortcutMethods<Employee> tester = new TestShortcutMethods<Employee>();
-        tester.setObjectIdFromResponseResult(result, employeeExpected);
-        tester.compareIdOwnerWithDataBase(employeeExpected, getEmployeeRepository());
+        TestShortcutMethods<EmployeeInfoDTO> tester = new TestShortcutMethods<EmployeeInfoDTO>();
+        tester.setObjectIdFromResponseResult(result, expectedEmployeeInfoDTO);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String expectedEmployeeInfoDTOJSON = objectMapper.writeValueAsString(expectedEmployeeInfoDTO);
+
+
+        Assertions.assertEquals(expectedEmployeeInfoDTOJSON, result.getResponse().getContentAsString());
 
     }
 
