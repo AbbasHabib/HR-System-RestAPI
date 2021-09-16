@@ -3,8 +3,9 @@ package com.spring.Employee;
 import com.spring.Employee.Attendance.AttendanceRepository;
 import com.spring.Employee.Attendance.AttendanceService;
 import com.spring.Employee.Attendance.AttendanceTable;
-import com.spring.Employee.DTO.EmployeeInfoOnlyDTO;
-import com.spring.Employee.DTO.EmployeeModifyCommand;
+import com.spring.Employee.COMMANDS.EmployeeModificationByLoggedUserCommand;
+import com.spring.Employee.DTO.EmployeeInfoDTO;
+import com.spring.Employee.COMMANDS.EmployeeModifyCommand;
 import com.spring.ExceptionsCustom.CustomException;
 import com.spring.Security.UserCredentials;
 import com.spring.Security.UserCredentialsRepository;
@@ -106,11 +107,7 @@ public class EmployeeService {
 
     public Employee getEmployeeByUserFromAuthentication() throws CustomException // send path parameter
     {
-        String userName = userPrincipalDetailsService.getLoggedUserName();
-        UserCredentials userCredentials = userCredentialsRepository.findById(userName).orElse(null);
-        if(userCredentials == null)
-            throw new CustomException("this userName doesn't exist");
-        Long employeeId = userCredentials.getEmployee().getId();
+        Long employeeId = getEmployeeIdFromAuthentication();
         if (employeeId != null)
             return employeeRepository.findById(employeeId).orElse(null);
         return null;
@@ -144,25 +141,44 @@ public class EmployeeService {
                 throw new CustomException("Infinite recursive relation between employee and manager");
             }
         }
-        employeeDto.dtoToEmployee(employeeDto, employeeToModify); //  copying new data to employee
+        employeeDto.commandToEmployee(employeeToModify); //  copying new data to employee
         return saveEmployee(employeeToModify);
     }
 
 
-    public List<EmployeeInfoOnlyDTO> getManagerEmployees(long managerId) throws CustomException {
+    public EmployeeInfoDTO modifyEmployeeByLoggedUser(EmployeeModificationByLoggedUserCommand employeeModificationCommand) throws NotFoundException, CustomException {
+        Long employeeId = getEmployeeIdFromAuthentication();
+        Employee employeeToModify = this.getEmployee(employeeId);
+        employeeModificationCommand.commandToEmployee(employeeToModify);
+        saveEmployee(employeeToModify);
+        EmployeeInfoDTO employeeInfoDTO = new EmployeeInfoDTO();
+        employeeInfoDTO.setEmployeeToDTO(employeeToModify);
+        return employeeInfoDTO;
+    }
+
+
+    public List<EmployeeInfoDTO> getManagerEmployees(long managerId) throws CustomException {
         Employee manager = this.getEmployee(managerId);
         if (manager == null)
             return null;
         List<Employee> employeesUnderManager = employeeRepository.findByManager(manager);
-        return EmployeeInfoOnlyDTO.setEmployeeToDTOList(employeesUnderManager);
+        return EmployeeInfoDTO.setEmployeeToDTOList(employeesUnderManager);
     }
 
 
-    public List<EmployeeInfoOnlyDTO> getManagerEmployeesRecursively(long managerId) throws CustomException {
+    public List<EmployeeInfoDTO> getManagerEmployeesRecursively(long managerId) throws CustomException {
         if (this.getEmployee(managerId) == null)
             return null;
         List<Employee> employeesUnderManagersRecursive = employeeRepository.findManagerEmployeesRecursivelyQueried(managerId);
 
-        return EmployeeInfoOnlyDTO.setEmployeeToDTOList(employeesUnderManagersRecursive);
+        return EmployeeInfoDTO.setEmployeeToDTOList(employeesUnderManagersRecursive);
+    }
+
+    public Long getEmployeeIdFromAuthentication() throws CustomException {
+        String userName = userPrincipalDetailsService.getLoggedUserName();
+        UserCredentials userCredentials = userCredentialsRepository.findById(userName).orElse(null);
+        if(userCredentials == null)
+            throw new CustomException("this userName doesn't exist");
+        return userCredentials.getEmployee().getId();
     }
 }

@@ -106,7 +106,7 @@ public class AttendanceIntegrationTest extends IntegrationTest {
         ObjectMapper objectMapper = new ObjectMapper();
         String monthDetailsJson = objectMapper.writeValueAsString(monthDTOFromDb); // converts employee object to JSON string
 
-        MvcResult result = getMockMvc().perform(MockMvcRequestBuilders.get("/attendance/month/employee/" + employeeId + "/" + monthToFind.toString())
+        MvcResult result = getMockMvc().perform(MockMvcRequestBuilders.get("/attendance/month/employee/" + employeeId + "/" + monthToFind)
                 .with(httpBasic("abbas_habib_1", "123")))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -160,7 +160,7 @@ public class AttendanceIntegrationTest extends IntegrationTest {
 
     @Test
     @Transactional
-    @DatabaseSetup( value = "/absencesTestsThroughYearTables.xml")
+    @DatabaseSetup(value = "/absencesTestsThroughYearTables.xml")
     public void generate_random_absences_at_year_by_hr() throws CustomException, Exception {
         int[] absencesInYearMonths = new int[12];
         long employeeId = 101L;
@@ -177,17 +177,16 @@ public class AttendanceIntegrationTest extends IntegrationTest {
                     String dayDate = year + "-" + monthStr + "-" + dayStr;
                     DayDetailsCommand dayDetailsToAddCommand = new DayDetailsCommand(null, dayDate, true, 0.0f);
                     getAttendanceService().addNewDayDataAndSave(employeeId, dayDetailsToAddCommand);
-                    absencesInYearMonths[month-1] += 1;
+                    absencesInYearMonths[month - 1] += 1;
                 }
             }
         }
 
         ObjectMapper objectMapper = new ObjectMapper();
 
-        for(int monthInYear=1;monthInYear<=12;monthInYear++)
-        {
+        for (int monthInYear = 1; monthInYear <= 12; monthInYear++) {
             monthStr = (monthInYear < 10) ? "0" + monthInYear : monthInYear + "";
-            String monthDate =year+"-"+monthStr+"-10";
+            String monthDate = year + "-" + monthStr + "-10";
 
             MvcResult result = getMockMvc().perform(MockMvcRequestBuilders.get("/attendance/month/employee/" + employeeId + "/" + monthDate)
                     .with(httpBasic("abbas_habib_1", "123")))
@@ -198,7 +197,7 @@ public class AttendanceIntegrationTest extends IntegrationTest {
             JSONObject jsonObject = new JSONObject(resultContent);
             int absenceFromDB = jsonObject.getInt("absences");
 
-            assertEquals(absencesInYearMonths[monthInYear-1], absenceFromDB);
+            assertEquals(absencesInYearMonths[monthInYear - 1], absenceFromDB);
         }
     }
 

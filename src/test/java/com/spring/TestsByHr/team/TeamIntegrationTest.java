@@ -2,7 +2,7 @@ package com.spring.TestsByHr.team;
 
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.spring.Employee.DTO.EmployeeInfoOnlyDTO;
+import com.spring.Employee.DTO.EmployeeInfoDTO;
 import com.spring.IntegrationTest;
 import com.spring.Team.Team;
 import com.spring.TestsByHr.testShortcuts.TestShortcutMethods;
@@ -51,7 +51,7 @@ public class TeamIntegrationTest extends IntegrationTest {
     @Transactional
     public void getTeamEmployees_by_hr() throws Exception {
         Long teamId = 101L;
-        List<EmployeeInfoOnlyDTO> teamEmployees = getTeamService().getTeamEmployees(teamId);
+        List<EmployeeInfoDTO> teamEmployees = getTeamService().getTeamEmployees(teamId);
         if (teamEmployees == null)
             throw new NotFoundException("no employees in this team");
 

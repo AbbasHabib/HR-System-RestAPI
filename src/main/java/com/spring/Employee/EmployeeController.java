@@ -1,7 +1,8 @@
 package com.spring.Employee;
 
-import com.spring.Employee.DTO.EmployeeInfoOnlyDTO;
-import com.spring.Employee.DTO.EmployeeModifyCommand;
+import com.spring.Employee.COMMANDS.EmployeeModificationByLoggedUserCommand;
+import com.spring.Employee.DTO.EmployeeInfoDTO;
+import com.spring.Employee.COMMANDS.EmployeeModifyCommand;
 import com.spring.ExceptionsCustom.CustomException;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,15 +47,14 @@ public class EmployeeController {
 
 
     @GetMapping("/employee/manager/recursive/{id}")
-    public List<EmployeeInfoOnlyDTO> getEmployeesUnderManagerRecursively(@PathVariable String id) throws CustomException {
+    public List<EmployeeInfoDTO> getEmployeesUnderManagerRecursively(@PathVariable String id) throws CustomException {
         return employeeService.getManagerEmployeesRecursively(Long.parseLong(id));
     }
 
     @GetMapping("/employee/manager/{id}")
-    public List<EmployeeInfoOnlyDTO> getEmployeesUnderManager(@PathVariable String id) throws CustomException {
+    public List<EmployeeInfoDTO> getEmployeesUnderManager(@PathVariable String id) throws CustomException {
         return employeeService.getManagerEmployees(Long.parseLong(id));
     }
-
 
 
     @GetMapping(value = "/profile/employee", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -64,6 +64,12 @@ public class EmployeeController {
         if (emp == null)
             throw new CustomException("this user Id does not exits");
         return emp;
+    }
+
+
+    @PutMapping(value = "/profile/employee", produces = MediaType.APPLICATION_JSON_VALUE)
+    public EmployeeInfoDTO modifyEmployee(@RequestBody EmployeeModificationByLoggedUserCommand employeeModifyCommand) throws NotFoundException, CustomException {
+        return employeeService.modifyEmployeeByLoggedUser(employeeModifyCommand);
     }
 
 }

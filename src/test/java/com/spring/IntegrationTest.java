@@ -11,7 +11,6 @@ import com.spring.Security.UserCredentialsRepository;
 import com.spring.Team.TeamRepository;
 import com.spring.Team.TeamService;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -34,37 +33,27 @@ import org.springframework.test.web.servlet.MockMvc;
 public class IntegrationTest {
 
     @Autowired
+    UserCredentialsRepository userCredentialsRepository;
+    @Autowired
     private AttendanceService attendanceService;
-
     @Autowired
     private DayDetailsRepository dayDetailsRepository;
-
     @Autowired
     private EmployeeService employeeService;
-
     @Autowired
     private DepartmentService departmentService;
-
     @Autowired
     private DepartmentRepository departmentRepository;
-
     @Autowired
     private EmployeeRepository employeeRepository;
-
     @Autowired
     private TeamService teamService;
-
     @Autowired
     private MockMvc mockMvc;
-
     @Autowired
     private TeamRepository teamRepository;
-
     @Autowired
     private JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    UserCredentialsRepository userCredentialsRepository;
 
     @AfterEach
     public void deleteAllTables() {

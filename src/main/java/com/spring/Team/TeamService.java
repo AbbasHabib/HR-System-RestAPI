@@ -1,6 +1,6 @@
 package com.spring.Team;
 
-import com.spring.Employee.DTO.EmployeeInfoOnlyDTO;
+import com.spring.Employee.DTO.EmployeeInfoDTO;
 import com.spring.Employee.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,7 @@ public class TeamService {
         return teamRepository.findById(id).isPresent() ? teamRepository.findById(id).get() : null;
     }
 
-    public List<EmployeeInfoOnlyDTO> getTeamEmployees(Long id) {
+    public List<EmployeeInfoDTO> getTeamEmployees(Long id) {
         assert id != null;
         Team team = this.getTeam(id);
         if (team == null)
@@ -27,7 +27,7 @@ public class TeamService {
 
         List<Employee> employeesInTeam = new ArrayList<Employee>(team.getEmployees());
 
-        return EmployeeInfoOnlyDTO.setEmployeeToDTOList(employeesInTeam);
+        return EmployeeInfoDTO.setEmployeeToDTOList(employeesInTeam);
     }
 
     public Team addTeam(Team team) {

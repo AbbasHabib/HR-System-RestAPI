@@ -18,7 +18,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class DepartmentIntegrationTest extends IntegrationTest {
 
 
-
     @Test
     @DatabaseSetup("/data.xml")
     public void add_department_by_hr() throws Exception, CustomException {

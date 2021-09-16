@@ -2,7 +2,6 @@ package com.spring.Employee;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.spring.Department.Department;
 import com.spring.Employee.Attendance.AttendanceTable;
 import com.spring.Security.EmployeeRole;
@@ -27,7 +26,7 @@ public class Employee implements IdOwner {
     @Column(name = "national_id", nullable = false, unique = true)
     private String nationalId;
     @Column(name = "first_name", nullable = false)
-    private String firstname;
+    private String firstName;
     @Column(name = "last_name", nullable = false)
     private String lastName;
     @Column(name = "degree")
@@ -94,17 +93,25 @@ public class Employee implements IdOwner {
 
 
     public String getUserName() {
-        return this.firstname + "_" + this.lastName + "_" + this.id;
+        return this.firstName + "_" + this.lastName + "_" + this.id;
     }
 
 
     public void setFullName(String name) {
         String[] fullName = name.split("\\s+");
         if (fullName.length >= 1) {
-            this.firstname = fullName[0];
+            this.firstName = fullName[0];
             if (fullName.length >= 2)
                 this.lastName = fullName[1];
         }
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public EmployeeRole getRole() {
@@ -147,8 +154,8 @@ public class Employee implements IdOwner {
         this.nationalId = nationalId;
     }
 
-    public String getFirstname() {
-        return firstname;
+    public String getFirstName() {
+        return firstName;
     }
 
     public String getLastName() {

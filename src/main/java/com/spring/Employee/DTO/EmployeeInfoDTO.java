@@ -1,6 +1,5 @@
 package com.spring.Employee.DTO;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.spring.Department.Department;
 import com.spring.Employee.Employee;
 import com.spring.Employee.Gender;
@@ -11,32 +10,52 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class EmployeeInfoOnlyDTO {
+public class EmployeeInfoDTO {
     private Long id;
     private String firstName;
     private String lastName;
-    private Date birthDate;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Date graduationDate;
+    private String birthDate;
+    private String graduationDate;
+    private Department department;
     private Gender gender;
     private Float grossSalary;
     private Float netSalary;
     private EmployeeRole role;
+//    private EmployeeBasicInfoDTO managerBasicInfo;
+//    private List<EmployeeInfoDTO> SubEmployeesBasicInfo;
 
-    public static void setEmployeeToDTO(Employee e, EmployeeInfoOnlyDTO DTO) {
-        ModelMapperGen.getModelMapperSingleton().map(e, DTO);
+    public void setEmployeeToDTO(Employee employeeFullData) {
+        ModelMapperGen.getModelMapperSingleton().map(employeeFullData, this);
+//        ModelMapperGen.getModelMapperSingleton().map(employeeFullData.getManager(), this.managerBasicInfo);
+//        ModelMapperGen.getModelMapperSingleton().map(employeeFullData.getSubEmployees(), DTO.SubEmployeesBasicInfo);
+
     }
 
-    public static List<EmployeeInfoOnlyDTO> setEmployeeToDTOList(List<Employee> employees) {
-        List<EmployeeInfoOnlyDTO> employeesDTO = new ArrayList<>();
+    public static List<EmployeeInfoDTO> setEmployeeToDTOList(List<Employee> employees) {
+        List<EmployeeInfoDTO> employeesDTO = new ArrayList<>();
         for (Employee emp : employees) {
-            EmployeeInfoOnlyDTO empDTO = new EmployeeInfoOnlyDTO();
-            setEmployeeToDTO(emp, empDTO);
+            EmployeeInfoDTO empDTO = new EmployeeInfoDTO();
+            empDTO.setEmployeeToDTO(emp);
             employeesDTO.add(empDTO);
         }
         return employeesDTO;
     }
 
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
+
+//    public EmployeeBasicInfoDTO getManagerBasicInfo() {
+//        return managerBasicInfo;
+//    }
+//
+//    public void setManagerBasicInfo(EmployeeBasicInfoDTO managerBasicInfo) {
+//        this.managerBasicInfo = managerBasicInfo;
+//    }
 
     public Long getId() {
         return id;
@@ -62,24 +81,24 @@ public class EmployeeInfoOnlyDTO {
         this.lastName = lastName;
     }
 
-    public Date getBirthDate() {
+    public Gender getGender() {
+        return gender;
+    }
+
+    public String getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(Date birthDate) {
+    public void setBirthDate(String birthDate) {
         this.birthDate = birthDate;
     }
 
-    public Date getGraduationDate() {
+    public String getGraduationDate() {
         return graduationDate;
     }
 
-    public void setGraduationDate(Date graduationDate) {
+    public void setGraduationDate(String graduationDate) {
         this.graduationDate = graduationDate;
-    }
-
-    public Gender getGender() {
-        return gender;
     }
 
     public void setGender(Gender gender) {

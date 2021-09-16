@@ -1,6 +1,6 @@
 package com.spring.Team;
 
-import com.spring.Employee.DTO.EmployeeInfoOnlyDTO;
+import com.spring.Employee.DTO.EmployeeInfoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +14,7 @@ public class TeamController {
     private TeamService teamService;
 
     @GetMapping(value = "/employees/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<EmployeeInfoOnlyDTO> getTeamEmployees(@PathVariable String id) {
+    public List<EmployeeInfoDTO> getTeamEmployees(@PathVariable String id) {
         return teamService.getTeamEmployees(Long.parseLong(id));
     }
 

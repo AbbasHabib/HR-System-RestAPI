@@ -3,16 +3,16 @@ package com.spring.TestsByHr.employee;
 import com.blazebit.persistence.CriteriaBuilderFactory;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.spring.Department.Department;
-import com.spring.Employee.DTO.EmployeeInfoOnlyDTO;
-import com.spring.Employee.DTO.EmployeeModifyCommand;
+import com.spring.Employee.COMMANDS.EmployeeModifyCommand;
+import com.spring.Employee.DTO.EmployeeInfoDTO;
 import com.spring.Employee.Employee;
 import com.spring.Employee.Gender;
 import com.spring.ExceptionsCustom.CustomException;
 import com.spring.IntegrationTest;
 import com.spring.Security.UserCredentialsRepository;
 import com.spring.Team.Team;
-import com.spring.YearAndTimeGenerator;
 import com.spring.TestsByHr.testShortcuts.TestShortcutMethods;
+import com.spring.YearAndTimeGenerator;
 import javassist.NotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -27,7 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import static com.spring.Employee.DTO.EmployeeInfoOnlyDTO.setEmployeeToDTOList;
+import static com.spring.Employee.DTO.EmployeeInfoDTO.setEmployeeToDTOList;
 import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
@@ -35,7 +35,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class EmployeeControllerTests extends IntegrationTest {
-
 
 
     @Autowired
@@ -78,7 +77,7 @@ public class EmployeeControllerTests extends IntegrationTest {
         String employeeJson = objectMapper.writeValueAsString(employeeToAdd); // converts employee object to JSON string
 
         // POST request (.post("/employee/")) takes to be a Json of employee in request Body
-        MvcResult response =  getMockMvc().perform(MockMvcRequestBuilders.post("/employee/")
+        MvcResult response = getMockMvc().perform(MockMvcRequestBuilders.post("/employee/")
                 .with(httpBasic("abbas_habib_1", "123"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(employeeJson))
@@ -179,7 +178,7 @@ public class EmployeeControllerTests extends IntegrationTest {
         if (manager == null) throw new NotFoundException("manager not found");
         employeeModificationDto.setManager(manager);
 
-        employeeModificationDto.dtoToEmployee(employeeModificationDto, employeeToModify); // copy modified data to employee
+        employeeModificationDto.commandToEmployee(employeeToModify); // copy modified data to employee
 
         ObjectMapper objectMapper = new ObjectMapper();
         String employeeDtoJson = objectMapper.writeValueAsString(employeeModificationDto);
@@ -197,10 +196,10 @@ public class EmployeeControllerTests extends IntegrationTest {
     public void get_employees_under_manager_by_hr() throws Exception, CustomException {
         Long managerId = 101L;
         List<Employee> employeesUnderManager = getEmployeeRepository().findEmployeesByManager_Id(managerId);
-        List<EmployeeInfoOnlyDTO> EmployeeInfoOnlyDTO = setEmployeeToDTOList(employeesUnderManager);
+        List<EmployeeInfoDTO> EmployeeInfoDTO = setEmployeeToDTOList(employeesUnderManager);
 
         ObjectMapper objectMapper = new ObjectMapper();
-        String employeeDtoJson = objectMapper.writeValueAsString(EmployeeInfoOnlyDTO);
+        String employeeDtoJson = objectMapper.writeValueAsString(EmployeeInfoDTO);
 
         getMockMvc().perform(MockMvcRequestBuilders.get("/employee/manager/" + managerId)
                 .with(httpBasic("abbas_habib_10", "123")))
@@ -213,7 +212,7 @@ public class EmployeeControllerTests extends IntegrationTest {
     @DatabaseSetup("/data.xml")
     public void get_employees_recursively_by_hr() throws Exception, CustomException {
         long managerId = 101L;
-        List<EmployeeInfoOnlyDTO> employeesUnderManager = getEmployeeService().getManagerEmployeesRecursively(managerId);
+        List<EmployeeInfoDTO> employeesUnderManager = getEmployeeService().getManagerEmployeesRecursively(managerId);
         if (employeesUnderManager == null) throw new NotFoundException("cant find manager");
 
         ObjectMapper objectMapper = new ObjectMapper();

@@ -1,16 +1,8 @@
 package com.spring.Employee.Attendance.monthDetails;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.spring.Employee.Attendance.AttendanceTable;
-import com.spring.Employee.DTO.EmployeeInfoOnlyDTO;
-import com.spring.Employee.Employee;
 import com.spring.modelMapperGen.ModelMapperGen;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import java.sql.Date;
-import java.time.LocalDate;
 
 public class MonthDTO {
     private Integer id;

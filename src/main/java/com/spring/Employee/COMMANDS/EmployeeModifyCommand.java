@@ -1,4 +1,4 @@
-package com.spring.Employee.DTO;
+package com.spring.Employee.COMMANDS;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.spring.Department.Department;
@@ -11,21 +11,19 @@ import java.util.Date;
 import java.util.Set;
 
 public class EmployeeModifyCommand {
-    private String lastName;
     private String firstName;
+    private String lastName;
     private Team team;
     private Date birthDate;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date graduationDate;
     private Gender gender;
     private Department department;
     private Employee manager;
     private Set<Employee> employees;
     private Float grossSalary;
-    private Float netSalary;
 
-    public void dtoToEmployee(EmployeeModifyCommand dto, Employee employee) {
-        ModelMapperGen.getModelMapperSingleton().map(dto, employee);
+    public void commandToEmployee(Employee employee) {
+        ModelMapperGen.getModelMapperSingleton().map(this, employee);
     }
 
     public String getLastName() {
@@ -108,11 +106,4 @@ public class EmployeeModifyCommand {
         this.grossSalary = grossSalary;
     }
 
-    public Float getNetSalary() {
-        return netSalary;
-    }
-
-    public void setNetSalary(Float netSalary) {
-        this.netSalary = netSalary;
-    }
 }
