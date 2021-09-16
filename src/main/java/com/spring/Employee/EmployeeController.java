@@ -11,22 +11,21 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/employee")
 public class EmployeeController {
     @Autowired
     EmployeeService employeeService;
 
-    @PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/employee/", produces = MediaType.APPLICATION_JSON_VALUE)
     public Employee addEmployee(@RequestBody Employee employee) throws Exception, CustomException {
         return employeeService.addEmployee(employee);
     }
 
-    @GetMapping("/")
+    @GetMapping("/employee/")
     public List<Employee> getEmployees() {
         return employeeService.getEmployees();
     }
 
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/employee/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Employee getEmployee(@PathVariable String id) throws CustomException // send path parameter
     {
         Employee emp = employeeService.getEmployee(Long.parseLong(id));
@@ -35,26 +34,36 @@ public class EmployeeController {
         return emp;
     }
 
-    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/employee/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public boolean deleteEmployee(@PathVariable String id) throws CustomException {
         return employeeService.deleteEmployee(Long.parseLong(id));
     }
 
-    @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/employee/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Employee modifyEmployee(@PathVariable String id, @RequestBody EmployeeModifyCommand employeeModifyCommand) throws NotFoundException, CustomException {
         return employeeService.modifyEmployee(Long.parseLong(id), employeeModifyCommand);
     }
 
 
-    @GetMapping("manager/recursive/{id}")
+    @GetMapping("/employee/manager/recursive/{id}")
     public List<EmployeeInfoOnlyDTO> getEmployeesUnderManagerRecursively(@PathVariable String id) throws CustomException {
         return employeeService.getManagerEmployeesRecursively(Long.parseLong(id));
     }
 
-    @GetMapping("manager/{id}")
+    @GetMapping("/employee/manager/{id}")
     public List<EmployeeInfoOnlyDTO> getEmployeesUnderManager(@PathVariable String id) throws CustomException {
         return employeeService.getManagerEmployees(Long.parseLong(id));
     }
 
+
+
+    @GetMapping(value = "/profile/employee", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Employee getEmployeeByLoggedUser() throws CustomException // send path parameter
+    {
+        Employee emp = employeeService.getEmployeeByUserFromAuthentication();
+        if (emp == null)
+            throw new CustomException("this user Id does not exits");
+        return emp;
+    }
 
 }

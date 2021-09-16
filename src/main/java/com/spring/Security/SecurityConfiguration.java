@@ -32,7 +32,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.
-                authorizeRequests().antMatchers("/employee/**").hasRole(EmployeeRole.HR.name())
+        authorizeRequests()
+                .antMatchers("/profile/**").hasRole(EmployeeRole.EMPLOYEE.name())
+                .antMatchers("/employee/**").hasRole(EmployeeRole.HR.name())
                 .antMatchers("/team/**").hasRole(EmployeeRole.HR.name())
                 .antMatchers("/department/**").hasRole(EmployeeRole.HR.name())
                 .antMatchers("/attendance/**").hasRole(EmployeeRole.HR.name())

@@ -8,6 +8,7 @@ import com.spring.Employee.DTO.EmployeeModifyCommand;
 import com.spring.ExceptionsCustom.CustomException;
 import com.spring.Security.UserCredentials;
 import com.spring.Security.UserCredentialsRepository;
+import com.spring.Security.UserPrincipalDetailsService;
 import com.spring.YearAndTimeGenerator;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,8 @@ public class EmployeeService {
     private UserCredentialsRepository userCredentialsRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private UserPrincipalDetailsService userPrincipalDetailsService;
 
     public Employee addEmployee(Employee employee) throws Exception, CustomException {
         if (employeeRepository.findEmployeeByNationalId(employee.getNationalId()).isPresent())
@@ -100,6 +103,19 @@ public class EmployeeService {
             return employeeRepository.findById(employeeId).orElse(null);
         return null;
     }
+
+    public Employee getEmployeeByUserFromAuthentication() throws CustomException // send path parameter
+    {
+        String userName = userPrincipalDetailsService.getLoggedUserName();
+        UserCredentials userCredentials = userCredentialsRepository.findById(userName).orElse(null);
+        if(userCredentials == null)
+            throw new CustomException("this userName doesn't exist");
+        Long employeeId = userCredentials.getEmployee().getId();
+        if (employeeId != null)
+            return employeeRepository.findById(employeeId).orElse(null);
+        return null;
+    }
+
 
     public Float calculateNetSalary(Float employeeSalary) {
         if (employeeSalary != null && employeeSalary != 0) {
