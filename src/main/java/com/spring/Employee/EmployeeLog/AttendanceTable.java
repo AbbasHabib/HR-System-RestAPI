@@ -1,8 +1,8 @@
-package com.spring.Employee.Attendance;
+package com.spring.Employee.EmployeeLog;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.spring.Employee.Attendance.dayDetails.DayDetails;
-import com.spring.Employee.Attendance.monthDetails.MonthDetails;
+import com.spring.Employee.EmployeeLog.dayDetails.DayDetails;
+import com.spring.Employee.EmployeeLog.monthDetails.MonthDetails;
 import com.spring.Employee.Employee;
 import com.spring.Employee.SalariesYearsConstants;
 
@@ -27,9 +27,7 @@ public class AttendanceTable {
     private List<DayDetails> dailyDetailsList;
     @OneToMany(mappedBy = "attendanceTable") // one manager to many employees
     private List<MonthDetails> monthDetailsList;
-
     private Integer initialWorkingYears = 0;
-    private Integer salaryRaise = 0;
 
     public AttendanceTable(Employee employee) {
         this.employee = employee;
@@ -79,14 +77,6 @@ public class AttendanceTable {
 
     public void setMonthDetailsList(List<MonthDetails> monthDetailsList) {
         this.monthDetailsList = monthDetailsList;
-    }
-
-    public Integer getSalaryRaise() {
-        return salaryRaise;
-    }
-
-    public void setSalaryRaise(Integer salaryRaise) {
-        this.salaryRaise = salaryRaise;
     }
 
     public Long getId() {

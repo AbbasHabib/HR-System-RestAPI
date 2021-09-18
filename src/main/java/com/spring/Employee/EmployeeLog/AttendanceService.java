@@ -1,13 +1,13 @@
-package com.spring.Employee.Attendance;
+package com.spring.Employee.EmployeeLog;
 
 
-import com.spring.Employee.Attendance.dayDetails.DayDetails;
-import com.spring.Employee.Attendance.dayDetails.DayDetailsCommand;
-import com.spring.Employee.Attendance.dayDetails.DayDetailsDTO;
-import com.spring.Employee.Attendance.dayDetails.DayDetailsRepository;
-import com.spring.Employee.Attendance.monthDetails.MonthDTO;
-import com.spring.Employee.Attendance.monthDetails.MonthDetails;
-import com.spring.Employee.Attendance.monthDetails.MonthDetailsRepository;
+import com.spring.Employee.EmployeeLog.dayDetails.DayDetails;
+import com.spring.Employee.EmployeeLog.dayDetails.DayDetailsCommand;
+import com.spring.Employee.EmployeeLog.dayDetails.DayDetailsDTO;
+import com.spring.Employee.EmployeeLog.dayDetails.DayDetailsRepository;
+import com.spring.Employee.EmployeeLog.monthDetails.MonthDTO;
+import com.spring.Employee.EmployeeLog.monthDetails.MonthDetails;
+import com.spring.Employee.EmployeeLog.monthDetails.MonthDetailsRepository;
 import com.spring.Employee.DTO.EmployeeSalaryDTO;
 import com.spring.Employee.SalariesYearsConstants;
 import com.spring.ExceptionsCustom.CustomException;
@@ -191,7 +191,7 @@ public class AttendanceService {
                 monthInquiring.getGrossSalaryOfMonth()
                 , absenceDaysTillMonth
                 , monthBonuses
-                , attendanceTable.getSalaryRaise()
+                , attendanceTable.getEmployee().getSalaryRaise()
                 , permittedAbsenceDays
                 , date.getMonth().length(true)
         );

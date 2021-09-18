@@ -3,7 +3,7 @@ package com.spring.Employee;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.spring.Department.Department;
-import com.spring.Employee.Attendance.AttendanceTable;
+import com.spring.Employee.EmployeeLog.AttendanceTable;
 import com.spring.Security.EmployeeRole;
 import com.spring.Security.UserCredentials;
 import com.spring.Team.Team;
@@ -77,6 +77,8 @@ public class Employee implements IdOwner {
     @Enumerated(EnumType.STRING)
     private EmployeeRole role;
 
+    private Float SalaryRaise = 0f;
+
     public Employee() {
     }
 
@@ -104,6 +106,14 @@ public class Employee implements IdOwner {
             if (fullName.length >= 2)
                 this.lastName = fullName[1];
         }
+    }
+
+    public Float getSalaryRaise() {
+        return SalaryRaise;
+    }
+
+    public void setSalaryRaise(Float salaryRaise) {
+        SalaryRaise = salaryRaise;
     }
 
     public EmployeeRole getRole() {

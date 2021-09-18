@@ -2,12 +2,12 @@ package com.spring.TestsByHr.attendance;
 
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.spring.Employee.Attendance.AttendanceTable;
-import com.spring.Employee.Attendance.dayDetails.DayDetails;
-import com.spring.Employee.Attendance.dayDetails.DayDetailsCommand;
-import com.spring.Employee.Attendance.dayDetails.DayDetailsDTO;
-import com.spring.Employee.Attendance.monthDetails.MonthDTO;
-import com.spring.Employee.Attendance.monthDetails.MonthDetails;
+import com.spring.Employee.EmployeeLog.AttendanceTable;
+import com.spring.Employee.EmployeeLog.dayDetails.DayDetails;
+import com.spring.Employee.EmployeeLog.dayDetails.DayDetailsCommand;
+import com.spring.Employee.EmployeeLog.dayDetails.DayDetailsDTO;
+import com.spring.Employee.EmployeeLog.monthDetails.MonthDTO;
+import com.spring.Employee.EmployeeLog.monthDetails.MonthDetails;
 import com.spring.ExceptionsCustom.CustomException;
 import com.spring.IntegrationTest;
 import com.spring.TestsByHr.testShortcuts.TestShortcutMethods;
@@ -77,7 +77,6 @@ public class AttendanceIntegrationTest extends IntegrationTest {
         AttendanceTable expectedAttendanceTable = new AttendanceTable();
         expectedAttendanceTable.setId(102L);
         expectedAttendanceTable.setInitialWorkingYears(9);
-        expectedAttendanceTable.setSalaryRaise(0);
         expectedAttendanceTable.setMonthDetailsList(new ArrayList<MonthDetails>());
         expectedAttendanceTable.setDailyDetailsList(new ArrayList<DayDetails>());
         expectedAttendanceTable.setEmployee(getEmployeeService().getEmployee(employeeId));

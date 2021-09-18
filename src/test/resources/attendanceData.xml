@@ -1,20 +1,20 @@
 <dataset>
 
-    <attendance_table id="1" initial_working_years="9" salary_raise="0"/>
+    <attendance_table id="1" initial_working_years="9" />
 
     <employee id="1"  first_name="abbas" graduation_date="2012-01-01" last_name="habib" national_id="123" gross_salary="100000" gender="MALE" role="HR" attendance_table_id="1"/>
 
     <user_credentials user_name="abbas_habib_1" password="$2a$12$AMsg.IGBdS3blFFG7K58wu3D2MuI/fPtvcKMD/FWLFHgA75b3mOcy" employee_id="1"  user_role="HR" />
 
 
-    <attendance_table id="101" initial_working_years="9" salary_raise="0"/>
+    <attendance_table id="101" initial_working_years="9" />
     <employee id="101"  first_name="Big"  graduation_date="2012-01-01" last_name="rami" attendance_table_id="101" national_id="10101001" gross_salary="100000" gender="MALE" role="EMPLOYEE" />
     <month_details id="1" absences="2" bonuses="2" date="2021-01-01" attendance_table_id="101" gross_salary_of_month="100000" />
 
 
 
 
-    <attendance_table id="102" initial_working_years="9" salary_raise="0"/>
+    <attendance_table id="102" initial_working_years="9" />
     <employee id="102"  first_name="big"  graduation_date="2012-01-01" last_name="rami" attendance_table_id="102" national_id="123456" gross_salary="100000" gender="MALE" role="EMPLOYEE" />
     <user_credentials user_name="big_rami_102" password="$2a$10$kbfnWWAGkLKW0vEJ.Sn93ubh3N2dmRu8Jk3n1tlmMsIj6RRLygB0S" employee_id="102"  user_role="EMPLOYEE" />
 

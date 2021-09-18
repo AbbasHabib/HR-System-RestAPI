@@ -1,8 +1,8 @@
 package com.spring.Employee;
 
-import com.spring.Employee.Attendance.AttendanceRepository;
-import com.spring.Employee.Attendance.AttendanceService;
-import com.spring.Employee.Attendance.AttendanceTable;
+import com.spring.Employee.EmployeeLog.AttendanceRepository;
+import com.spring.Employee.EmployeeLog.AttendanceService;
+import com.spring.Employee.EmployeeLog.AttendanceTable;
 import com.spring.Employee.COMMANDS.EmployeeModificationByLoggedUserCommand;
 import com.spring.Employee.COMMANDS.EmployeeModifyCommand;
 import com.spring.Employee.DTO.EmployeeBasicInfoDTO;

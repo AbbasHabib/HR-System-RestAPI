@@ -1,7 +1,7 @@
-package com.spring.Employee.Attendance.monthDetails;
+package com.spring.Employee.EmployeeLog.monthDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.spring.Employee.Attendance.AttendanceTable;
+import com.spring.Employee.EmployeeLog.AttendanceTable;
 
 import javax.persistence.*;
 import java.time.LocalDate;

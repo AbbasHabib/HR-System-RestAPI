@@ -1,4 +1,4 @@
-package com.spring.Employee.Attendance.monthDetails;
+package com.spring.Employee.EmployeeLog.monthDetails;
 
 import com.spring.modelMapperGen.ModelMapperGen;
 

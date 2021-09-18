@@ -1,4 +1,3 @@
--- auto-generated definition
 create table department
 (
     id   bigint auto_increment
@@ -7,7 +6,7 @@ create table department
 );
 
 
--- auto-generated definition
+
 create table team
 (
     id        bigint auto_increment
@@ -16,26 +15,26 @@ create table team
 );
 
 
--- auto-generated definition
+
 create table attendance_table
 (
     id                    bigint auto_increment
         primary key,
-    initial_working_years int null,
-    salary_raise          int null
+    initial_working_years int null
 );
 
 
--- auto-generated definition
+
 create table employee
 (
     id                  bigint auto_increment
         primary key,
+    salary_raise        float null,
     birth_date          date null,
     degree              varchar(255) null,
     first_name          varchar(255) not null,
     gender              varchar(255) null,
-    graduation_date     date null,
+    graduation_date     datetime(6) null,
     gross_salary        float null,
     last_name           varchar(255) not null,
     national_id         varchar(255) not null,
@@ -59,7 +58,7 @@ create table employee
 );
 
 
--- auto-generated definition
+
 create table user_credentials
 (
     user_name   varchar(255) not null
@@ -72,7 +71,7 @@ create table user_credentials
 );
 
 
--- auto-generated definition
+
 create table day_details
 (
     id                  bigint auto_increment
@@ -86,7 +85,7 @@ create table day_details
 );
 
 
--- auto-generated definition
+
 create table month_details
 (
     id                    int auto_increment

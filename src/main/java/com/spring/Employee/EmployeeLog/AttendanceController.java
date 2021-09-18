@@ -1,9 +1,9 @@
-package com.spring.Employee.Attendance;
+package com.spring.Employee.EmployeeLog;
 
-import com.spring.Employee.Attendance.dayDetails.DayDetailsCommand;
-import com.spring.Employee.Attendance.dayDetails.DayDetailsDTO;
-import com.spring.Employee.Attendance.monthDetails.MonthDTO;
-import com.spring.Employee.Attendance.monthDetails.MonthDetails;
+import com.spring.Employee.EmployeeLog.dayDetails.DayDetailsCommand;
+import com.spring.Employee.EmployeeLog.dayDetails.DayDetailsDTO;
+import com.spring.Employee.EmployeeLog.monthDetails.MonthDTO;
+import com.spring.Employee.EmployeeLog.monthDetails.MonthDetails;
 import com.spring.Employee.DTO.EmployeeSalaryDTO;
 import com.spring.ExceptionsCustom.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,11 +34,11 @@ public class AttendanceController {
         return attendanceService.getMonthDetailsDTO(Long.parseLong(id), LocalDate.parse(date));
     }
 
+
     @GetMapping(value = "/absence/employee/{id}/{date}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Integer absenceDaysInYearTillMonth(@PathVariable String id, @PathVariable String date) throws CustomException {
         return attendanceService.calcAbsenceDaysInYearTillMonth(Long.parseLong(id), LocalDate.parse(date));
     }
-
 
     @GetMapping(value = "/salary/employee/{id}/{date}", produces = MediaType.APPLICATION_JSON_VALUE)
     public EmployeeSalaryDTO getEmployeeSalaryAtMonth(@PathVariable String id, @PathVariable String date) throws CustomException {
