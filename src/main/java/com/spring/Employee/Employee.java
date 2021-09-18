@@ -82,6 +82,19 @@ public class Employee implements IdOwner {
     public Employee() {
     }
 
+    public Employee(Long id, String nationalId, String firstName, String lastName, Date graduationDate, Gender gender, Employee manager, Float grossSalary, Float netSalary, EmployeeRole role) {
+        this.id = id;
+        this.nationalId = nationalId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.graduationDate = graduationDate;
+        this.gender = gender;
+        this.manager = manager;
+        this.grossSalary = grossSalary;
+        this.netSalary = netSalary;
+        this.role = role;
+    }
+
     public boolean shiftSubordinates() {
         Employee managerToShiftTo = this.getManager();
         if (managerToShiftTo == null) {
