@@ -51,7 +51,6 @@ public class EmployeeControllerTests extends IntegrationTest {
 
         Float expectedNetSalary = getEmployeeService().calculateNetSalary(employeeToAdd.getGrossSalary());
 
-
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = simpleDateFormat.parse("2012-01-02");
         employeeToAdd.setGraduationDate(date);

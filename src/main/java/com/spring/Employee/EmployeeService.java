@@ -34,16 +34,21 @@ public class EmployeeService {
     @Autowired
     private UserPrincipalDetailsService userPrincipalDetailsService;
 
-    public Employee addEmployee(Employee employee) throws Exception, CustomException {
+    public EmployeeInfoDTO addEmployee(Employee employee) throws Exception, CustomException {
         if (employeeRepository.findEmployeeByNationalId(employee.getNationalId()).isPresent())
             throw new CustomException(">>national id already exists?");
 
+        Employee employeeToAdd = null;
 
         if (employee.getId() == null)
-            return saveEmployee(employee);
-        if (this.getEmployee(employee.getId()) == null)
-            return saveEmployee(employee);
-
+            employeeToAdd = saveEmployee(employee);
+        else if (this.getEmployee(employee.getId()) == null)
+            employeeToAdd = saveEmployee(employee);
+        if(employeeToAdd != null) {
+            EmployeeInfoDTO employeeInfoDTO = new EmployeeInfoDTO();
+            employeeInfoDTO.setEmployeeToDTO(employeeToAdd);
+            return employeeInfoDTO;
+        }
         throw new CustomException(">>User ID already exists");
     }
 
@@ -95,6 +100,13 @@ public class EmployeeService {
     }
 
 
+    public List<EmployeeBasicInfoDTO> getEmployeesInDTO() {
+        List<Employee> employees = employeeRepository.findAll();
+        EmployeeBasicInfoDTO employeeBasicInfoDTO = new EmployeeBasicInfoDTO();
+        return employeeBasicInfoDTO.generateDTOListFromEmployeeList(employees);
+    }
+
+
     public List<Employee> getEmployees() {
         return employeeRepository.findAll();
     }
@@ -104,6 +116,19 @@ public class EmployeeService {
         if (employeeId != null)
             return employeeRepository.findById(employeeId).orElse(null);
         return null;
+    }
+
+    public EmployeeInfoDTO getEmployeeInDTO(Long employeeId) throws CustomException {
+        Employee employeeFound = null;
+        if (employeeId != null)
+            employeeFound = employeeRepository.findById(employeeId).orElse(null);
+        if(employeeFound != null)
+        {
+            EmployeeInfoDTO employeeInfoDTO = new EmployeeInfoDTO();
+            employeeInfoDTO.setEmployeeToDTO(employeeFound);
+            return employeeInfoDTO;
+        }
+        throw new CustomException("did not find this employee id");
     }
 
     public EmployeeInfoDTO getEmployeeByUserFromAuthentication() throws CustomException // send path parameter
@@ -139,7 +164,7 @@ public class EmployeeService {
         return employeesUnderCurrentEmployee.stream().noneMatch(o -> o.getId().equals(goToManager.getId())); // if it contains this manager then he cant be my manager
     }
 
-    public Employee modifyEmployee(long employeeId, EmployeeModifyCommand employeeDto) throws NotFoundException, CustomException {
+    public EmployeeInfoDTO modifyEmployee(long employeeId, EmployeeModifyCommand employeeDto) throws NotFoundException, CustomException {
         Employee employeeToModify = this.getEmployee(employeeId);
         if (employeeDto.getManager() != null) // if employee manager is modified check problem could occur
         {
@@ -149,7 +174,15 @@ public class EmployeeService {
             }
         }
         employeeDto.commandToEmployee(employeeToModify); //  copying new data to employee
-        return saveEmployee(employeeToModify);
+        Employee employeeModified = null;
+        employeeModified = saveEmployee(employeeToModify);
+        if(employeeModified != null) {
+            EmployeeInfoDTO employeeInfoDTO = new EmployeeInfoDTO();
+            employeeInfoDTO.setEmployeeToDTO(employeeModified);
+            return employeeInfoDTO;
+        }
+        throw new CustomException("could not modify employee");
+
     }
 
 

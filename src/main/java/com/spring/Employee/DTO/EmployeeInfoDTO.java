@@ -33,16 +33,19 @@ public class EmployeeInfoDTO implements IdOwner, IEmployeeInfoDTO {
             managerPublicInfo = new EmployeePublicInfo();
             managerPublicInfo.setEmployeeToDTO(employeeFullData.getManager());
         }
-        if (employeeFullData.getSubEmployees().size() > 0) {
-            int i = 0;
-            SubEmployeesBasicInfo = new ArrayList<EmployeeBasicInfoDTO>();
+        if (employeeFullData.getSubEmployees() != null) {
+            if (employeeFullData.getSubEmployees().size() > 0) {
+                int i = 0;
+                SubEmployeesBasicInfo = new ArrayList<EmployeeBasicInfoDTO>();
 
-            for (Employee subEmployee : employeeFullData.getSubEmployees()) {
-                SubEmployeesBasicInfo.add(new EmployeeBasicInfoDTO());
-                ModelMapperGen.getModelMapperSingleton().map(subEmployee, SubEmployeesBasicInfo.get(i++));
+                for (Employee subEmployee : employeeFullData.getSubEmployees()) {
+                    SubEmployeesBasicInfo.add(new EmployeeBasicInfoDTO());
+                    ModelMapperGen.getModelMapperSingleton().map(subEmployee, SubEmployeesBasicInfo.get(i++));
+                }
             }
         }
     }
+
     public static List<EmployeeInfoDTO> setEmployeeToDTOList(List<Employee> employees) {
         List<EmployeeInfoDTO> employeesDTO = new ArrayList<>();
         for (Employee emp : employees) {
@@ -52,7 +55,6 @@ public class EmployeeInfoDTO implements IdOwner, IEmployeeInfoDTO {
         }
         return employeesDTO;
     }
-
 
 
     public EmployeePublicInfo getManagerPublicInfo() {

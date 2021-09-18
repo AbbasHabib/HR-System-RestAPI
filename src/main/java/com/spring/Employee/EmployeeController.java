@@ -18,22 +18,19 @@ public class EmployeeController {
     EmployeeService employeeService;
 
     @PostMapping(value = "/employee/", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Employee addEmployee(@RequestBody Employee employee) throws Exception, CustomException {
+    public EmployeeInfoDTO addEmployee(@RequestBody Employee employee) throws Exception, CustomException {
         return employeeService.addEmployee(employee);
     }
 
     @GetMapping("/employee/")
-    public List<Employee> getEmployees() {
-        return employeeService.getEmployees();
+    public List<EmployeeBasicInfoDTO> getEmployees() {
+        return employeeService.getEmployeesInDTO();
     }
 
     @GetMapping(value = "/employee/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Employee getEmployee(@PathVariable String id) throws CustomException // send path parameter
+    public EmployeeInfoDTO getEmployee(@PathVariable String id) throws CustomException // send path parameter
     {
-        Employee emp = employeeService.getEmployee(Long.parseLong(id));
-        if (emp == null)
-            throw new CustomException("this user Id does not exits");
-        return emp;
+        return employeeService.getEmployeeInDTO(Long.parseLong(id));
     }
 
     @DeleteMapping(value = "/employee/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -42,7 +39,7 @@ public class EmployeeController {
     }
 
     @PutMapping(value = "/employee/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Employee modifyEmployee(@PathVariable String id, @RequestBody EmployeeModifyCommand employeeModifyCommand) throws NotFoundException, CustomException {
+    public EmployeeInfoDTO modifyEmployee(@PathVariable String id, @RequestBody EmployeeModifyCommand employeeModifyCommand) throws NotFoundException, CustomException {
         return employeeService.modifyEmployee(Long.parseLong(id), employeeModifyCommand);
     }
 
