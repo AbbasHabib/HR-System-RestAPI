@@ -1,11 +1,8 @@
 package com.spring.Department;
 
-import com.spring.Employee.Employee;
 import com.spring.Employee.EmployeeService;
 import com.spring.ExceptionsCustom.CustomException;
-import com.spring.Team.Team;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,7 +15,7 @@ public class DepartmentService {
     private EmployeeService employeeService;
 
     public Department addDepartment(Department department) throws CustomException {
-        if(department.getName() == null)
+        if (department.getName() == null)
             throw new CustomException("departmentName cannot be null!");
         return departmentRepository.save(department);
     }
@@ -27,7 +24,7 @@ public class DepartmentService {
         return departmentRepository.findAll();
     }
 
-    public Department getDepartment(Long id) throws Exception, CustomException {
+    public Department getDepartment(Long id) throws Exception {
         if (departmentRepository.findById(id).isPresent())
             return departmentRepository.findById(id).get();
         else
@@ -36,7 +33,7 @@ public class DepartmentService {
 
     public Department getDepartmentByLoggedUser() throws Exception {
         Department department = employeeService.getEmployeeByLoggedUser().getDepartment();
-        if(department == null)
+        if (department == null)
             throw new CustomException("this employee is not enrolled in a department!");
         return getDepartment(department.getId());
     }

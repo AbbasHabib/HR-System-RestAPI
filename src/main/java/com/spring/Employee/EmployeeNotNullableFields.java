@@ -16,25 +16,23 @@ public class EmployeeNotNullableFields {
     private EmployeeRole role;
 
 
-    public void mapFromEmployee(Employee employee) {
-        ModelMapperGen.getModelMapperSingleton().map(employee, this);
-    }
-
     public EmployeeNotNullableFields(Employee employee) {
         ModelMapperGen.getModelMapperSingleton().map(employee, this);
 
     }
 
+    public EmployeeNotNullableFields() {
+    }
+
+    public void mapFromEmployee(Employee employee) {
+        ModelMapperGen.getModelMapperSingleton().map(employee, this);
+    }
 
     public String checkNull() throws IllegalAccessException {
         for (Field f : getClass().getDeclaredFields())
             if (f.get(this) == null)
                 return f.getName();
         return "";
-    }
-
-
-    public EmployeeNotNullableFields() {
     }
 
     public String getNationalId() {

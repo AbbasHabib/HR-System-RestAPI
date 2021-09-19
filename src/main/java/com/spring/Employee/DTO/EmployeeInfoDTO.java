@@ -28,6 +28,15 @@ public class EmployeeInfoDTO implements IdOwner, IEmployeeInfoDTO {
     private EmployeePublicInfo managerPublicInfo;
     private List<EmployeeBasicInfoDTO> SubEmployeesBasicInfo;
 
+    public static List<EmployeeInfoDTO> setEmployeeToDTOList(List<Employee> employees) {
+        List<EmployeeInfoDTO> employeesDTO = new ArrayList<>();
+        for (Employee emp : employees) {
+            EmployeeInfoDTO empDTO = new EmployeeInfoDTO();
+            empDTO.setEmployeeToDTO(emp);
+            employeesDTO.add(empDTO);
+        }
+        return employeesDTO;
+    }
 
     public void setEmployeeToDTO(Employee employeeFullData) {
         ModelMapperGen.getModelMapperSingleton().map(employeeFullData, this);
@@ -48,17 +57,6 @@ public class EmployeeInfoDTO implements IdOwner, IEmployeeInfoDTO {
         }
     }
 
-    public static List<EmployeeInfoDTO> setEmployeeToDTOList(List<Employee> employees) {
-        List<EmployeeInfoDTO> employeesDTO = new ArrayList<>();
-        for (Employee emp : employees) {
-            EmployeeInfoDTO empDTO = new EmployeeInfoDTO();
-            empDTO.setEmployeeToDTO(emp);
-            employeesDTO.add(empDTO);
-        }
-        return employeesDTO;
-    }
-
-
     public EmployeePublicInfo getManagerPublicInfo() {
         return managerPublicInfo;
     }
@@ -71,16 +69,16 @@ public class EmployeeInfoDTO implements IdOwner, IEmployeeInfoDTO {
         return SubEmployeesBasicInfo;
     }
 
+    public void setSubEmployeesBasicInfo(List<EmployeeBasicInfoDTO> subEmployeesBasicInfo) {
+        SubEmployeesBasicInfo = subEmployeesBasicInfo;
+    }
+
     public Float getSalaryRaise() {
         return salaryRaise;
     }
 
     public void setSalaryRaise(Float salaryRaise) {
         this.salaryRaise = salaryRaise;
-    }
-
-    public void setSubEmployeesBasicInfo(List<EmployeeBasicInfoDTO> subEmployeesBasicInfo) {
-        SubEmployeesBasicInfo = subEmployeesBasicInfo;
     }
 
     public Department getDepartment() {

@@ -31,7 +31,7 @@ public class UserPrincipalDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserCredentials userCredentials = this.userCredentialsRepository.findById(username).orElse(null);
-        if(userCredentials == null)
+        if (userCredentials == null)
             throw new UsernameNotFoundException("userName not found!");
         return new UserPrincipal(userCredentials);
     }

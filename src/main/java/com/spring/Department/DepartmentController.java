@@ -22,12 +22,12 @@ public class DepartmentController {
     }
 
     @GetMapping("/department/{id}")
-    public Department getDepartment(@PathVariable String id) throws Exception, CustomException {
+    public Department getDepartment(@PathVariable String id) throws Exception {
         return departmentService.getDepartment(Long.parseLong(id));
     }
 
     @GetMapping("/profile/department")
-    public Department getDepartmentByLoggedUser() throws Exception, CustomException {
+    public Department getDepartmentByLoggedUser() throws Exception {
         return departmentService.getDepartmentByLoggedUser();
     }
 }

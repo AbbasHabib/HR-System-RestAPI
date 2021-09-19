@@ -1,6 +1,7 @@
 package com.spring.Employee.EmployeeLog;
 
 
+import com.spring.Employee.DTO.EmployeeSalaryDTO;
 import com.spring.Employee.EmployeeLog.dayDetails.DayDetails;
 import com.spring.Employee.EmployeeLog.dayDetails.DayDetailsCommand;
 import com.spring.Employee.EmployeeLog.dayDetails.DayDetailsDTO;
@@ -8,7 +9,6 @@ import com.spring.Employee.EmployeeLog.dayDetails.DayDetailsRepository;
 import com.spring.Employee.EmployeeLog.monthDetails.MonthDTO;
 import com.spring.Employee.EmployeeLog.monthDetails.MonthDetails;
 import com.spring.Employee.EmployeeLog.monthDetails.MonthDetailsRepository;
-import com.spring.Employee.DTO.EmployeeSalaryDTO;
 import com.spring.Employee.EmployeeService;
 import com.spring.Employee.SalariesYearsConstants;
 import com.spring.ExceptionsCustom.CustomException;
@@ -21,15 +21,13 @@ import java.util.List;
 @Service
 public class AttendanceService {
     @Autowired
+    EmployeeService employeeService;
+    @Autowired
     private AttendanceRepository attendanceRepository;
-
     @Autowired
     private DayDetailsRepository dailyAttendanceRepository;
-
     @Autowired
     private MonthDetailsRepository monthDetailsRepository;
-    @Autowired
-    EmployeeService employeeService;
 
     public AttendanceTable findAttendanceTable(Long attendanceTableId) {
         // if no table with this id is found return null

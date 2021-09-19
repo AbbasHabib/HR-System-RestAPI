@@ -19,7 +19,7 @@ public class EmployeeController {
     EmployeeService employeeService;
 
     @PostMapping(value = "/employee/", produces = MediaType.APPLICATION_JSON_VALUE)
-    public EmployeeInfoDTO addEmployee(@RequestBody Employee employee) throws Exception, CustomException {
+    public EmployeeInfoDTO addEmployee(@RequestBody Employee employee) throws Exception {
         return employeeService.addEmployee(employee);
     }
 

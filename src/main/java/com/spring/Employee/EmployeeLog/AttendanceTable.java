@@ -1,9 +1,9 @@
 package com.spring.Employee.EmployeeLog;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.spring.Employee.Employee;
 import com.spring.Employee.EmployeeLog.dayDetails.DayDetails;
 import com.spring.Employee.EmployeeLog.monthDetails.MonthDetails;
-import com.spring.Employee.Employee;
 import com.spring.Employee.SalariesYearsConstants;
 
 import javax.persistence.*;

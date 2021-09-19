@@ -32,7 +32,7 @@ public class EmployeeService {
     @Autowired
     private UserPrincipalDetailsService userPrincipalDetailsService;
 
-    public EmployeeInfoDTO addEmployee(Employee employee) throws Exception, CustomException {
+    public EmployeeInfoDTO addEmployee(Employee employee) throws Exception {
         Employee employeeToAdd = null;
         this.handleEmployeeInsertionExceptions(employee);
 
@@ -159,7 +159,7 @@ public class EmployeeService {
 
 
     public Float calculateNetSalary(Float employeeSalary, Float salaryRaise) {
-        if(salaryRaise == null)
+        if (salaryRaise == null)
             salaryRaise = 0f;
         if (employeeSalary != null && employeeSalary != 0) {
             float empSalary = (employeeSalary + salaryRaise) * (1 - SalariesYearsConstants.TAXES) - SalariesYearsConstants.DEDUCTED_INSURANCE;
@@ -274,7 +274,6 @@ public class EmployeeService {
     {
         String userName = userPrincipalDetailsService.getLoggedUserName();
         UserCredentials userCredentials = userCredentialsRepository.findById(userName).orElse(null);
-        Employee employee = null;
         if (userCredentials == null)
             throw new CustomException("this userName doesn't exist");
         return userCredentials.getEmployee();

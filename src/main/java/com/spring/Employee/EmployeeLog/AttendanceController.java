@@ -1,10 +1,10 @@
 package com.spring.Employee.EmployeeLog;
 
+import com.spring.Employee.DTO.EmployeeSalaryDTO;
 import com.spring.Employee.EmployeeLog.dayDetails.DayDetailsCommand;
 import com.spring.Employee.EmployeeLog.dayDetails.DayDetailsDTO;
 import com.spring.Employee.EmployeeLog.monthDetails.MonthDTO;
 import com.spring.Employee.EmployeeLog.monthDetails.MonthDetails;
-import com.spring.Employee.DTO.EmployeeSalaryDTO;
 import com.spring.ExceptionsCustom.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -56,7 +56,7 @@ public class AttendanceController {
     }
 
     @GetMapping(value = "profile/salary/{date}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public EmployeeSalaryDTO getEmployeeSalaryAtMonthByLoggedUser( @PathVariable String date) throws CustomException {
+    public EmployeeSalaryDTO getEmployeeSalaryAtMonthByLoggedUser(@PathVariable String date) throws CustomException {
         return attendanceService.employeeSalaryAtMonthByLoggedUser(LocalDate.parse(date));
     }
 

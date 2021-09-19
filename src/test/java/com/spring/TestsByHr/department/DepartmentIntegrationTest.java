@@ -4,7 +4,6 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.spring.Department.Department;
 import com.spring.ExceptionsCustom.CustomException;
 import com.spring.IntegrationTest;
-import com.spring.Team.Team;
 import com.spring.TestsByHr.testShortcuts.TestShortcutMethods;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -15,7 +14,6 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Objects;
 
-import static org.junit.Assert.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -25,7 +23,7 @@ public class DepartmentIntegrationTest extends IntegrationTest {
 
     @Test
     @DatabaseSetup("/data.xml")
-    public void add_department_by_hr() throws Exception, CustomException {
+    public void add_department_by_hr() throws Exception {
         Department departmentExpected = new Department();
         departmentExpected.setName("el a7bab");
         ObjectMapper objectMapper = new ObjectMapper();
@@ -48,7 +46,7 @@ public class DepartmentIntegrationTest extends IntegrationTest {
 
     @Test
     @DatabaseSetup("/data.xml")
-    public void get_department_by_hr() throws Exception, CustomException {
+    public void get_department_by_hr() throws Exception {
         Long searchForId = 101L;
 
         Department employee = getDepartmentService().getDepartment(searchForId);
@@ -76,7 +74,6 @@ public class DepartmentIntegrationTest extends IntegrationTest {
                 .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof CustomException))
                 .andExpect(result -> Assertions.assertEquals("departmentName cannot be null!", Objects.requireNonNull(result.getResolvedException()).getMessage()));
     }
-
 
 
 }

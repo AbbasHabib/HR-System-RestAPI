@@ -2,29 +2,18 @@ package com.spring.TestsByEmployee;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.spring.Employee.COMMANDS.EmployeeModificationByLoggedUserCommand;
-import com.spring.Employee.DTO.EmployeeBasicInfoDTO;
 import com.spring.Employee.DTO.EmployeeInfoDTO;
 import com.spring.Employee.Employee;
 import com.spring.Employee.Gender;
 import com.spring.ExceptionsCustom.CustomException;
 import com.spring.IntegrationTest;
-import com.spring.Security.EmployeeRole;
 import com.spring.TestsByHr.testShortcuts.TestShortcutMethods;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.util.Date;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -33,7 +22,7 @@ public class EmployeeControllerByLoggedUser extends IntegrationTest {
 
     @Test
     @DatabaseSetup("/EmployeeWithCredentials.xml")
-    public void get_employee_with_id_by_logged_user() throws Exception, CustomException {
+    public void get_employee_with_id_by_logged_user() throws Exception {
         Long searchForId = 1L;
         Employee employeeExpected = getEmployeeService().getEmployee(searchForId);
 
@@ -59,7 +48,7 @@ public class EmployeeControllerByLoggedUser extends IntegrationTest {
 
     @Test
     @DatabaseSetup("/EmployeeWithCredentials.xml")
-    public void modify_employee_by_logged_user() throws Exception, CustomException {
+    public void modify_employee_by_logged_user() throws Exception {
         Long searchForId = 1L;
         Employee employeeExpected = getEmployeeService().getEmployee(searchForId);
         EmployeeModificationByLoggedUserCommand modificationCommand = new EmployeeModificationByLoggedUserCommand();
@@ -86,9 +75,6 @@ public class EmployeeControllerByLoggedUser extends IntegrationTest {
         String responseJson = result.getResponse().getContentAsString();
         Assertions.assertEquals(expectedEmployeeInfoDTOJSON, responseJson);
     }
-
-
-
 
 
 }

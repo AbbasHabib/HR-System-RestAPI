@@ -33,7 +33,7 @@ public class AttendanceIntegrationTest extends IntegrationTest {
     @Test
     @Transactional
     @DatabaseSetup("/attendanceData.xml")
-    public void add_new_day_data_by_hr() throws Exception, CustomException {
+    public void add_new_day_data_by_hr() throws Exception {
         long employeeId = 101L;
         AttendanceTable attendanceTable = getAttendanceService().getAttendanceTableByEmployeeId(employeeId);
 
@@ -72,7 +72,7 @@ public class AttendanceIntegrationTest extends IntegrationTest {
     @Test
     @Transactional
     @DatabaseSetup("/attendanceData.xml")
-    public void get_attendance_with_employee_id_table_by_hr() throws CustomException, Exception {
+    public void get_attendance_with_employee_id_table_by_hr() throws Exception {
         long employeeId = 102;
         AttendanceTable expectedAttendanceTable = new AttendanceTable();
         expectedAttendanceTable.setId(102L);
@@ -96,7 +96,7 @@ public class AttendanceIntegrationTest extends IntegrationTest {
     @Test
     @Transactional
     @DatabaseSetup("/attendanceData.xml")
-    public void get_month_data_by_hr() throws Exception, CustomException {
+    public void get_month_data_by_hr() throws Exception {
         long employeeId = 101L;
 
         LocalDate monthToFind = LocalDate.of(2021, 1, 1);
@@ -120,7 +120,7 @@ public class AttendanceIntegrationTest extends IntegrationTest {
     @Test
     @Transactional
     @DatabaseSetup("/attendanceData.xml")
-    public void date_insertion_and_getting_absence_days_in_year_till_month_by_hr() throws Exception, CustomException {
+    public void date_insertion_and_getting_absence_days_in_year_till_month_by_hr() throws Exception {
         String expectedAbsence = "6";
         long employeeId = 101L;
         String month = "2020-01-01";
@@ -160,7 +160,7 @@ public class AttendanceIntegrationTest extends IntegrationTest {
     @Test
     @Transactional
     @DatabaseSetup(value = "/absencesTestsThroughYearTables.xml")
-    public void generate_random_absences_at_year_by_hr() throws CustomException, Exception {
+    public void generate_random_absences_at_year_by_hr() throws Exception {
         int[] absencesInYearMonths = new int[12];
         long employeeId = 101L;
         String dayStr;

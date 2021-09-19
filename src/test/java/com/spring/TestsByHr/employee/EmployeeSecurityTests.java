@@ -15,18 +15,15 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.Objects;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class EmployeeSecurityTests extends IntegrationTest{
+public class EmployeeSecurityTests extends IntegrationTest {
 
     @Test
     @Transactional
     @DatabaseSetup("/data.xml")
-    public void modify_employee_by_hr_non_existing_user_un_authorized() throws Exception, CustomException {
+    public void modify_employee_by_hr_non_existing_user_un_authorized() throws Exception {
         // Initial values of the employee
         Long employeeId = 103L; // employee id to modify
         Employee employeeToModify = getEmployeeService().getEmployee(employeeId);
@@ -72,7 +69,7 @@ public class EmployeeSecurityTests extends IntegrationTest{
     @Test
     @Transactional
     @DatabaseSetup("/data.xml")
-    public void modify_employee_by_hr_existing_user_incorrect_password_un_authorized() throws Exception, CustomException {
+    public void modify_employee_by_hr_existing_user_incorrect_password_un_authorized() throws Exception {
         // Initial values of the employee
         Long employeeId = 103L; // employee id to modify
         Employee employeeToModify = getEmployeeService().getEmployee(employeeId);

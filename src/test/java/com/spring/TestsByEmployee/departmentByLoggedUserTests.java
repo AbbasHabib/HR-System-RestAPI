@@ -9,9 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
@@ -22,7 +20,7 @@ public class departmentByLoggedUserTests extends IntegrationTest {
 
     @Test
     @DatabaseSetup("/data.xml")
-    public void get_department_by_logged_employee() throws Exception, CustomException {
+    public void get_department_by_logged_employee() throws Exception {
         Long departmentId = 102L;
         Employee employeeInDepartment = getEmployeeService().getEmployee(105L);
 
@@ -41,7 +39,6 @@ public class departmentByLoggedUserTests extends IntegrationTest {
                 .andExpect(content().json(expectedDepartmentJSON))
                 .andExpect(status().isOk());
     }
-
 
 
 }

@@ -5,8 +5,10 @@
 
     <attendance_table id="1" initial_working_years="9"/>
 
-    <employee id="1"  first_name="abbas" last_name="habib" graduation_date="2012-01-01" attendance_table_id="1" national_id="123" gross_salary="100000" gender="MALE" department_id="101" team_id="101" role="HR" />
+    <employee id="1" first_name="abbas" last_name="habib" graduation_date="2012-01-01" attendance_table_id="1"
+              national_id="123" gross_salary="100000" gender="MALE" department_id="101" team_id="101" role="HR"/>
 
-    <user_credentials user_name="abbas_habib_1" password="$2a$12$AMsg.IGBdS3blFFG7K58wu3D2MuI/fPtvcKMD/FWLFHgA75b3mOcy" employee_id="1"  user_role="HR" />
+    <user_credentials user_name="abbas_habib_1" password="$2a$12$AMsg.IGBdS3blFFG7K58wu3D2MuI/fPtvcKMD/FWLFHgA75b3mOcy"
+                      employee_id="1" user_role="HR"/>
 
 </dataset>

@@ -46,7 +46,7 @@ public class EmployeeControllerTests extends IntegrationTest {
 
     @Test
     @DatabaseSetup("/hr-only.xml")
-    public void add_employee_by_hr() throws Exception, CustomException {
+    public void add_employee_by_hr() throws Exception {
         Employee employeeToAdd = new Employee();
         employeeToAdd.setFullName("ahmed safty");
         employeeToAdd.setGender(Gender.MALE);
@@ -108,7 +108,7 @@ public class EmployeeControllerTests extends IntegrationTest {
 
     @Test
     @DatabaseSetup("/data.xml")
-    public void get_employee_with_id_by_hr() throws Exception, CustomException {
+    public void get_employee_with_id_by_hr() throws Exception {
         Long searchForId = 101L;
 
 
@@ -180,7 +180,7 @@ public class EmployeeControllerTests extends IntegrationTest {
     @Test
     @Transactional
     @DatabaseSetup("/data.xml")
-    public void modify_employee_by_hr() throws Exception, CustomException {
+    public void modify_employee_by_hr() throws Exception {
         // Initial values of the employee
         Long employeeId = 103L; // employee id to modify
         Employee employeeToModify = getEmployeeService().getEmployee(employeeId);
@@ -245,7 +245,7 @@ public class EmployeeControllerTests extends IntegrationTest {
 
         EmployeeInfoDTO employeeInfoDTO = new EmployeeInfoDTO();
         employeeInfoDTO.setEmployeeToDTO(employee);
-        String expectedResponseDTOJSON =  objectMapper.writeValueAsString(employeeInfoDTO);
+        String expectedResponseDTOJSON = objectMapper.writeValueAsString(employeeInfoDTO);
 
 
         getMockMvc().perform(MockMvcRequestBuilders.put("/employee/" + employeeIdToModify + "/salary")
@@ -256,12 +256,11 @@ public class EmployeeControllerTests extends IntegrationTest {
                 .andExpect(content().json(expectedResponseDTOJSON));
 
 
-
     }
 
     @Test
     @DatabaseSetup("/data.xml")
-    public void get_employees_under_manager_by_hr() throws Exception, CustomException {
+    public void get_employees_under_manager_by_hr() throws Exception {
         Long managerId = 101L;
         List<Employee> employeesUnderManager = getEmployeeRepository().findEmployeesByManager_Id(managerId);
         EmployeeBasicInfoDTO employeeBasicInfoDTO = new EmployeeBasicInfoDTO();
@@ -279,7 +278,7 @@ public class EmployeeControllerTests extends IntegrationTest {
 
     @Test
     @DatabaseSetup("/data.xml")
-    public void get_employees_recursively_by_hr() throws Exception, CustomException {
+    public void get_employees_recursively_by_hr() throws Exception {
         long managerId = 101L;
         List<EmployeeBasicInfoDTO> employeesUnderManager = getEmployeeService().getManagerEmployeesRecursively(managerId);
         if (employeesUnderManager == null) throw new NotFoundException("cant find manager");
@@ -299,7 +298,7 @@ public class EmployeeControllerTests extends IntegrationTest {
 
     @Test
     @DatabaseSetup("/hr-only.xml")
-    public void add_employee_by_hr_duplicate_national_id() throws Exception, CustomException {
+    public void add_employee_by_hr_duplicate_national_id() throws Exception {
         Employee employeeToAdd = new Employee();
         employeeToAdd.setFullName("ahmed safty");
         employeeToAdd.setGender(Gender.MALE);
@@ -330,7 +329,7 @@ public class EmployeeControllerTests extends IntegrationTest {
 
     @Test
     @DatabaseSetup("/hr-only.xml")
-    public void add_employee_by_hr_first_name_null() throws Exception, CustomException {
+    public void add_employee_by_hr_first_name_null() throws Exception {
         Employee employeeToAdd = new Employee();
         employeeToAdd.setLastName("ahmed");
         employeeToAdd.setGender(Gender.MALE);
@@ -357,7 +356,7 @@ public class EmployeeControllerTests extends IntegrationTest {
 
     @Test
     @DatabaseSetup("/hr-only.xml")
-    public void add_employee_by_hr_last_name_null() throws Exception, CustomException {
+    public void add_employee_by_hr_last_name_null() throws Exception {
         Employee employeeToAdd = new Employee();
         employeeToAdd.setFirstName("ahmed");
         employeeToAdd.setGender(Gender.MALE);
@@ -385,7 +384,7 @@ public class EmployeeControllerTests extends IntegrationTest {
 
     @Test
     @DatabaseSetup("/hr-only.xml")
-    public void add_employee_by_hr_national_id_null() throws Exception, CustomException {
+    public void add_employee_by_hr_national_id_null() throws Exception {
         Employee employeeToAdd = new Employee();
         employeeToAdd.setFirstName("ahmed");
         employeeToAdd.setLastName("abbas");
@@ -412,7 +411,7 @@ public class EmployeeControllerTests extends IntegrationTest {
 
     @Test
     @DatabaseSetup("/hr-only.xml")
-    public void add_employee_by_hr_gender_null() throws Exception, CustomException {
+    public void add_employee_by_hr_gender_null() throws Exception {
         Employee employeeToAdd = new Employee();
         employeeToAdd.setFirstName("ahmed");
         employeeToAdd.setLastName("abbas");
@@ -466,7 +465,7 @@ public class EmployeeControllerTests extends IntegrationTest {
 
     @Test
     @DatabaseSetup("/hr-only.xml")
-    public void add_employee_by_hr_gross_salary_null() throws Exception, CustomException {
+    public void add_employee_by_hr_gross_salary_null() throws Exception {
         Employee employeeToAdd = new Employee();
         employeeToAdd.setFirstName("ahmed");
         employeeToAdd.setLastName("abbas");
@@ -491,7 +490,7 @@ public class EmployeeControllerTests extends IntegrationTest {
 
     @Test
     @DatabaseSetup("/hr-only.xml")
-    public void add_employee_by_hr_user_role_null() throws Exception, CustomException {
+    public void add_employee_by_hr_user_role_null() throws Exception {
         Employee employeeToAdd = new Employee();
         employeeToAdd.setFirstName("ahmed");
         employeeToAdd.setGrossSalary(10000f);
@@ -519,7 +518,7 @@ public class EmployeeControllerTests extends IntegrationTest {
 
     @Test
     @DatabaseSetup("/hr-only.xml")
-    public void add_employee_by_hr_user_gross_salary_negative() throws Exception, CustomException {
+    public void add_employee_by_hr_user_gross_salary_negative() throws Exception {
         Employee employeeToAdd = new Employee();
         employeeToAdd.setFullName("ahmed safty");
         employeeToAdd.setGender(Gender.MALE);
@@ -551,7 +550,7 @@ public class EmployeeControllerTests extends IntegrationTest {
     @Test
     @Transactional
     @DatabaseSetup("/data.xml")
-    public void modify_employee_gross_salary_negative_by_hr() throws Exception, CustomException {
+    public void modify_employee_gross_salary_negative_by_hr() throws Exception {
         // Initial values of the employee
         Long employeeId = 103L; // employee id to modify
         Employee employeeToModify = getEmployeeService().getEmployee(employeeId);

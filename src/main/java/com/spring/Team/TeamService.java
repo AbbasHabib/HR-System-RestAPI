@@ -1,6 +1,5 @@
 package com.spring.Team;
 
-import com.spring.Employee.DTO.EmployeeBasicInfoDTO;
 import com.spring.Employee.DTO.EmployeeInfoDTO;
 import com.spring.Employee.Employee;
 import com.spring.Employee.EmployeeService;
@@ -14,9 +13,9 @@ import java.util.List;
 @Service
 public class TeamService {
     @Autowired
-    private TeamRepository teamRepository;
-    @Autowired
     EmployeeService employeeService;
+    @Autowired
+    private TeamRepository teamRepository;
 
     public Team getTeam(Long id) {
         return teamRepository.findById(id).isPresent() ? teamRepository.findById(id).get() : null;
@@ -35,7 +34,7 @@ public class TeamService {
     }
 
     public Team addTeam(Team team) throws Exception {
-        if(team.getTeamName() == null)
+        if (team.getTeamName() == null)
             throw new CustomException("teamName cannot be null!");
         if (getTeam(team.getId()) == null)
             return teamRepository.save(team);
