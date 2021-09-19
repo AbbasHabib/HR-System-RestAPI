@@ -3,9 +3,12 @@ package com.spring.Employee.COMMANDS;
 import com.spring.Employee.Employee;
 import com.spring.Employee.Gender;
 import com.spring.modelMapperGen.ModelMapperGen;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Date;
-
+@Getter
+@Setter
 public class EmployeeModificationByLoggedUserCommand implements IEmployeeInfoCommand {
     private String firstName;
     private String lastName;
@@ -25,37 +28,5 @@ public class EmployeeModificationByLoggedUserCommand implements IEmployeeInfoCom
     public void commandToEmployee(Employee employee) {
         ModelMapperGen.getModelMapperSingleton().map(this, employee);
         System.out.println(employee);
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public Date getBirthDate() {
-        return birthDate;
-    }
-
-    public void setBirthDate(Date birthDate) {
-        this.birthDate = birthDate;
-    }
-
-    public Gender getGender() {
-        return gender;
-    }
-
-    public void setGender(Gender gender) {
-        this.gender = gender;
     }
 }

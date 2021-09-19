@@ -7,11 +7,15 @@ import com.spring.Employee.Gender;
 import com.spring.Security.EmployeeRole;
 import com.spring.interfaces.IdOwner;
 import com.spring.modelMapperGen.ModelMapperGen;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@Getter
+@Setter
 public class EmployeeInfoDTO implements IdOwner, IEmployeeInfoDTO {
     private Long id;
     private String firstName;
@@ -55,110 +59,5 @@ public class EmployeeInfoDTO implements IdOwner, IEmployeeInfoDTO {
                 }
             }
         }
-    }
-
-    public EmployeePublicInfo getManagerPublicInfo() {
-        return managerPublicInfo;
-    }
-
-    public void setManagerPublicInfo(EmployeePublicInfo managerPublicInfo) {
-        this.managerPublicInfo = managerPublicInfo;
-    }
-
-    public List<EmployeeBasicInfoDTO> getSubEmployeesBasicInfo() {
-        return SubEmployeesBasicInfo;
-    }
-
-    public void setSubEmployeesBasicInfo(List<EmployeeBasicInfoDTO> subEmployeesBasicInfo) {
-        SubEmployeesBasicInfo = subEmployeesBasicInfo;
-    }
-
-    public Float getSalaryRaise() {
-        return salaryRaise;
-    }
-
-    public void setSalaryRaise(Float salaryRaise) {
-        this.salaryRaise = salaryRaise;
-    }
-
-    public Department getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(Department department) {
-        this.department = department;
-    }
-
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public Gender getGender() {
-        return gender;
-    }
-
-    public void setGender(Gender gender) {
-        this.gender = gender;
-    }
-
-    public String getBirthDate() {
-        return birthDate;
-    }
-
-    public void setBirthDate(String birthDate) {
-        this.birthDate = birthDate;
-    }
-
-    public Date getGraduationDate() {
-        return graduationDate;
-    }
-
-    public void setGraduationDate(Date graduationDate) {
-        this.graduationDate = graduationDate;
-    }
-
-    public Float getGrossSalary() {
-        return grossSalary;
-    }
-
-    public void setGrossSalary(Float grossSalary) {
-        this.grossSalary = grossSalary;
-    }
-
-    public Float getNetSalary() {
-        return netSalary;
-    }
-
-    public void setNetSalary(Float netSalary) {
-        this.netSalary = netSalary;
-    }
-
-    public EmployeeRole getRole() {
-        return role;
-    }
-
-    public void setRole(EmployeeRole role) {
-        this.role = role;
     }
 }

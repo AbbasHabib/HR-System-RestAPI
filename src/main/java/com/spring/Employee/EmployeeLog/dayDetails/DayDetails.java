@@ -3,12 +3,16 @@ package com.spring.Employee.EmployeeLog.dayDetails;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.spring.Employee.EmployeeLog.AttendanceTable;
 import com.spring.interfaces.IdOwner;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "day_details")
+@Getter
+@Setter
 public class DayDetails implements IdOwner {
     @ManyToOne
     @JoinColumn(name = "attendance_table_id")
@@ -42,48 +46,6 @@ public class DayDetails implements IdOwner {
     }
 
     public DayDetails() {
-    }
-
-    public boolean isAbsent() {
-        return absent;
-    }
-
-    public void setAbsent(boolean absent) {
-        this.absent = absent;
-    }
-
-    public Float getBonusInSalary() {
-        return bonusInSalary;
-    }
-
-    public void setBonusInSalary(Float bonusInSalary) {
-        this.bonusInSalary = bonusInSalary;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public AttendanceTable getAttendanceTable() {
-        return attendanceTable;
-    }
-
-    public void setAttendanceTable(AttendanceTable attendanceTable) {
-        this.attendanceTable = attendanceTable;
     }
 
 }

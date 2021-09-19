@@ -1,9 +1,13 @@
 package com.spring.Employee.EmployeeLog.monthDetails;
 
 import com.spring.modelMapperGen.ModelMapperGen;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.sql.Date;
 
+@Getter
+@Setter
 public class MonthDTO {
     private Integer id;
     private Float grossSalaryOfMonth = null;
@@ -15,45 +19,5 @@ public class MonthDTO {
     public static void setMonthDetailsToDTO(MonthDetails m, MonthDTO DTO) {
         ModelMapperGen.getModelMapperSingleton().map(m, DTO);
         DTO.date = Date.valueOf(m.getDate());
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Float getGrossSalaryOfMonth() {
-        return grossSalaryOfMonth;
-    }
-
-    public void setGrossSalaryOfMonth(Float grossSalaryOfMonth) {
-        this.grossSalaryOfMonth = grossSalaryOfMonth;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public Integer getAbsences() {
-        return absences;
-    }
-
-    public void setAbsences(Integer absences) {
-        this.absences = absences;
-    }
-
-    public Float getBonuses() {
-        return bonuses;
-    }
-
-    public void setBonuses(Float bonuses) {
-        this.bonuses = bonuses;
     }
 }

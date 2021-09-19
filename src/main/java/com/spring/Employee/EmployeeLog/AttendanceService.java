@@ -2,6 +2,7 @@ package com.spring.Employee.EmployeeLog;
 
 
 import com.spring.Employee.DTO.EmployeeSalaryDTO;
+import com.spring.Employee.DTO.EmployeeSalaryDTOBuilder;
 import com.spring.Employee.EmployeeLog.dayDetails.DayDetails;
 import com.spring.Employee.EmployeeLog.dayDetails.DayDetailsCommand;
 import com.spring.Employee.EmployeeLog.dayDetails.DayDetailsDTO;
@@ -213,8 +214,8 @@ public class AttendanceService {
                 , date.getMonth().length(true)
         );
 
-        EmployeeSalaryDTO employeeSalaryDTO = new EmployeeSalaryDTO();
-        employeeSalaryDTO.setInfoDate(date)
+        EmployeeSalaryDTOBuilder employeeSalaryDTOBuilder = new EmployeeSalaryDTOBuilder();
+        employeeSalaryDTOBuilder.setInfoDate(date)
                 .setGrossSalary(monthInquiring.getGrossSalaryOfMonth())
                 .setNetSalary(netSalary)
                 .setNumberOfAbsencesThroughYear(absenceDaysTillMonth)
@@ -222,7 +223,7 @@ public class AttendanceService {
                 .setAllowedAbsencesThroughYear(permittedAbsenceDays)
                 .setExceededBy(Math.max(absenceDaysTillMonth - permittedAbsenceDays, 0));
 
-        return employeeSalaryDTO;
+        return employeeSalaryDTOBuilder.Build();
     }
 
 

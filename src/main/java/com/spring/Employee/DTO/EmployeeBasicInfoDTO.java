@@ -5,11 +5,15 @@ import com.spring.Employee.Employee;
 import com.spring.Employee.Gender;
 import com.spring.interfaces.IdOwner;
 import com.spring.modelMapperGen.ModelMapperGen;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@Getter
+@Setter
 public class EmployeeBasicInfoDTO implements IEmployeeInfoDTO, IdOwner {
     private Long id;
     private String lastName;
@@ -34,70 +38,5 @@ public class EmployeeBasicInfoDTO implements IEmployeeInfoDTO, IdOwner {
             employeeBasicInfoDTOList.get(i++).setEmployeeToDTO(employee);
         }
         return employeeBasicInfoDTOList;
-    }
-
-    public String getBirthDate() {
-        return birthDate;
-    }
-
-    public void setBirthDate(String birthDate) {
-        this.birthDate = birthDate;
-    }
-
-    public Date getGraduationDate() {
-        return graduationDate;
-    }
-
-    public void setGraduationDate(Date graduationDate) {
-        this.graduationDate = graduationDate;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-
-    public Gender getGender() {
-        return gender;
-    }
-
-    public void setGender(Gender gender) {
-        this.gender = gender;
-    }
-
-    public Float getGrossSalary() {
-        return grossSalary;
-    }
-
-    public void setGrossSalary(Float grossSalary) {
-        this.grossSalary = grossSalary;
-    }
-
-    public Float getNetSalary() {
-        return netSalary;
-    }
-
-    public void setNetSalary(Float netSalary) {
-        this.netSalary = netSalary;
     }
 }

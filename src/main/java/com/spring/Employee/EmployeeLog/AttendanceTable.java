@@ -5,6 +5,8 @@ import com.spring.Employee.Employee;
 import com.spring.Employee.EmployeeLog.dayDetails.DayDetails;
 import com.spring.Employee.EmployeeLog.monthDetails.MonthDetails;
 import com.spring.Employee.SalariesYearsConstants;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -13,6 +15,8 @@ import java.util.List;
 @Entity
 @Table(name = "attendance_table")
 
+@Getter
+@Setter
 public class AttendanceTable {
     @Id
     @Column(name = "id")
@@ -54,46 +58,5 @@ public class AttendanceTable {
     public Integer getPermittedAbsenceDays(int workingYears) {
         return (workingYears < SalariesYearsConstants.SENIOR_YEARS) ? SalariesYearsConstants.AVAILABLE_ABSENCES_JUNIOR : SalariesYearsConstants.AVAILABLE_ABSENCES_SENIOR;
     }
-
-    public Employee getEmployee() {
-        return employee;
-    }
-
-    public void setEmployee(Employee employee) {
-        this.employee = employee;
-    }
-
-    public List<DayDetails> getDailyDetailsList() {
-        return dailyDetailsList;
-    }
-
-    public void setDailyDetailsList(List<DayDetails> dailyAttendanceList) {
-        this.dailyDetailsList = dailyAttendanceList;
-    }
-
-    public List<MonthDetails> getMonthDetailsList() {
-        return monthDetailsList;
-    }
-
-    public void setMonthDetailsList(List<MonthDetails> monthDetailsList) {
-        this.monthDetailsList = monthDetailsList;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Integer getInitialWorkingYears() {
-        return initialWorkingYears;
-    }
-
-    public void setInitialWorkingYears(Integer initialWorkingYears) {
-        this.initialWorkingYears = initialWorkingYears;
-    }
-
 
 }
