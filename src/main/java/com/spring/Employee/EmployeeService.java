@@ -36,7 +36,7 @@ public class EmployeeService {
 
     public EmployeeInfoDTO addEmployee(Employee employee) throws Exception, CustomException {
         if (employeeRepository.findEmployeeByNationalId(employee.getNationalId()).isPresent())
-            throw new CustomException(">>national id already exists?");
+            throw new CustomException("national id already exists!");
 
         Employee employeeToAdd = null;
 

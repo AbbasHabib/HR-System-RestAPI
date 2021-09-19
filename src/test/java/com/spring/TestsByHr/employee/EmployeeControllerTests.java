@@ -5,7 +5,6 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.spring.Department.Department;
 import com.spring.Employee.COMMANDS.EmployeeModifyCommand;
 import com.spring.Employee.DTO.EmployeeBasicInfoDTO;
-import com.spring.Employee.DTO.EmployeeInfoDTO;
 import com.spring.Employee.Employee;
 import com.spring.Employee.Gender;
 import com.spring.ExceptionsCustom.CustomException;
@@ -28,9 +27,8 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -50,7 +48,6 @@ public class EmployeeControllerTests extends IntegrationTest {
         employeeToAdd.setFullName("ahmed safty");
         employeeToAdd.setGender(Gender.MALE);
         employeeToAdd.setGrossSalary(10000f);
-
 
         Float expectedNetSalary = getEmployeeService().calculateNetSalary(employeeToAdd.getGrossSalary());
 
@@ -103,6 +100,33 @@ public class EmployeeControllerTests extends IntegrationTest {
         assertEquals(employeeToAdd.getGender(), employeeFromDb.getGender());
         assertEquals(expectedNetSalary, employeeFromDb.getNetSalary());
     }
+
+    @Test
+    @DatabaseSetup("/hr-only.xml")
+    public void add_employee_by_hr_duplicate_national_id() throws Exception, CustomException {
+        Employee employeeToAdd = new Employee();
+        employeeToAdd.setFullName("ahmed safty");
+        employeeToAdd.setGender(Gender.MALE);
+        employeeToAdd.setGrossSalary(10000f);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = simpleDateFormat.parse("2012-01-02");
+        employeeToAdd.setGraduationDate(date);
+
+        employeeToAdd.setNationalId("123"); // duplicate nationalId
+        // Is expected to return same object it receives
+        ObjectMapper objectMapper = new ObjectMapper();
+        String employeeJson = objectMapper.writeValueAsString(employeeToAdd); // converts employee object to JSON string
+
+        // POST request (.post("/employee/")) takes to be a Json of employee in request Body
+        getMockMvc().perform(MockMvcRequestBuilders.post("/employee/")
+                .with(httpBasic("abbas_habib_1", "123"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(employeeJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof CustomException))
+                .andExpect(result -> assertEquals("national id already exists!", Objects.requireNonNull(result.getResolvedException()).getMessage()));
+    }
+
 
     @Test
     @DatabaseSetup("/data.xml")
@@ -159,11 +183,10 @@ public class EmployeeControllerTests extends IntegrationTest {
                 .andExpect(content().string("true"))
                 .andExpect(status().isOk()).andReturn();
 
-
         Assertions.assertNull(getEmployeeService().getEmployee(deleteUserWithID));
         Assertions.assertNull(userCredentialsRepository.findById(userName).orElse(null)); // making sure that this user credential doesn't exist
-        
     }
+
     @Test
     @Transactional
     @DatabaseSetup("/data.xml")
