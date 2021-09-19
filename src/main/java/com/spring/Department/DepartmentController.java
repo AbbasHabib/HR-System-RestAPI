@@ -7,23 +7,28 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/department")
 public class DepartmentController {
     @Autowired
     DepartmentService departmentService;
 
-    @PostMapping("/")
+    @PostMapping("/department/")
     public Department addDepartment(@RequestBody Department department) {
         return departmentService.addDepartment(department);
     }
 
-    @GetMapping("/")
+    @GetMapping("/department/")
     public List<Department> getDepartments() {
         return departmentService.getDepartments();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/department/{id}")
     public Department getDepartment(@PathVariable String id) throws Exception, CustomException {
         return departmentService.getDepartment(Long.parseLong(id));
+    }
+
+
+    @GetMapping("/profile/department")
+    public Department getDepartmentByLoggedUser() throws Exception, CustomException {
+        return departmentService.getDepartmentByLoggedUser();
     }
 }

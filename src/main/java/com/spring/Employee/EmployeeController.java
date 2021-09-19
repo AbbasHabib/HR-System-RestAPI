@@ -58,7 +58,7 @@ public class EmployeeController {
     @GetMapping(value = "/profile/employee", produces = MediaType.APPLICATION_JSON_VALUE)
     public EmployeeInfoDTO getEmployeeByLoggedUser() throws CustomException // send path parameter
     {
-        EmployeeInfoDTO employeeDto = employeeService.getEmployeeByUserFromAuthentication();
+        EmployeeInfoDTO employeeDto = employeeService.getEmployeeInDTOByUserFromAuthentication();
         if (employeeDto == null)
             throw new CustomException("this user Id does not exits");
         return employeeDto;

@@ -146,12 +146,9 @@ public class EmployeeService {
         throw new CustomException("did not find this employee id");
     }
 
-    public EmployeeInfoDTO getEmployeeByUserFromAuthentication() throws CustomException // send path parameter
+    public EmployeeInfoDTO getEmployeeInDTOByUserFromAuthentication() throws CustomException // send path parameter
     {
-        Long employeeId = getEmployeeIdFromAuthentication();
-        Employee employee = null;
-        if (employeeId != null)
-            employee = employeeRepository.findById(employeeId).orElse(null);
+        Employee employee = getEmployeeByLoggedUser();
         if (employee != null) {
             EmployeeInfoDTO employeeInfoDTO = new EmployeeInfoDTO();
             employeeInfoDTO.setEmployeeToDTO(employee);
@@ -159,6 +156,7 @@ public class EmployeeService {
         }
         return null;
     }
+
 
 
     public Float calculateNetSalary(Float employeeSalary) {
@@ -255,4 +253,15 @@ public class EmployeeService {
             throw new CustomException("this userName doesn't exist");
         return userCredentials.getEmployee().getId();
     }
+
+    public Employee getEmployeeByLoggedUser() throws CustomException // send path parameter
+    {
+        String userName = userPrincipalDetailsService.getLoggedUserName();
+        UserCredentials userCredentials = userCredentialsRepository.findById(userName).orElse(null);
+        Employee employee = null;
+        if (userCredentials == null)
+            throw new CustomException("this userName doesn't exist");
+        return userCredentials.getEmployee();
+    }
+
 }

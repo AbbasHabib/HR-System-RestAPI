@@ -1,7 +1,10 @@
 package com.spring.Team;
 
+import com.spring.Employee.DTO.EmployeeBasicInfoDTO;
 import com.spring.Employee.DTO.EmployeeInfoDTO;
 import com.spring.Employee.Employee;
+import com.spring.Employee.EmployeeService;
+import com.spring.ExceptionsCustom.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,15 +15,16 @@ import java.util.List;
 public class TeamService {
     @Autowired
     private TeamRepository teamRepository;
+    @Autowired
+    EmployeeService employeeService;
 
     public Team getTeam(Long id) {
-        if (id == null)
-            return null;
         return teamRepository.findById(id).isPresent() ? teamRepository.findById(id).get() : null;
     }
 
-    public List<EmployeeInfoDTO> getTeamEmployees(Long id) {
-        assert id != null;
+    public List<EmployeeInfoDTO> getTeamEmployees(Long id) throws CustomException {
+        if (id == null)
+            throw new CustomException("this team id does not exist");
         Team team = this.getTeam(id);
         if (team == null)
             return null;
@@ -31,9 +35,16 @@ public class TeamService {
     }
 
     public Team addTeam(Team team) {
-        assert team.getId() != null;
         if (getTeam(team.getId()) == null)
             return teamRepository.save(team);
         return null;
     }
+
+    public Team getTeamByLoggedUser() throws CustomException {
+        Team team = employeeService.getEmployeeByLoggedUser().getTeam();
+        if (team == null)
+            throw new CustomException("this employee does not have a team!");
+        return getTeam(team.getId());
+    }
+
 }
