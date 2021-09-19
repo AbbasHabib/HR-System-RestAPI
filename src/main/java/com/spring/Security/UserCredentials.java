@@ -2,10 +2,14 @@ package com.spring.Security;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.spring.Employee.Employee;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 
 @Entity
+@Getter
+@Setter
 public class UserCredentials {
     @Id
     private String userName;
@@ -29,35 +33,4 @@ public class UserCredentials {
     public UserCredentials() {
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public EmployeeRole getUserRole() {
-        return userRole;
-    }
-
-    public void setUserRole(EmployeeRole userRole) {
-        this.userRole = userRole;
-    }
-
-    public Employee getEmployee() {
-        return employee;
-    }
-
-    public void setEmployee(Employee employee) {
-        this.employee = employee;
-    }
 }

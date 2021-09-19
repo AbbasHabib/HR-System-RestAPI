@@ -8,6 +8,8 @@ import com.spring.Security.EmployeeRole;
 import com.spring.Security.UserCredentials;
 import com.spring.Team.Team;
 import com.spring.interfaces.IdOwner;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.text.SimpleDateFormat;
@@ -18,6 +20,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "employee")
+@Getter
+@Setter
 public class Employee implements IdOwner {
     @Id
     @Column(name = "id", nullable = false)
@@ -106,10 +110,9 @@ public class Employee implements IdOwner {
     }
 
 
-    public String getUserName() {
+    public String createUserName() {
         return this.firstName + "_" + this.lastName + "_" + this.id;
     }
-
 
     public void setFullName(String name) {
         String[] fullName = name.split("\\s+");
@@ -120,161 +123,9 @@ public class Employee implements IdOwner {
         }
     }
 
-    public Float getSalaryRaise() {
-        return salaryRaise;
-    }
-
-    public void setSalaryRaise(Float salaryRaise) {
-        this.salaryRaise = salaryRaise;
-    }
-
-    public EmployeeRole getRole() {
-        return role;
-    }
-
-    public void setRole(EmployeeRole role) {
-        this.role = role;
-    }
-
-    public UserCredentials getUserCredentials() {
-        return userCredentials;
-    }
-
-    public void setUserCredentials(UserCredentials userCredentials) {
-        this.userCredentials = userCredentials;
-    }
-
-    public AttendanceTable getAttendanceTable() {
-        return attendanceTable;
-    }
-
-    public void setAttendanceTable(AttendanceTable attendanceTable) {
-        this.attendanceTable = attendanceTable;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNationalId() {
-        return nationalId;
-    }
-
-    public void setNationalId(String nationalId) {
-        this.nationalId = nationalId;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public Degree getDegree() {
-        return degree;
-    }
-
-    public void setDegree(Degree degree) {
-        this.degree = degree;
-    }
-
-    public Integer getYearsOfExperience() {
-        return yearsOfExperience;
-    }
-
-    public void setYearsOfExperience(Integer yearsOfExperience) {
-        this.yearsOfExperience = yearsOfExperience;
-    }
-
-    public LocalDate getBirthDate() {
-        return birthDate;
-    }
-
-    public void setBirthDate(LocalDate birthDate) {
-        this.birthDate = birthDate;
-    }
-
-    public Date getGraduationDate() {
-        return graduationDate;
-    }
-
-    public void setGraduationDate(Date graduationDate) {
-        this.graduationDate = graduationDate;
-    }
-
     public int calcGraduationYear() {
         SimpleDateFormat getYearFormat = new SimpleDateFormat("yyyy");
         String year = getYearFormat.format(this.graduationDate);
         return Integer.parseInt(year);
-    }
-
-    public Gender getGender() {
-        return gender;
-    }
-
-    public void setGender(Gender gender) {
-        this.gender = gender;
-    }
-
-    public Department getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(Department department) {
-        this.department = department;
-    }
-
-    public Team getTeam() {
-        return team;
-    }
-
-    public void setTeam(Team team) {
-        this.team = team;
-    }
-
-    public Employee getManager() {
-        return manager;
-    }
-
-    public void setManager(Employee manager) {
-        this.manager = manager;
-    }
-
-    public List<Employee> getSubEmployees() {
-        return subEmployees;
-    }
-
-    public void setSubEmployees(List<Employee> subEmployees) {
-        this.subEmployees = subEmployees;
-    }
-
-    public Float getGrossSalary() {
-        return grossSalary;
-    }
-
-    public void setGrossSalary(Float grossSalary) {
-        this.grossSalary = grossSalary;
-    }
-
-    public Float getNetSalary() {
-        return netSalary;
-    }
-
-    public void setNetSalary(Float netSalary) {
-        this.netSalary = netSalary;
     }
 }

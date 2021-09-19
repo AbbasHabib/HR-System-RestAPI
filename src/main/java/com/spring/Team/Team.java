@@ -3,12 +3,16 @@ package com.spring.Team;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.spring.Employee.Employee;
 import com.spring.interfaces.IdOwner;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Getter
+@Setter
 public class Team implements IdOwner {
     @Id
     @Column(name = "id", nullable = false)
@@ -26,30 +30,6 @@ public class Team implements IdOwner {
     public Team(Long id, String teamName) {
         this.id = id;
         this.teamName = teamName;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTeamName() {
-        return teamName;
-    }
-
-    public void setTeamName(String teamName) {
-        this.teamName = teamName;
-    }
-
-    public Set<Employee> getEmployees() {
-        return employees;
-    }
-
-    public void setEmployees(Set<Employee> employees) {
-        this.employees = employees;
     }
 
     public void addEmployee(Employee e) {

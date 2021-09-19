@@ -67,7 +67,7 @@ public class EmployeeService {
 
     public void AddCredentials(Employee employee) {
         if (employee.getUserCredentials() == null) {
-            UserCredentials userCredentialForNewEmployee = new UserCredentials(employee.getUserName()
+            UserCredentials userCredentialForNewEmployee = new UserCredentials(employee.createUserName()
                     , passwordEncoder.encode(employee.getNationalId())
                     , employee.getRole()
                     , employee);

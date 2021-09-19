@@ -100,7 +100,7 @@ public class EmployeeControllerTests extends IntegrationTest {
 
         assertEquals(expectedInitialWorkingYears, employeeFromDb.getAttendanceTable().getInitialWorkingYears()); // from 2012 to 2021(testing year)
         assertEquals(employeeToAdd.getId(), employeeFromDb.getId());
-        assertEquals(employeeToAdd.getUserName(), employeeFromDb.getUserName());
+        assertEquals(employeeToAdd.createUserName(), employeeFromDb.createUserName());
         assertEquals(employeeToAdd.getGender(), employeeFromDb.getGender());
         assertEquals(expectedNetSalary, employeeFromDb.getNetSalary());
     }
