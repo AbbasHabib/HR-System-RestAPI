@@ -39,7 +39,7 @@ public class EmployeeController {
     }
 
     @PutMapping(value = "/employee/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public EmployeeInfoDTO modifyEmployee(@PathVariable String id, @RequestBody EmployeeModifyCommand employeeModifyCommand) throws NotFoundException, CustomException {
+    public EmployeeInfoDTO modifyEmployee(@PathVariable String id, @RequestBody EmployeeModifyCommand employeeModifyCommand) throws NotFoundException, CustomException, IllegalAccessException {
         return employeeService.modifyEmployee(Long.parseLong(id), employeeModifyCommand);
     }
 
@@ -66,7 +66,7 @@ public class EmployeeController {
 
 
     @PutMapping(value = "/profile/employee", produces = MediaType.APPLICATION_JSON_VALUE)
-    public EmployeeInfoDTO modifyEmployeeByLoggedUSer(@RequestBody EmployeeModificationByLoggedUserCommand employeeModifyCommand) throws NotFoundException, CustomException {
+    public EmployeeInfoDTO modifyEmployeeByLoggedUSer(@RequestBody EmployeeModificationByLoggedUserCommand employeeModifyCommand) throws NotFoundException, CustomException, IllegalAccessException {
         return employeeService.modifyEmployeeByLoggedUser(employeeModifyCommand);
     }
 

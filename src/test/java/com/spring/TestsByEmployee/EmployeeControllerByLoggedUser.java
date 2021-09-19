@@ -88,37 +88,7 @@ public class EmployeeControllerByLoggedUser extends IntegrationTest {
     }
 
 
-    @Test
-    @DatabaseSetup("/ManagerWithSubEmployees.xml")
-    public void get_employee_employees_by_logged_user_with_employee_role() throws Exception {
-        Long managerId = 1L;
-        Employee manager = getEmployeeService().getEmployee(managerId);
-        List<Employee> employeesUnderThisManager = new ArrayList<Employee>();
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String strDate = "2012-01-01";
-        Date gradDate = sdf.parse(strDate);
-
-        employeesUnderThisManager.add(new Employee(2L, "12345", "a", "habib"
-                , gradDate, Gender.MALE, manager, 100000f, 84500.0f, EmployeeRole.EMPLOYEE));
-        employeesUnderThisManager.add(new Employee(3L, "15695", "b", "habib"
-                , gradDate, Gender.MALE, manager, 100000f, 84500.0f, EmployeeRole.EMPLOYEE));
-        employeesUnderThisManager.add(new Employee(4L, "48514", "c", "habib"
-                , gradDate, Gender.MALE, manager, 100000f, 84500.0f, EmployeeRole.EMPLOYEE));
-
-        EmployeeBasicInfoDTO employeeBasicInfoDTO = new EmployeeBasicInfoDTO();
-        List<EmployeeBasicInfoDTO> employeeBasicInfoDTOList = employeeBasicInfoDTO.generateDTOListFromEmployeeList(employeesUnderThisManager);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        String expectedDTOLListJson = objectMapper.writeValueAsString(employeeBasicInfoDTOList);
-
-        MvcResult result = getMockMvc().perform(MockMvcRequestBuilders.get("/profile/employee/all-sub-employees")
-                .with(httpBasic("ahmed_habib_1", "123")))
-                .andReturn();
-
-        String responseJson = result.getResponse().getContentAsString();
-        Assertions.assertEquals(expectedDTOLListJson, responseJson);
-    }
 
 
 }

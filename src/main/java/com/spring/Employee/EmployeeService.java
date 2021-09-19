@@ -37,6 +37,8 @@ public class EmployeeService {
 
     public EmployeeInfoDTO addEmployee(Employee employee) throws Exception, CustomException {
         Employee employeeToAdd = null;
+        if (employeeRepository.findEmployeeByNationalId(employee.getNationalId()).isPresent())
+            throw new CustomException("nationalId already exists!");
 
         this.handleEmployeeInsertionExceptions(employee);
 
@@ -53,12 +55,11 @@ public class EmployeeService {
     }
 
     public void handleEmployeeInsertionExceptions(Employee employee) throws CustomException, IllegalAccessException {
-        if (employeeRepository.findEmployeeByNationalId(employee.getNationalId()).isPresent())
-            throw new CustomException("national id already exists!");
+        if(employee.getGrossSalary() < 0) {
+            throw new CustomException("grossSalary cannot be less than 0!");
+        }
         EmployeeNotNullableFields employeeNotNullableFields = new EmployeeNotNullableFields(employee);
-
         String nullFieldString= employeeNotNullableFields.checkNull();
-
         if(!nullFieldString.equals(""))
             throw new CustomException(nullFieldString + " cannot be null!");
 
@@ -179,8 +180,9 @@ public class EmployeeService {
         return employeesUnderCurrentEmployee.stream().noneMatch(o -> o.getId().equals(goToManager.getId())); // if it contains this manager then he cant be my manager
     }
 
-    public EmployeeInfoDTO modifyEmployee(long employeeId, EmployeeModifyCommand employeeDto) throws NotFoundException, CustomException {
+    public EmployeeInfoDTO modifyEmployee(long employeeId, EmployeeModifyCommand employeeDto) throws NotFoundException, CustomException, IllegalAccessException {
         Employee employeeToModify = this.getEmployee(employeeId);
+
         if (employeeDto.getManager() != null) // if employee manager is modified check problem could occur
         {
             if (!checkManagerChange(employeeToModify, employeeDto.getManager())) // if the manager is working underMe he cant be my manager
@@ -189,6 +191,9 @@ public class EmployeeService {
             }
         }
         employeeDto.commandToEmployee(employeeToModify); //  copying new data to employee
+        this.handleEmployeeInsertionExceptions(employeeToModify);
+
+
         Employee employeeModified = null;
         employeeModified = saveEmployee(employeeToModify);
         if (employeeModified != null) {
@@ -201,10 +206,13 @@ public class EmployeeService {
     }
 
 
-    public EmployeeInfoDTO modifyEmployeeByLoggedUser(EmployeeModificationByLoggedUserCommand employeeModificationCommand) throws NotFoundException, CustomException {
+    public EmployeeInfoDTO modifyEmployeeByLoggedUser(EmployeeModificationByLoggedUserCommand employeeModificationCommand) throws NotFoundException, CustomException, IllegalAccessException {
         Long employeeId = getEmployeeIdFromAuthentication();
         Employee employeeToModify = this.getEmployee(employeeId);
+
         employeeModificationCommand.commandToEmployee(employeeToModify);
+        this.handleEmployeeInsertionExceptions(employeeToModify);
+
         saveEmployee(employeeToModify);
         EmployeeInfoDTO employeeInfoDTO = new EmployeeInfoDTO();
         employeeInfoDTO.setEmployeeToDTO(employeeToModify);

@@ -246,7 +246,7 @@ public class EmployeeControllerTests extends IntegrationTest {
     }
 
 
-    // duplicates and exception handling tests
+    // duplicates and exception handling tests *********************************
 
     @Test
     @DatabaseSetup("/hr-only.xml")
@@ -271,7 +271,7 @@ public class EmployeeControllerTests extends IntegrationTest {
                 .content(employeeJson))
                 .andExpect(status().isBadRequest())
                 .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof CustomException))
-                .andExpect(result -> assertEquals("national id already exists!", Objects.requireNonNull(result.getResolvedException()).getMessage()));
+                .andExpect(result -> assertEquals("nationalId already exists!", Objects.requireNonNull(result.getResolvedException()).getMessage()));
     }
 
     @Test
@@ -458,6 +458,83 @@ public class EmployeeControllerTests extends IntegrationTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof CustomException))
                 .andExpect(result -> assertEquals("role cannot be null!", Objects.requireNonNull(result.getResolvedException()).getMessage()));
+    }
+
+
+    @Test
+    @DatabaseSetup("/hr-only.xml")
+    public void add_employee_by_hr_user_gross_salary_negative() throws Exception, CustomException {
+        Employee employeeToAdd = new Employee();
+        employeeToAdd.setFirstName("ahmed");
+        employeeToAdd.setGrossSalary(-500f);
+
+        employeeToAdd.setLastName("abbas");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = simpleDateFormat.parse("2012-01-02");
+        employeeToAdd.setGraduationDate(date);
+        employeeToAdd.setNationalId("1234");
+        employeeToAdd.setGender(Gender.MALE);
+        // Is expected to return same object it receives
+        ObjectMapper objectMapper = new ObjectMapper();
+        String employeeJson = objectMapper.writeValueAsString(employeeToAdd); // converts employee object to JSON string
+
+        // POST request (.post("/employee/")) takes to be a Json of employee in request Body
+        getMockMvc().perform(MockMvcRequestBuilders.post("/employee/")
+                .with(httpBasic("abbas_habib_1", "123"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(employeeJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof CustomException))
+                .andExpect(result -> assertEquals("grossSalary cannot be less than 0!", Objects.requireNonNull(result.getResolvedException()).getMessage()));
+    }
+
+
+    @Test
+    @Transactional
+    @DatabaseSetup("/data.xml")
+    public void modify_employee_by_gross_salary_negative_by_hr() throws Exception, CustomException {
+        // Initial values of the employee
+        Long employeeId = 103L; // employee id to modify
+        Employee employeeToModify = getEmployeeService().getEmployee(employeeId);
+
+        // Expected modification
+        EmployeeModifyCommand employeeModificationDto = new EmployeeModifyCommand();
+
+        // (1) Edit basic employee info
+        employeeModificationDto.setFirstName("reem");
+        employeeModificationDto.setLastName("naser");
+        employeeModificationDto.setGender(Gender.FEMALE);
+        employeeModificationDto.setGrossSalary(-500f);
+        // (2) set Department
+        Long departmentId = 102L;
+        Department dep = getDepartmentService().getDepartment(departmentId);
+        if (dep == null) throw new NotFoundException("department is not found");
+        employeeModificationDto.setDepartment(dep);
+
+        // (3) set Team
+        Long teamId = 102L;
+        Team team = getTeamService().getTeam(teamId);
+        if (team == null) throw new NotFoundException("team is not found");
+        employeeModificationDto.setTeam(team);
+
+        // (4) Edit employee manager
+        Long managerId = 102L;
+        Employee manager = getEmployeeService().getEmployee(managerId);
+        if (manager == null) throw new NotFoundException("manager not found");
+        employeeModificationDto.setManager(manager);
+
+        employeeModificationDto.commandToEmployee(employeeToModify); // copy modified data to employee
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String employeeDtoJson = objectMapper.writeValueAsString(employeeModificationDto);
+
+        getMockMvc().perform(MockMvcRequestBuilders.put("/employee/" + employeeId)
+                .with(httpBasic("abbas_habib_10", "123"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(employeeDtoJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof CustomException))
+                .andExpect(result -> assertEquals("grossSalary cannot be less than 0!", Objects.requireNonNull(result.getResolvedException()).getMessage()));
     }
 
 }
