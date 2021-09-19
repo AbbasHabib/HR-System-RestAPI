@@ -1,12 +1,12 @@
 package com.spring.Employee;
 
-import com.spring.Employee.EmployeeLog.AttendanceRepository;
-import com.spring.Employee.EmployeeLog.AttendanceService;
-import com.spring.Employee.EmployeeLog.AttendanceTable;
 import com.spring.Employee.COMMANDS.EmployeeModificationByLoggedUserCommand;
 import com.spring.Employee.COMMANDS.EmployeeModifyCommand;
 import com.spring.Employee.DTO.EmployeeBasicInfoDTO;
 import com.spring.Employee.DTO.EmployeeInfoDTO;
+import com.spring.Employee.EmployeeLog.AttendanceRepository;
+import com.spring.Employee.EmployeeLog.AttendanceService;
+import com.spring.Employee.EmployeeLog.AttendanceTable;
 import com.spring.ExceptionsCustom.CustomException;
 import com.spring.Security.UserCredentials;
 import com.spring.Security.UserCredentialsRepository;
@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 @Service
@@ -35,21 +36,32 @@ public class EmployeeService {
     private UserPrincipalDetailsService userPrincipalDetailsService;
 
     public EmployeeInfoDTO addEmployee(Employee employee) throws Exception, CustomException {
-        if (employeeRepository.findEmployeeByNationalId(employee.getNationalId()).isPresent())
-            throw new CustomException("national id already exists!");
-
         Employee employeeToAdd = null;
+
+        this.handleEmployeeInsertionExceptions(employee);
 
         if (employee.getId() == null)
             employeeToAdd = saveEmployee(employee);
         else if (this.getEmployee(employee.getId()) == null)
             employeeToAdd = saveEmployee(employee);
-        if(employeeToAdd != null) {
+        if (employeeToAdd != null) {
             EmployeeInfoDTO employeeInfoDTO = new EmployeeInfoDTO();
             employeeInfoDTO.setEmployeeToDTO(employeeToAdd);
             return employeeInfoDTO;
         }
-        throw new CustomException(">>User ID already exists");
+        throw new CustomException("employeeId already exists!");
+    }
+
+    public void handleEmployeeInsertionExceptions(Employee employee) throws CustomException, IllegalAccessException {
+        if (employeeRepository.findEmployeeByNationalId(employee.getNationalId()).isPresent())
+            throw new CustomException("national id already exists!");
+        EmployeeNotNullableFields employeeNotNullableFields = new EmployeeNotNullableFields(employee);
+
+        String nullFieldString= employeeNotNullableFields.checkNull();
+
+        if(!nullFieldString.equals(""))
+            throw new CustomException(nullFieldString + " cannot be null!");
+
     }
 
 
@@ -92,7 +104,7 @@ public class EmployeeService {
         Employee employee = this.getEmployee(employeeId);
         if (employee != null) {
             if (employee.shiftSubordinates()) {
-                if(employee.getUserCredentials() != null) {
+                if (employee.getUserCredentials() != null) {
                     userCredentialsRepository.deleteById(employee.getUserCredentials().getUserName());
                 }
                 employeeRepository.deleteById(employeeId); // if shifting shiftSubordinates process is complete
@@ -126,8 +138,7 @@ public class EmployeeService {
         Employee employeeFound = null;
         if (employeeId != null)
             employeeFound = employeeRepository.findById(employeeId).orElse(null);
-        if(employeeFound != null)
-        {
+        if (employeeFound != null) {
             EmployeeInfoDTO employeeInfoDTO = new EmployeeInfoDTO();
             employeeInfoDTO.setEmployeeToDTO(employeeFound);
             return employeeInfoDTO;
@@ -180,7 +191,7 @@ public class EmployeeService {
         employeeDto.commandToEmployee(employeeToModify); //  copying new data to employee
         Employee employeeModified = null;
         employeeModified = saveEmployee(employeeToModify);
-        if(employeeModified != null) {
+        if (employeeModified != null) {
             EmployeeInfoDTO employeeInfoDTO = new EmployeeInfoDTO();
             employeeInfoDTO.setEmployeeToDTO(employeeModified);
             return employeeInfoDTO;

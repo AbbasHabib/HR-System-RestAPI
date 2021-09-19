@@ -29,22 +29,22 @@ create table employee
 (
     id                  bigint auto_increment
         primary key,
-    salary_raise        float null,
-    birth_date          date null,
+    salary_raise        float        null,
+    birth_date          date         null,
     degree              varchar(255) null,
     first_name          varchar(255) not null,
-    gender              varchar(255) null,
-    graduation_date     datetime(6) null,
-    gross_salary        float null,
+    gender              varchar(255) not null,
+    graduation_date     varchar(255) not null,
+    gross_salary        float        not null,
     last_name           varchar(255) not null,
     national_id         varchar(255) not null,
-    net_salary          float null,
-    role                varchar(255) null,
-    years_of_experience int null,
-    attendance_table_id bigint null,
-    department_id       bigint null,
-    manager_id          bigint null,
-    team_id             bigint null,
+    net_salary          float        null,
+    role                varchar(255) not null,
+    years_of_experience int          null,
+    attendance_table_id bigint       null,
+    department_id       bigint       null,
+    manager_id          bigint       null,
+    team_id             bigint       null,
     constraint UK_59epvmnko5yc9qssb60euk5q2
         unique (national_id),
     constraint FK8d7lrsr6kwirr93rx0tafnoqa
@@ -56,6 +56,7 @@ create table employee
     constraint FKs9qsdavx3eugepb5ija1ykw4u
         foreign key (attendance_table_id) references attendance_table (id)
 );
+
 
 
 

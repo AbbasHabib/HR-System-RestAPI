@@ -18,11 +18,11 @@
 
     <employee id="101" first_name="big" last_name="rami" graduation_date="2012-01-01" national_id="10101001" gross_salary="100000" gender="MALE" department_id="101" team_id="101" role="HR"/>
 
-    <employee id="102" first_name="7amada" last_name="elgin" graduation_date="2012-01-01" national_id="101087" gross_salary="20000" gender="MALE" manager_id="101" department_id="101" team_id="101" />
+    <employee id="102" first_name="7amada" last_name="elgin" graduation_date="2012-01-01" national_id="101087" gross_salary="20000" gender="MALE" manager_id="101" department_id="101" team_id="101" role="EMPLOYEE"/>
 
-    <employee id="103" first_name="zatona" last_name="lamona" graduation_date="2012-01-01" national_id="1010865" gross_salary="10000" gender="MALE" manager_id="102" department_id="101" team_id="101" />
+    <employee id="103" first_name="zatona" last_name="lamona" graduation_date="2012-01-01" national_id="1010865" gross_salary="10000" gender="MALE" manager_id="102" department_id="101" team_id="101" role="EMPLOYEE"/>
 
-    <employee id="104" first_name="lamona" last_name="habib" graduation_date="2012-01-01" national_id="1084896" gross_salary="10000" gender="MALE" manager_id="102" department_id="101" team_id="101"   />
+    <employee id="104" first_name="lamona" last_name="habib" graduation_date="2012-01-01" national_id="1084896" gross_salary="10000" gender="MALE" manager_id="102" department_id="101" team_id="101"   role="EMPLOYEE"/>
 
 
 </dataset>

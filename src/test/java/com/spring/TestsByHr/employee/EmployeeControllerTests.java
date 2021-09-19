@@ -9,6 +9,7 @@ import com.spring.Employee.Employee;
 import com.spring.Employee.Gender;
 import com.spring.ExceptionsCustom.CustomException;
 import com.spring.IntegrationTest;
+import com.spring.Security.EmployeeRole;
 import com.spring.Security.UserCredentials;
 import com.spring.Security.UserCredentialsRepository;
 import com.spring.Team.Team;
@@ -48,6 +49,7 @@ public class EmployeeControllerTests extends IntegrationTest {
         employeeToAdd.setFullName("ahmed safty");
         employeeToAdd.setGender(Gender.MALE);
         employeeToAdd.setGrossSalary(10000f);
+        employeeToAdd.setRole(EmployeeRole.EMPLOYEE);
 
         Float expectedNetSalary = getEmployeeService().calculateNetSalary(employeeToAdd.getGrossSalary());
 
@@ -99,32 +101,6 @@ public class EmployeeControllerTests extends IntegrationTest {
         assertEquals(employeeToAdd.getUserName(), employeeFromDb.getUserName());
         assertEquals(employeeToAdd.getGender(), employeeFromDb.getGender());
         assertEquals(expectedNetSalary, employeeFromDb.getNetSalary());
-    }
-
-    @Test
-    @DatabaseSetup("/hr-only.xml")
-    public void add_employee_by_hr_duplicate_national_id() throws Exception, CustomException {
-        Employee employeeToAdd = new Employee();
-        employeeToAdd.setFullName("ahmed safty");
-        employeeToAdd.setGender(Gender.MALE);
-        employeeToAdd.setGrossSalary(10000f);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = simpleDateFormat.parse("2012-01-02");
-        employeeToAdd.setGraduationDate(date);
-
-        employeeToAdd.setNationalId("123"); // duplicate nationalId
-        // Is expected to return same object it receives
-        ObjectMapper objectMapper = new ObjectMapper();
-        String employeeJson = objectMapper.writeValueAsString(employeeToAdd); // converts employee object to JSON string
-
-        // POST request (.post("/employee/")) takes to be a Json of employee in request Body
-        getMockMvc().perform(MockMvcRequestBuilders.post("/employee/")
-                .with(httpBasic("abbas_habib_1", "123"))
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(employeeJson))
-                .andExpect(status().isBadRequest())
-                .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof CustomException))
-                .andExpect(result -> assertEquals("national id already exists!", Objects.requireNonNull(result.getResolvedException()).getMessage()));
     }
 
 
@@ -268,7 +244,222 @@ public class EmployeeControllerTests extends IntegrationTest {
                 .andExpect(status().isOk());
 
     }
-}
 
+
+    // duplicates and exception handling tests
+
+    @Test
+    @DatabaseSetup("/hr-only.xml")
+    public void add_employee_by_hr_duplicate_national_id() throws Exception, CustomException {
+        Employee employeeToAdd = new Employee();
+        employeeToAdd.setFullName("ahmed safty");
+        employeeToAdd.setGender(Gender.MALE);
+        employeeToAdd.setGrossSalary(10000f);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = simpleDateFormat.parse("2012-01-02");
+        employeeToAdd.setGraduationDate(date);
+
+        employeeToAdd.setNationalId("123"); // duplicate nationalId
+        // Is expected to return same object it receives
+        ObjectMapper objectMapper = new ObjectMapper();
+        String employeeJson = objectMapper.writeValueAsString(employeeToAdd); // converts employee object to JSON string
+
+        // POST request (.post("/employee/")) takes to be a Json of employee in request Body
+        getMockMvc().perform(MockMvcRequestBuilders.post("/employee/")
+                .with(httpBasic("abbas_habib_1", "123"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(employeeJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof CustomException))
+                .andExpect(result -> assertEquals("national id already exists!", Objects.requireNonNull(result.getResolvedException()).getMessage()));
+    }
+
+    @Test
+    @DatabaseSetup("/hr-only.xml")
+    public void add_employee_by_hr_first_name_null() throws Exception, CustomException {
+        Employee employeeToAdd = new Employee();
+        employeeToAdd.setLastName("ahmed");
+        employeeToAdd.setGender(Gender.MALE);
+        employeeToAdd.setGrossSalary(10000f);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = simpleDateFormat.parse("2012-01-02");
+        employeeToAdd.setGraduationDate(date);
+
+        employeeToAdd.setNationalId("1234");
+        // Is expected to return same object it receives
+        ObjectMapper objectMapper = new ObjectMapper();
+        String employeeJson = objectMapper.writeValueAsString(employeeToAdd); // converts employee object to JSON string
+
+        // POST request (.post("/employee/")) takes to be a Json of employee in request Body
+        getMockMvc().perform(MockMvcRequestBuilders.post("/employee/")
+                .with(httpBasic("abbas_habib_1", "123"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(employeeJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof CustomException))
+                .andExpect(result -> assertEquals("firstName cannot be null!", Objects.requireNonNull(result.getResolvedException()).getMessage()));
+    }
+
+    @Test
+    @DatabaseSetup("/hr-only.xml")
+    public void add_employee_by_hr_last_name_null() throws Exception, CustomException {
+        Employee employeeToAdd = new Employee();
+        employeeToAdd.setFirstName("ahmed");
+        employeeToAdd.setGender(Gender.MALE);
+        employeeToAdd.setGrossSalary(10000f);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = simpleDateFormat.parse("2012-01-02");
+        employeeToAdd.setGraduationDate(date);
+
+        employeeToAdd.setNationalId("1234");
+        // Is expected to return same object it receives
+        ObjectMapper objectMapper = new ObjectMapper();
+        String employeeJson = objectMapper.writeValueAsString(employeeToAdd); // converts employee object to JSON string
+
+        // POST request (.post("/employee/")) takes to be a Json of employee in request Body
+        getMockMvc().perform(MockMvcRequestBuilders.post("/employee/")
+                .with(httpBasic("abbas_habib_1", "123"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(employeeJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof CustomException))
+                .andExpect(result -> assertEquals("lastName cannot be null!", Objects.requireNonNull(result.getResolvedException()).getMessage()));
+    }
+
+
+    @Test
+    @DatabaseSetup("/hr-only.xml")
+    public void add_employee_by_hr_national_id_null() throws Exception, CustomException {
+        Employee employeeToAdd = new Employee();
+        employeeToAdd.setFirstName("ahmed");
+        employeeToAdd.setLastName("abbas");
+        employeeToAdd.setGender(Gender.MALE);
+        employeeToAdd.setGrossSalary(10000f);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = simpleDateFormat.parse("2012-01-02");
+        employeeToAdd.setGraduationDate(date);
+
+
+        // Is expected to return same object it receives
+        ObjectMapper objectMapper = new ObjectMapper();
+        String employeeJson = objectMapper.writeValueAsString(employeeToAdd); // converts employee object to JSON string
+
+        // POST request (.post("/employee/")) takes to be a Json of employee in request Body
+        getMockMvc().perform(MockMvcRequestBuilders.post("/employee/")
+                .with(httpBasic("abbas_habib_1", "123"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(employeeJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof CustomException))
+                .andExpect(result -> assertEquals("nationalId cannot be null!", Objects.requireNonNull(result.getResolvedException()).getMessage()));
+    }
+
+    @Test
+    @DatabaseSetup("/hr-only.xml")
+    public void add_employee_by_hr_gender_null() throws Exception, CustomException {
+        Employee employeeToAdd = new Employee();
+        employeeToAdd.setFirstName("ahmed");
+        employeeToAdd.setLastName("abbas");
+        employeeToAdd.setGrossSalary(10000f);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = simpleDateFormat.parse("2012-01-02");
+        employeeToAdd.setGraduationDate(date);
+        employeeToAdd.setNationalId("1234");
+
+
+        // Is expected to return same object it receives
+        ObjectMapper objectMapper = new ObjectMapper();
+        String employeeJson = objectMapper.writeValueAsString(employeeToAdd); // converts employee object to JSON string
+
+        // POST request (.post("/employee/")) takes to be a Json of employee in request Body
+        getMockMvc().perform(MockMvcRequestBuilders.post("/employee/")
+                .with(httpBasic("abbas_habib_1", "123"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(employeeJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof CustomException))
+                .andExpect(result -> assertEquals("gender cannot be null!", Objects.requireNonNull(result.getResolvedException()).getMessage()));
+    }
+
+
+    @Test
+    @DatabaseSetup("/hr-only.xml")
+    public void add_employee_by_hr_graduation_date_null() throws Exception {
+        Employee employeeToAdd = new Employee();
+        employeeToAdd.setFirstName("ahmed");
+        employeeToAdd.setLastName("abbas");
+        employeeToAdd.setGrossSalary(10000f);
+        employeeToAdd.setNationalId("1234");
+        employeeToAdd.setGender(Gender.MALE);
+
+
+        // Is expected to return same object it receives
+        ObjectMapper objectMapper = new ObjectMapper();
+        String employeeJson = objectMapper.writeValueAsString(employeeToAdd); // converts employee object to JSON string
+
+        // POST request (.post("/employee/")) takes to be a Json of employee in request Body
+        getMockMvc().perform(MockMvcRequestBuilders.post("/employee/")
+                .with(httpBasic("abbas_habib_1", "123"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(employeeJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof CustomException))
+                .andExpect(result -> assertEquals("graduationDate cannot be null!", Objects.requireNonNull(result.getResolvedException()).getMessage()));
+
+    }
+
+    @Test
+    @DatabaseSetup("/hr-only.xml")
+    public void add_employee_by_hr_gross_salary_null() throws Exception, CustomException {
+        Employee employeeToAdd = new Employee();
+        employeeToAdd.setFirstName("ahmed");
+        employeeToAdd.setLastName("abbas");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = simpleDateFormat.parse("2012-01-02");
+        employeeToAdd.setGraduationDate(date);
+        employeeToAdd.setNationalId("1234");
+        employeeToAdd.setGender(Gender.MALE);
+        // Is expected to return same object it receives
+        ObjectMapper objectMapper = new ObjectMapper();
+        String employeeJson = objectMapper.writeValueAsString(employeeToAdd); // converts employee object to JSON string
+
+        // POST request (.post("/employee/")) takes to be a Json of employee in request Body
+        getMockMvc().perform(MockMvcRequestBuilders.post("/employee/")
+                .with(httpBasic("abbas_habib_1", "123"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(employeeJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof CustomException))
+                .andExpect(result -> assertEquals("grossSalary cannot be null!", Objects.requireNonNull(result.getResolvedException()).getMessage()));
+    }
+
+    @Test
+    @DatabaseSetup("/hr-only.xml")
+    public void add_employee_by_hr_user_role_null() throws Exception, CustomException {
+        Employee employeeToAdd = new Employee();
+        employeeToAdd.setFirstName("ahmed");
+        employeeToAdd.setGrossSalary(10000f);
+
+        employeeToAdd.setLastName("abbas");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = simpleDateFormat.parse("2012-01-02");
+        employeeToAdd.setGraduationDate(date);
+        employeeToAdd.setNationalId("1234");
+        employeeToAdd.setGender(Gender.MALE);
+        // Is expected to return same object it receives
+        ObjectMapper objectMapper = new ObjectMapper();
+        String employeeJson = objectMapper.writeValueAsString(employeeToAdd); // converts employee object to JSON string
+
+        // POST request (.post("/employee/")) takes to be a Json of employee in request Body
+        getMockMvc().perform(MockMvcRequestBuilders.post("/employee/")
+                .with(httpBasic("abbas_habib_1", "123"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(employeeJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof CustomException))
+                .andExpect(result -> assertEquals("role cannot be null!", Objects.requireNonNull(result.getResolvedException()).getMessage()));
+    }
+
+}
 
 

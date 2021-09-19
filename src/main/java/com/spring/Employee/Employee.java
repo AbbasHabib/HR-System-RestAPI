@@ -36,11 +36,10 @@ public class Employee implements IdOwner {
     private Integer yearsOfExperience;
     @Column(name = "birth_date")
     private LocalDate birthDate;
-    @Column(name = "graduation_date")
+    @Column(name = "graduation_date", nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date graduationDate;
-    @Column(name = "gender")
-
+    @Column(name = "gender", nullable = false)
     @Enumerated(EnumType.STRING)
     private Gender gender;
     @ManyToOne
@@ -61,9 +60,8 @@ public class Employee implements IdOwner {
     @OneToMany(mappedBy = "manager") // one manager to many employees
     private List<Employee> subEmployees;
 
-    @Column(name = "gross_salary")
+    @Column(name = "gross_salary", nullable = false)
     private Float grossSalary;
-
     @Column(name = "net_salary")
     private Float netSalary;
 
@@ -74,6 +72,7 @@ public class Employee implements IdOwner {
     @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL)
     private UserCredentials userCredentials;
 
+    @Column(name = "role", nullable = false)
     @Enumerated(EnumType.STRING)
     private EmployeeRole role;
 
