@@ -9,6 +9,7 @@ import com.spring.Employee.EmployeeLog.monthDetails.MonthDTO;
 import com.spring.Employee.EmployeeLog.monthDetails.MonthDetails;
 import com.spring.Employee.EmployeeLog.monthDetails.MonthDetailsRepository;
 import com.spring.Employee.DTO.EmployeeSalaryDTO;
+import com.spring.Employee.EmployeeService;
 import com.spring.Employee.SalariesYearsConstants;
 import com.spring.ExceptionsCustom.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,8 @@ public class AttendanceService {
 
     @Autowired
     private MonthDetailsRepository monthDetailsRepository;
+    @Autowired
+    EmployeeService employeeService;
 
     public AttendanceTable findAttendanceTable(Long attendanceTableId) {
         // if no table with this id is found return null
@@ -156,6 +159,22 @@ public class AttendanceService {
         MonthDTO monthDTO = new MonthDTO();
         MonthDTO.setMonthDetailsToDTO(monthData, monthDTO);
         return monthDTO;
+    }
+
+    public MonthDTO getMonthDetailsByLoggedUser(LocalDate date) throws CustomException {
+        Long employeeId = employeeService.getEmployeeIdFromAuthentication();
+        return getMonthDetailsDTO(employeeId, date);
+    }
+
+
+    public EmployeeSalaryDTO employeeSalaryAtMonthByLoggedUser(LocalDate date) throws CustomException {
+        Long employeeId = employeeService.getEmployeeIdFromAuthentication();
+        return employeeSalaryAtMonth(employeeId, date);
+    }
+
+    public List<MonthDetails> getAllSalaryHistoryByLoggedUser() throws CustomException {
+        Long employeeId = employeeService.getEmployeeIdFromAuthentication();
+        return getAllSalaryHistory(employeeId);
     }
 
     public Long getAttendanceTableIdByEmployeeId(Long employeeId) throws CustomException {

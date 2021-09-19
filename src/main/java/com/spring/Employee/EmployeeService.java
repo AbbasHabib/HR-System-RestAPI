@@ -24,8 +24,6 @@ public class EmployeeService {
     @Autowired
     private EmployeeRepository employeeRepository;
     @Autowired
-    private AttendanceService attendanceService;
-    @Autowired
     private AttendanceRepository attendanceRepository;
     @Autowired
     private UserCredentialsRepository userCredentialsRepository;
