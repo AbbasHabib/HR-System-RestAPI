@@ -4,7 +4,9 @@ import com.blazebit.persistence.CriteriaBuilderFactory;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.spring.Department.Department;
 import com.spring.Employee.COMMANDS.EmployeeModifyCommand;
+import com.spring.Employee.COMMANDS.EmployeeSalaryModifyCommand;
 import com.spring.Employee.DTO.EmployeeBasicInfoDTO;
+import com.spring.Employee.DTO.EmployeeInfoDTO;
 import com.spring.Employee.Employee;
 import com.spring.Employee.Gender;
 import com.spring.ExceptionsCustom.CustomException;
@@ -51,7 +53,7 @@ public class EmployeeControllerTests extends IntegrationTest {
         employeeToAdd.setGrossSalary(10000f);
         employeeToAdd.setRole(EmployeeRole.EMPLOYEE);
 
-        Float expectedNetSalary = getEmployeeService().calculateNetSalary(employeeToAdd.getGrossSalary());
+        Float expectedNetSalary = getEmployeeService().calculateNetSalary(employeeToAdd.getGrossSalary(), employeeToAdd.getSalaryRaise());
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = simpleDateFormat.parse("2012-01-02");
@@ -221,6 +223,41 @@ public class EmployeeControllerTests extends IntegrationTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    @DatabaseSetup("/data.xml")
+    public void modify_employee_salary_with_salary_command() throws Exception {
+        Long employeeIdToModify = 101L;
+        Employee employee = getEmployeeService().getEmployee(employeeIdToModify);
+        employee.setSalaryRaise(5000f);
+        employee.setGrossSalary(20000f);
+        Float netSalary = getEmployeeService().calculateNetSalary(employee.getGrossSalary(), employee.getSalaryRaise());
+        employee.setNetSalary(netSalary);
+
+
+        EmployeeSalaryModifyCommand employeeSalaryModifyCommand = new EmployeeSalaryModifyCommand();
+        employeeSalaryModifyCommand.setGrossSalary(20000f);
+        employeeSalaryModifyCommand.setSalaryRaise(5000f);
+
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String employeeSalaryModifyCommandJSON = objectMapper.writeValueAsString(employeeSalaryModifyCommand);
+
+
+        EmployeeInfoDTO employeeInfoDTO = new EmployeeInfoDTO();
+        employeeInfoDTO.setEmployeeToDTO(employee);
+        String expectedResponseDTOJSON =  objectMapper.writeValueAsString(employeeInfoDTO);
+
+
+        getMockMvc().perform(MockMvcRequestBuilders.put("/employee/" + employeeIdToModify + "/salary")
+                .with(httpBasic("abbas_habib_10", "123"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(employeeSalaryModifyCommandJSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(expectedResponseDTOJSON));
+
+
+
+    }
 
     @Test
     @DatabaseSetup("/data.xml")
@@ -269,7 +306,7 @@ public class EmployeeControllerTests extends IntegrationTest {
         employeeToAdd.setGrossSalary(10000f);
         employeeToAdd.setRole(EmployeeRole.EMPLOYEE);
 
-        Float expectedNetSalary = getEmployeeService().calculateNetSalary(employeeToAdd.getGrossSalary());
+        Float expectedNetSalary = getEmployeeService().calculateNetSalary(employeeToAdd.getGrossSalary(), employeeToAdd.getSalaryRaise());
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = simpleDateFormat.parse("2012-01-02");
@@ -488,7 +525,7 @@ public class EmployeeControllerTests extends IntegrationTest {
         employeeToAdd.setGender(Gender.MALE);
         employeeToAdd.setRole(EmployeeRole.EMPLOYEE);
 
-        Float expectedNetSalary = getEmployeeService().calculateNetSalary(employeeToAdd.getGrossSalary());
+        Float expectedNetSalary = getEmployeeService().calculateNetSalary(employeeToAdd.getGrossSalary(), employeeToAdd.getSalaryRaise());
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = simpleDateFormat.parse("2012-01-02");
@@ -514,7 +551,7 @@ public class EmployeeControllerTests extends IntegrationTest {
     @Test
     @Transactional
     @DatabaseSetup("/data.xml")
-    public void modify_employee_by_gross_salary_negative_by_hr() throws Exception, CustomException {
+    public void modify_employee_gross_salary_negative_by_hr() throws Exception, CustomException {
         // Initial values of the employee
         Long employeeId = 103L; // employee id to modify
         Employee employeeToModify = getEmployeeService().getEmployee(employeeId);

@@ -11,7 +11,7 @@ create table team
 (
     id        bigint auto_increment
         primary key,
-    team_name varchar(255) null
+    team_name varchar(255) not null
 );
 
 

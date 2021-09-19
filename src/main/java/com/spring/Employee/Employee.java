@@ -76,7 +76,7 @@ public class Employee implements IdOwner {
     @Enumerated(EnumType.STRING)
     private EmployeeRole role;
 
-    private Float SalaryRaise = 0f;
+    private Float salaryRaise = 0f;
 
     public Employee() {
     }
@@ -121,11 +121,11 @@ public class Employee implements IdOwner {
     }
 
     public Float getSalaryRaise() {
-        return SalaryRaise;
+        return salaryRaise;
     }
 
     public void setSalaryRaise(Float salaryRaise) {
-        SalaryRaise = salaryRaise;
+        this.salaryRaise = salaryRaise;
     }
 
     public EmployeeRole getRole() {

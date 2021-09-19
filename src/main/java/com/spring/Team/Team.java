@@ -14,7 +14,7 @@ public class Team implements IdOwner {
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id = 0L;
-    @Column(name = "team_name")
+    @Column(name = "team_name", nullable = false)
     private String teamName;
     @JsonIgnore
     @OneToMany(mappedBy = "team", fetch = FetchType.EAGER, cascade = CascadeType.ALL)

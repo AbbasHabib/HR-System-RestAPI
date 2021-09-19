@@ -36,6 +36,7 @@ public class AttendanceService {
         return attendanceRepository.findById(attendanceTableId).orElse(null);
     }
 
+
     public AttendanceTable getAttendanceTable(Long attendanceTableId) throws CustomException {
         AttendanceTable attendanceTableToFind = this.findAttendanceTable(attendanceTableId);
         if (attendanceTableToFind == null)
@@ -50,8 +51,7 @@ public class AttendanceService {
             return attendanceTable;
         throw new CustomException("""
                 *this employee id doesn't exist
-                *or employee doesn't have an attendance table
-                *-->check add attendance table api""");
+                *or employee doesn't have an attendance table""");
     }
 
 

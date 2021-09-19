@@ -34,7 +34,9 @@ public class TeamService {
         return EmployeeInfoDTO.setEmployeeToDTOList(employeesInTeam);
     }
 
-    public Team addTeam(Team team) {
+    public Team addTeam(Team team) throws Exception {
+        if(team.getTeamName() == null)
+            throw new CustomException("teamName cannot be null!");
         if (getTeam(team.getId()) == null)
             return teamRepository.save(team);
         return null;

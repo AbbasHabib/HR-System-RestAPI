@@ -24,7 +24,7 @@ public class TeamController {
     }
 
     @PostMapping(value = "/team/", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Team addTeam(@RequestBody Team team) {
+    public Team addTeam(@RequestBody Team team) throws Exception {
         return teamService.addTeam(team);
     }
 

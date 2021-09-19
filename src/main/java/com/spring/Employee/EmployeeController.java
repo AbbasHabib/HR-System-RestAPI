@@ -2,6 +2,7 @@ package com.spring.Employee;
 
 import com.spring.Employee.COMMANDS.EmployeeModificationByLoggedUserCommand;
 import com.spring.Employee.COMMANDS.EmployeeModifyCommand;
+import com.spring.Employee.COMMANDS.EmployeeSalaryModifyCommand;
 import com.spring.Employee.DTO.EmployeeBasicInfoDTO;
 import com.spring.Employee.DTO.EmployeeInfoDTO;
 import com.spring.ExceptionsCustom.CustomException;
@@ -43,6 +44,10 @@ public class EmployeeController {
         return employeeService.modifyEmployee(Long.parseLong(id), employeeModifyCommand);
     }
 
+    @PutMapping(value = "/employee/{id}/salary", produces = MediaType.APPLICATION_JSON_VALUE)
+    public EmployeeInfoDTO modifyEmployeeSalary(@PathVariable String id, @RequestBody EmployeeSalaryModifyCommand employeeModifyCommand) throws NotFoundException, CustomException, IllegalAccessException {
+        return employeeService.modifyEmployeeSalary(Long.parseLong(id), employeeModifyCommand);
+    }
 
     @GetMapping("/employee/manager/recursive/{id}")
     public List<EmployeeBasicInfoDTO> getEmployeesUnderManagerRecursively(@PathVariable String id) throws CustomException {

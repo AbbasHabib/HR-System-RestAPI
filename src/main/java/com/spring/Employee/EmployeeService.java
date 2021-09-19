@@ -2,10 +2,10 @@ package com.spring.Employee;
 
 import com.spring.Employee.COMMANDS.EmployeeModificationByLoggedUserCommand;
 import com.spring.Employee.COMMANDS.EmployeeModifyCommand;
+import com.spring.Employee.COMMANDS.EmployeeSalaryModifyCommand;
 import com.spring.Employee.DTO.EmployeeBasicInfoDTO;
 import com.spring.Employee.DTO.EmployeeInfoDTO;
 import com.spring.Employee.EmployeeLog.AttendanceRepository;
-import com.spring.Employee.EmployeeLog.AttendanceService;
 import com.spring.Employee.EmployeeLog.AttendanceTable;
 import com.spring.ExceptionsCustom.CustomException;
 import com.spring.Security.UserCredentials;
@@ -89,7 +89,7 @@ public class EmployeeService {
 
     public Employee saveEmployee(Employee employeeToAdd) throws CustomException {
         try {
-            employeeToAdd.setNetSalary(calculateNetSalary(employeeToAdd.getGrossSalary())); // This function calculates employee new salary and return it
+            employeeToAdd.setNetSalary(calculateNetSalary(employeeToAdd.getGrossSalary(), employeeToAdd.getSalaryRaise())); // This function calculates employee new salary and return it
             Employee savedEmployee = employeeRepository.save(employeeToAdd);
             AddCredentials(savedEmployee);
             AddAttendanceTable(savedEmployee);
@@ -158,10 +158,11 @@ public class EmployeeService {
     }
 
 
-
-    public Float calculateNetSalary(Float employeeSalary) {
+    public Float calculateNetSalary(Float employeeSalary, Float salaryRaise) {
+        if(salaryRaise == null)
+            salaryRaise = 0f;
         if (employeeSalary != null && employeeSalary != 0) {
-            float empSalary = employeeSalary * (1 - SalariesYearsConstants.TAXES) - SalariesYearsConstants.DEDUCTED_INSURANCE;
+            float empSalary = (employeeSalary + salaryRaise) * (1 - SalariesYearsConstants.TAXES) - SalariesYearsConstants.DEDUCTED_INSURANCE;
             if (empSalary > 0)
                 return empSalary;
         }
@@ -177,17 +178,17 @@ public class EmployeeService {
         return employeesUnderCurrentEmployee.stream().noneMatch(o -> o.getId().equals(goToManager.getId())); // if it contains this manager then he cant be my manager
     }
 
-    public EmployeeInfoDTO modifyEmployee(long employeeId, EmployeeModifyCommand employeeDto) throws NotFoundException, CustomException, IllegalAccessException {
+    public EmployeeInfoDTO modifyEmployee(long employeeId, EmployeeModifyCommand employeeModifyCommand) throws NotFoundException, CustomException, IllegalAccessException {
         Employee employeeToModify = this.getEmployee(employeeId);
 
-        if (employeeDto.getManager() != null) // if employee manager is modified check problem could occur
+        if (employeeModifyCommand.getManager() != null) // if employee manager is modified check problem could occur
         {
-            if (!checkManagerChange(employeeToModify, employeeDto.getManager())) // if the manager is working underMe he cant be my manager
+            if (!checkManagerChange(employeeToModify, employeeModifyCommand.getManager())) // if the manager is working underMe he cant be my manager
             {
                 throw new CustomException("Infinite recursive relation between employee and manager");
             }
         }
-        employeeDto.commandToEmployee(employeeToModify); //  copying new data to employee
+        employeeModifyCommand.commandToEmployee(employeeToModify); //  copying new data to employee
         this.handleEmployeeInsertionExceptions(employeeToModify);
 
 
@@ -199,6 +200,21 @@ public class EmployeeService {
             return employeeInfoDTO;
         }
         throw new CustomException("could not modify employee");
+
+    }
+
+    public EmployeeInfoDTO modifyEmployeeSalary(long employeeId, EmployeeSalaryModifyCommand employeeSalaryModifyCommand) throws NotFoundException, CustomException, IllegalAccessException {
+        Employee employeeToModify = this.getEmployee(employeeId);
+        employeeSalaryModifyCommand.commandToEmployee(employeeToModify); //  copying new data to employee
+
+        Employee employeeModified = null;
+        employeeModified = saveEmployee(employeeToModify);
+        if (employeeModified != null) {
+            EmployeeInfoDTO employeeInfoDTO = new EmployeeInfoDTO();
+            employeeInfoDTO.setEmployeeToDTO(employeeModified);
+            return employeeInfoDTO;
+        }
+        throw new CustomException("could not modify employee!");
 
     }
 
@@ -231,7 +247,7 @@ public class EmployeeService {
     public List<EmployeeBasicInfoDTO> getManagerEmployeesByLoggedUser() throws CustomException {
         Long managerId = getEmployeeIdFromAuthentication();
         if (managerId == null)
-            throw new CustomException("this employee Id does not exist");
+            throw new CustomException("this employee id does not exist");
         List<Employee> employeesUnderManager = employeeRepository.findByManager_Id(managerId);
         EmployeeBasicInfoDTO employeeBasicInfoDTO = new EmployeeBasicInfoDTO();
         return employeeBasicInfoDTO.generateDTOListFromEmployeeList(employeesUnderManager);

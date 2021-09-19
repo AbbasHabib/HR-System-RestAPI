@@ -3,10 +3,12 @@ package com.spring.TestsByHr.team;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.spring.Employee.DTO.EmployeeInfoDTO;
+import com.spring.ExceptionsCustom.CustomException;
 import com.spring.IntegrationTest;
 import com.spring.Team.Team;
 import com.spring.TestsByHr.testShortcuts.TestShortcutMethods;
 import javassist.NotFoundException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
@@ -15,7 +17,9 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Objects;
 
+import static org.junit.Assert.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -66,4 +70,21 @@ public class TeamIntegrationTest extends IntegrationTest {
                 .andReturn();
 
     }
+
+    // testing exceptions ---------------------
+    @Test
+    @DatabaseSetup("/data.xml")
+    public void add_team_by_hr_team_name_null_exception_thrown() throws Exception {
+        Team teamToAdd = new Team();
+        ObjectMapper objectMapper = new ObjectMapper();
+        String teamJson = objectMapper.writeValueAsString(teamToAdd);
+
+        getMockMvc().perform(MockMvcRequestBuilders.post("/team/")
+                .with(httpBasic("abbas_habib_10", "123"))
+                .contentType(MediaType.APPLICATION_JSON).content(teamJson))
+                .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof CustomException))
+                .andExpect(result -> assertEquals("teamName cannot be null!", Objects.requireNonNull(result.getResolvedException()).getMessage()));
+    }
+
 }
+
