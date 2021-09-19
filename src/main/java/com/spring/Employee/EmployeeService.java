@@ -92,9 +92,13 @@ public class EmployeeService {
         Employee employee = this.getEmployee(employeeId);
         if (employee != null) {
             if (employee.shiftSubordinates()) {
+                if(employee.getUserCredentials() != null) {
+                    userCredentialsRepository.deleteById(employee.getUserCredentials().getUserName());
+                }
                 employeeRepository.deleteById(employeeId); // if shifting shiftSubordinates process is complete
                 return true;
             }
+            throw new CustomException(">>This employee has no manager it cant be deleted");
         }
         throw new CustomException(">>This employee id does not exist!!!");
     }

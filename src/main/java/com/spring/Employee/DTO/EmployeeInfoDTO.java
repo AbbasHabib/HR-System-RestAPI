@@ -24,8 +24,10 @@ public class EmployeeInfoDTO implements IdOwner, IEmployeeInfoDTO {
     private Float grossSalary;
     private Float netSalary;
     private EmployeeRole role;
+    private Float salaryRaise;
     private EmployeePublicInfo managerPublicInfo;
     private List<EmployeeBasicInfoDTO> SubEmployeesBasicInfo;
+
 
     public void setEmployeeToDTO(Employee employeeFullData) {
         ModelMapperGen.getModelMapperSingleton().map(employeeFullData, this);
@@ -67,6 +69,14 @@ public class EmployeeInfoDTO implements IdOwner, IEmployeeInfoDTO {
 
     public List<EmployeeBasicInfoDTO> getSubEmployeesBasicInfo() {
         return SubEmployeesBasicInfo;
+    }
+
+    public Float getSalaryRaise() {
+        return salaryRaise;
+    }
+
+    public void setSalaryRaise(Float salaryRaise) {
+        this.salaryRaise = salaryRaise;
     }
 
     public void setSubEmployeesBasicInfo(List<EmployeeBasicInfoDTO> subEmployeesBasicInfo) {

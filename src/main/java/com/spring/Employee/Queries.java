@@ -16,4 +16,7 @@ public interface Queries {
 
     String DELETE_FROM_EMPLOYEE_BY_ID = "DELETE from Employee e where e.id = ?1";
 
+    String DELETE_FROM_USER_CREDENTIALS = "DELETE from UserCredentials u where u.userName = ?1";
+
+
 }

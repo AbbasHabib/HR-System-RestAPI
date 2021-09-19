@@ -10,6 +10,7 @@ import com.spring.Employee.Employee;
 import com.spring.Employee.Gender;
 import com.spring.ExceptionsCustom.CustomException;
 import com.spring.IntegrationTest;
+import com.spring.Security.UserCredentials;
 import com.spring.Security.UserCredentialsRepository;
 import com.spring.Team.Team;
 import com.spring.TestsByHr.testShortcuts.TestShortcutMethods;
@@ -27,6 +28,8 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
@@ -128,20 +131,39 @@ public class EmployeeControllerTests extends IntegrationTest {
 
     @Test
     @DatabaseSetup("/data.xml")
-//    @ExpectedDatabase(value ="/expectedDatabases/employee_deletion.xml", table = "employee")
     public void delete_employee_with_id_by_hr() throws Exception {
         long deleteUserWithID = 102L;
+
 
         getMockMvc().perform(MockMvcRequestBuilders.delete("/employee/" + deleteUserWithID)
                 .with(httpBasic("abbas_habib_10", "123")))
                 .andExpect(content().string("true"))
                 .andExpect(status().isOk()).andReturn();
 
-        assertNull(getEmployeeService().getEmployee(deleteUserWithID));
+        Assertions.assertNull(getEmployeeService().getEmployee(deleteUserWithID));
         assertEquals(getEmployeeService().getEmployee(103L).getManager().getId(), 101L);
         assertEquals(getEmployeeService().getEmployee(104L).getManager().getId(), 101L);
     }
 
+
+    @Test
+    @DatabaseSetup("/EmployeeWithCredentialsDeletionTest.xml")
+    public void delete_employee_with_id_with_credentials_deletion_by_hr() throws Exception {
+        long deleteUserWithID = 20L;
+        String userName = "abbas_habib_20";
+        UserCredentials userCredential = userCredentialsRepository.findById(userName).orElse(null);
+        Assertions.assertNotEquals(userCredential, null); // making sure that this user credential exists at first
+
+        getMockMvc().perform(MockMvcRequestBuilders.delete("/employee/" + deleteUserWithID)
+                .with(httpBasic("abbas_habib_10", "123")))
+                .andExpect(content().string("true"))
+                .andExpect(status().isOk()).andReturn();
+
+
+        Assertions.assertNull(getEmployeeService().getEmployee(deleteUserWithID));
+        Assertions.assertNull(userCredentialsRepository.findById(userName).orElse(null)); // making sure that this user credential doesn't exist
+        
+    }
     @Test
     @Transactional
     @DatabaseSetup("/data.xml")

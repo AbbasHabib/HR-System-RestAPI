@@ -116,7 +116,6 @@ public class EmployeeControllerByLoggedUser extends IntegrationTest {
                 .with(httpBasic("ahmed_habib_1", "123")))
                 .andReturn();
 
-
         String responseJson = result.getResponse().getContentAsString();
         Assertions.assertEquals(expectedDTOLListJson, responseJson);
     }
