@@ -17,7 +17,9 @@ public class DepartmentService {
     @Autowired
     private EmployeeService employeeService;
 
-    public Department addDepartment(Department department) {
+    public Department addDepartment(Department department) throws CustomException {
+        if(department.getName() == null)
+            throw new CustomException("departmentName cannot be null!");
         return departmentRepository.save(department);
     }
 

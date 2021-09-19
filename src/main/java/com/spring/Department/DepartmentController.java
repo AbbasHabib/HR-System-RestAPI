@@ -12,7 +12,7 @@ public class DepartmentController {
     DepartmentService departmentService;
 
     @PostMapping("/department/")
-    public Department addDepartment(@RequestBody Department department) {
+    public Department addDepartment(@RequestBody Department department) throws Exception {
         return departmentService.addDepartment(department);
     }
 
@@ -25,7 +25,6 @@ public class DepartmentController {
     public Department getDepartment(@PathVariable String id) throws Exception, CustomException {
         return departmentService.getDepartment(Long.parseLong(id));
     }
-
 
     @GetMapping("/profile/department")
     public Department getDepartmentByLoggedUser() throws Exception, CustomException {
