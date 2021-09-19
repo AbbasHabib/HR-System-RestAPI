@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 @Service
@@ -37,10 +36,10 @@ public class EmployeeService {
 
     public EmployeeInfoDTO addEmployee(Employee employee) throws Exception, CustomException {
         Employee employeeToAdd = null;
+        this.handleEmployeeInsertionExceptions(employee);
+
         if (employeeRepository.findEmployeeByNationalId(employee.getNationalId()).isPresent())
             throw new CustomException("nationalId already exists!");
-
-        this.handleEmployeeInsertionExceptions(employee);
 
         if (employee.getId() == null)
             employeeToAdd = saveEmployee(employee);
@@ -55,13 +54,15 @@ public class EmployeeService {
     }
 
     public void handleEmployeeInsertionExceptions(Employee employee) throws CustomException, IllegalAccessException {
-        if(employee.getGrossSalary() < 0) {
+        EmployeeNotNullableFields employeeNotNullableFields = new EmployeeNotNullableFields(employee);
+        String nullFieldString = employeeNotNullableFields.checkNull();
+        if (!nullFieldString.equals("")) {
+            throw new CustomException(nullFieldString + " cannot be null!");
+        }
+
+        if (employee.getGrossSalary() < 0) {
             throw new CustomException("grossSalary cannot be less than 0!");
         }
-        EmployeeNotNullableFields employeeNotNullableFields = new EmployeeNotNullableFields(employee);
-        String nullFieldString= employeeNotNullableFields.checkNull();
-        if(!nullFieldString.equals(""))
-            throw new CustomException(nullFieldString + " cannot be null!");
 
     }
 

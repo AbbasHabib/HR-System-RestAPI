@@ -26,7 +26,7 @@ public class TestShortcutMethods<T extends IdOwner> {
         if (objectFromDb == null)
             throw new Exception("didnt find it in DB");
         ObjectMapper objectMapper = new ObjectMapper();
-        assertEquals(objectMapper.writeValueAsString(objectFromDb), objectMapper.writeValueAsString(expectedResult));
+        assertEquals(objectMapper.writeValueAsString(expectedResult), objectMapper.writeValueAsString(objectFromDb));
 
     }
 
