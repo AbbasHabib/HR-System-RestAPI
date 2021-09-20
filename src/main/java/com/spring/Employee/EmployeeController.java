@@ -40,17 +40,17 @@ public class EmployeeController {
     }
 
     @PutMapping(value = "/employee/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public EmployeeInfoDTO modifyEmployee(@PathVariable String id, @RequestBody EmployeeModifyCommand employeeModifyCommand) throws NotFoundException, CustomException, IllegalAccessException {
+    public EmployeeInfoDTO modifyEmployee(@PathVariable String id, @RequestBody EmployeeModifyCommand employeeModifyCommand) throws CustomException, IllegalAccessException {
         return employeeService.modifyEmployee(Long.parseLong(id), employeeModifyCommand);
     }
 
     @PutMapping(value = "/employee/{id}/salary", produces = MediaType.APPLICATION_JSON_VALUE)
-    public EmployeeInfoDTO modifyEmployeeSalary(@PathVariable String id, @RequestBody EmployeeSalaryModifyCommand employeeModifyCommand) throws NotFoundException, CustomException, IllegalAccessException {
+    public EmployeeInfoDTO modifyEmployeeSalary(@PathVariable String id, @RequestBody EmployeeSalaryModifyCommand employeeModifyCommand) throws CustomException, IllegalAccessException {
         return employeeService.modifyEmployeeSalary(Long.parseLong(id), employeeModifyCommand);
     }
 
     @GetMapping("/employee/manager/recursive/{id}")
-    public List<EmployeeBasicInfoDTO> getEmployeesUnderManagerRecursively(@PathVariable String id) throws CustomException {
+    public List<EmployeeBasicInfoDTO> getEmployeesUnderManagerRecursively(@PathVariable String id) {
         return employeeService.getManagerEmployeesRecursively(Long.parseLong(id));
     }
 
@@ -71,7 +71,7 @@ public class EmployeeController {
 
 
     @PutMapping(value = "/profile/employee", produces = MediaType.APPLICATION_JSON_VALUE)
-    public EmployeeInfoDTO modifyEmployeeByLoggedUSer(@RequestBody EmployeeModificationByLoggedUserCommand employeeModifyCommand) throws NotFoundException, CustomException, IllegalAccessException {
+    public EmployeeInfoDTO modifyEmployeeByLoggedUSer(@RequestBody EmployeeModificationByLoggedUserCommand employeeModifyCommand) throws CustomException, IllegalAccessException {
         return employeeService.modifyEmployeeByLoggedUser(employeeModifyCommand);
     }
 

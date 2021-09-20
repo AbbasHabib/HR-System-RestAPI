@@ -9,6 +9,5 @@ public class YearAndTimeGenerator {
 
     public static int getTestingYear() {
         return 2021;
-//        return getCurrentYear();
     }
 }

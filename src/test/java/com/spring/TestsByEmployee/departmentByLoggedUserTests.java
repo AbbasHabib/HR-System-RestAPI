@@ -3,7 +3,6 @@ package com.spring.TestsByEmployee;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.spring.Department.Department;
 import com.spring.Employee.Employee;
-import com.spring.ExceptionsCustom.CustomException;
 import com.spring.IntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;

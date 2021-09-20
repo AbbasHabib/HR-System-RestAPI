@@ -2,6 +2,7 @@ package com.spring.Employee.COMMANDS;
 
 import com.spring.Employee.Employee;
 import com.spring.Employee.Gender;
+import com.spring.interfaces.IEmployeeInfoCommand;
 import com.spring.modelMapperGen.ModelMapperGen;
 import lombok.Getter;
 import lombok.Setter;

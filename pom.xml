@@ -141,10 +141,6 @@
 				<artifactId>flyway-maven-plugin</artifactId>
 				<version>5.2.4</version>
 			</plugin>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
 		</plugins>
 	</build>
 </project>

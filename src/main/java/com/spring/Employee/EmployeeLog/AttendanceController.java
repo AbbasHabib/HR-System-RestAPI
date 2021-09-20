@@ -1,7 +1,6 @@
 package com.spring.Employee.EmployeeLog;
 
 import com.spring.Employee.DTO.EmployeeSalaryDTO;
-import com.spring.Employee.DTO.EmployeeSalaryDTOBuilder;
 import com.spring.Employee.EmployeeLog.dayDetails.DayDetailsCommand;
 import com.spring.Employee.EmployeeLog.dayDetails.DayDetailsDTO;
 import com.spring.Employee.EmployeeLog.monthDetails.MonthDTO;
@@ -20,7 +19,7 @@ public class AttendanceController {
     AttendanceService attendanceService;
 
     @PostMapping(value = "/attendance/day/employee/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public DayDetailsDTO addNewDayData(@PathVariable String id, @RequestBody DayDetailsCommand dayDetailsCommand) throws CustomException {
+    public DayDetailsDTO addNewDayDataOrModify(@PathVariable String id, @RequestBody DayDetailsCommand dayDetailsCommand) throws CustomException {
         return attendanceService.addNewDayDataAndSave(Long.parseLong(id), dayDetailsCommand);
     }
 
@@ -49,8 +48,8 @@ public class AttendanceController {
     public List<MonthDetails> getSalaryHistory(@PathVariable String id) throws CustomException {
         return attendanceService.getAllSalaryHistory(Long.parseLong(id));
     }
-
     // -------------------------------- api for employee with employee role ------------------------------------//
+
     @GetMapping(value = "profile/attendance/month/{date}", produces = MediaType.APPLICATION_JSON_VALUE)
     public MonthDTO getMonthDataByLoggedUser(@PathVariable String date) throws CustomException {
         return attendanceService.getMonthDetailsByLoggedUser(LocalDate.parse(date));

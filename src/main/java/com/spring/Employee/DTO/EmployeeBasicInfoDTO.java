@@ -3,6 +3,7 @@ package com.spring.Employee.DTO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.spring.Employee.Employee;
 import com.spring.Employee.Gender;
+import com.spring.interfaces.IEmployeeInfoDTO;
 import com.spring.interfaces.IdOwner;
 import com.spring.modelMapperGen.ModelMapperGen;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.spring.Employee.DTO;
+package com.spring.interfaces;
 
 import com.spring.Employee.Employee;
 

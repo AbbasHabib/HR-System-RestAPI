@@ -1,4 +1,4 @@
-package com.spring.Employee.COMMANDS;
+package com.spring.interfaces;
 
 import com.spring.Employee.Employee;
 

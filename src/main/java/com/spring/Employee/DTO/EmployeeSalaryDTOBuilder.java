@@ -1,12 +1,11 @@
 package com.spring.Employee.DTO;
 
-import com.spring.Employee.Employee;
 import com.spring.modelMapperGen.ModelMapperGen;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDate;
 
+@Getter
 public class EmployeeSalaryDTOBuilder {
     private LocalDate infoDate;
     private Float grossSalary;
@@ -59,26 +58,5 @@ public class EmployeeSalaryDTOBuilder {
     public EmployeeSalaryDTOBuilder setNetSalary(Float netSalary) {
         this.netSalary = netSalary;
         return this;
-    }
-
-
-    public Integer getNumberOfAbsencesThroughYear() {
-        return numberOfAbsencesThroughYear;
-    }
-
-    public Float getGrossSalary() {
-        return grossSalary;
-    }
-
-    public Float getNetSalary() {
-        return netSalary;
-    }
-
-    public Integer getAllowedAbsences() {
-        return allowedAbsences;
-    }
-
-    public Integer getExceededBy() {
-        return exceededBy;
     }
 }

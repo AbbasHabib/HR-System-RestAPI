@@ -8,11 +8,11 @@ import com.spring.Employee.DTO.EmployeeInfoDTO;
 import com.spring.Employee.EmployeeLog.AttendanceRepository;
 import com.spring.Employee.EmployeeLog.AttendanceTable;
 import com.spring.ExceptionsCustom.CustomException;
+import com.spring.RegexChecker;
 import com.spring.Security.UserCredentials;
 import com.spring.Security.UserCredentialsRepository;
 import com.spring.Security.UserPrincipalDetailsService;
 import com.spring.YearAndTimeGenerator;
-import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -61,7 +61,15 @@ public class EmployeeService {
         if (employee.getGrossSalary() < 0) {
             throw new CustomException("grossSalary cannot be less than 0!");
         }
+    }
 
+    public void handleEmployeeFieldsNamesWithRegex(Employee employee) throws CustomException {
+        if (RegexChecker.isStringOnlyAlphabet(employee.getFirstName()))
+            throw new CustomException("firstName has to be alphabets only!");
+        if (RegexChecker.isStringOnlyAlphabet(employee.getLastName()))
+            throw new CustomException("lastName has to be alphabets only!");
+        if (!RegexChecker.isNumbersOnly(employee.getNationalId()))
+            throw new CustomException("nationalId has to be numbers only!");
     }
 
 
@@ -78,24 +86,27 @@ public class EmployeeService {
     }
 
 
-    public void AddAttendanceTable(Employee employee) throws CustomException {
+    public void AddAttendanceTable(Employee employee) {
         if (employee.getAttendanceTable() == null) {
             AttendanceTable attendanceTableForNewEmployee = new AttendanceTable(employee);
-            attendanceTableForNewEmployee.setInitialWorkingYears(YearAndTimeGenerator.getTestingYear() - employee.calcGraduationYear());
+            attendanceTableForNewEmployee.setInitialWorkingYears(YearAndTimeGenerator.getCurrentYear() - employee.calcGraduationYear());
             AttendanceTable attendanceTableForNewEmployeeFromServer = attendanceRepository.save(attendanceTableForNewEmployee);
             employee.setAttendanceTable(attendanceTableForNewEmployeeFromServer);
         }
     }
 
     public Employee saveEmployee(Employee employeeToAdd) throws CustomException {
+
+        this.handleEmployeeFieldsNamesWithRegex(employeeToAdd);
+        employeeToAdd.setNetSalary(calculateNetSalary(employeeToAdd.getGrossSalary(), employeeToAdd.getSalaryRaise())); // This function calculates employee new salary and return it
+
         try {
-            employeeToAdd.setNetSalary(calculateNetSalary(employeeToAdd.getGrossSalary(), employeeToAdd.getSalaryRaise())); // This function calculates employee new salary and return it
             Employee savedEmployee = employeeRepository.save(employeeToAdd);
             AddCredentials(savedEmployee);
             AddAttendanceTable(savedEmployee);
             return employeeRepository.save(savedEmployee);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return null;
     }
@@ -178,7 +189,7 @@ public class EmployeeService {
         return employeesUnderCurrentEmployee.stream().noneMatch(o -> o.getId().equals(goToManager.getId())); // if it contains this manager then he cant be my manager
     }
 
-    public EmployeeInfoDTO modifyEmployee(long employeeId, EmployeeModifyCommand employeeModifyCommand) throws NotFoundException, CustomException, IllegalAccessException {
+    public EmployeeInfoDTO modifyEmployee(long employeeId, EmployeeModifyCommand employeeModifyCommand) throws CustomException, IllegalAccessException {
         Employee employeeToModify = this.getEmployee(employeeId);
 
         if (employeeModifyCommand.getManager() != null) // if employee manager is modified check problem could occur
@@ -203,7 +214,7 @@ public class EmployeeService {
 
     }
 
-    public EmployeeInfoDTO modifyEmployeeSalary(long employeeId, EmployeeSalaryModifyCommand employeeSalaryModifyCommand) throws NotFoundException, CustomException, IllegalAccessException {
+    public EmployeeInfoDTO modifyEmployeeSalary(long employeeId, EmployeeSalaryModifyCommand employeeSalaryModifyCommand) throws CustomException {
         Employee employeeToModify = this.getEmployee(employeeId);
         employeeSalaryModifyCommand.commandToEmployee(employeeToModify); //  copying new data to employee
 
@@ -219,7 +230,7 @@ public class EmployeeService {
     }
 
 
-    public EmployeeInfoDTO modifyEmployeeByLoggedUser(EmployeeModificationByLoggedUserCommand employeeModificationCommand) throws NotFoundException, CustomException, IllegalAccessException {
+    public EmployeeInfoDTO modifyEmployeeByLoggedUser(EmployeeModificationByLoggedUserCommand employeeModificationCommand) throws CustomException, IllegalAccessException {
         Long employeeId = getEmployeeIdFromAuthentication();
         Employee employeeToModify = this.getEmployee(employeeId);
 
@@ -253,7 +264,7 @@ public class EmployeeService {
         return employeeBasicInfoDTO.generateDTOListFromEmployeeList(employeesUnderManager);
     }
 
-    public List<EmployeeBasicInfoDTO> getManagerEmployeesRecursively(long managerId) throws CustomException {
+    public List<EmployeeBasicInfoDTO> getManagerEmployeesRecursively(long managerId) {
         if (this.getEmployee(managerId) == null)
             return null;
         List<Employee> employeesUnderManagersRecursive = employeeRepository.findManagerEmployeesRecursivelyQueried(managerId);
@@ -277,6 +288,10 @@ public class EmployeeService {
         if (userCredentials == null)
             throw new CustomException("this userName doesn't exist");
         return userCredentials.getEmployee();
+    }
+
+    public List<Employee> getAllEmployees() {
+        return employeeRepository.findAll();
     }
 
 }

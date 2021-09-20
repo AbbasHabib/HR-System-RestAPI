@@ -100,12 +100,4 @@ public class IntegrationTest {
     public MockMvc getMockMvc() {
         return mockMvc;
     }
-
-    public JdbcTemplate getJdbcTemplate() {
-        return jdbcTemplate;
-    }
-
-    public DayDetailsRepository getDayDetailsRepository() {
-        return dayDetailsRepository;
-    }
 }

@@ -3,6 +3,7 @@ package com.spring.Employee.DTO;
 import com.spring.Employee.Employee;
 import com.spring.Employee.Gender;
 import com.spring.Security.EmployeeRole;
+import com.spring.interfaces.IEmployeeInfoDTO;
 import com.spring.modelMapperGen.ModelMapperGen;
 import lombok.Getter;
 import lombok.Setter;

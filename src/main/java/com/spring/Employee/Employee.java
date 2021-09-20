@@ -50,13 +50,13 @@ public class Employee implements IdOwner {
     @JoinColumn(name = "department_id", nullable = true)
     private Department department;
     @ManyToOne
-    @JoinColumn(name = "team_id", nullable = true)
+    @JoinColumn(name = "team_id")
     private Team team;
 
     // recursive relationship where a manager is an employee
     // many employees share the same manager id
     @ManyToOne
-    @JoinColumn(name = "manager_id", nullable = true)// in case the manager_id is null that means that
+    @JoinColumn(name = "manager_id")// in case the manager_id is null that means that
     // manager is a a super manager doesn't have a manager above him
     private Employee manager;
 

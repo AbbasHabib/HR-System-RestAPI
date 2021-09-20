@@ -93,7 +93,7 @@ public class EmployeeControllerTests extends IntegrationTest {
 
         Employee employeeFromDb = getEmployeeService().getEmployee(employeeToAdd.getId());
 
-        int expectedInitialWorkingYears = YearAndTimeGenerator.getTestingYear() - employeeToAdd.calcGraduationYear();
+        int expectedInitialWorkingYears = YearAndTimeGenerator.getCurrentYear() - employeeToAdd.calcGraduationYear();
 
         Assertions.assertNotEquals(null, employeeFromDb.getAttendanceTable());
         Assertions.assertNotEquals(null, employeeFromDb.getUserCredentials());
@@ -130,10 +130,9 @@ public class EmployeeControllerTests extends IntegrationTest {
         employeeExpected.setDepartment(department);
 
 
-        MvcResult result = getMockMvc().perform(MockMvcRequestBuilders.get("/employee/" + searchForId)
+        getMockMvc().perform(MockMvcRequestBuilders.get("/employee/" + searchForId)
                 .with(httpBasic("abbas_habib_10", "123")))
-                .andExpect(status().isOk())
-                .andReturn();
+                .andExpect(status().isOk());
 
         // as departmentExpected id is currently null
         // we add the id coming from the response to it
@@ -304,8 +303,6 @@ public class EmployeeControllerTests extends IntegrationTest {
         employeeToAdd.setGender(Gender.MALE);
         employeeToAdd.setGrossSalary(10000f);
         employeeToAdd.setRole(EmployeeRole.EMPLOYEE);
-
-        Float expectedNetSalary = getEmployeeService().calculateNetSalary(employeeToAdd.getGrossSalary(), employeeToAdd.getSalaryRaise());
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = simpleDateFormat.parse("2012-01-02");
@@ -524,8 +521,6 @@ public class EmployeeControllerTests extends IntegrationTest {
         employeeToAdd.setGender(Gender.MALE);
         employeeToAdd.setRole(EmployeeRole.EMPLOYEE);
 
-        Float expectedNetSalary = getEmployeeService().calculateNetSalary(employeeToAdd.getGrossSalary(), employeeToAdd.getSalaryRaise());
-
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = simpleDateFormat.parse("2012-01-02");
         employeeToAdd.setGraduationDate(date);
@@ -595,6 +590,90 @@ public class EmployeeControllerTests extends IntegrationTest {
                 .andExpect(result -> assertEquals("grossSalary cannot be less than 0!", Objects.requireNonNull(result.getResolvedException()).getMessage()));
     }
 
+
+    @Test
+    @DatabaseSetup("/hr-only.xml")
+    public void add_employee_with_hr_first_name_contains_numbers() throws Exception {
+        Employee employeeToAdd = new Employee();
+        employeeToAdd.setFullName("ahme2d safty");
+        employeeToAdd.setGender(Gender.MALE);
+        employeeToAdd.setRole(EmployeeRole.EMPLOYEE);
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = simpleDateFormat.parse("2012-01-02");
+        employeeToAdd.setGraduationDate(date);
+
+        employeeToAdd.setNationalId("1234");
+        // Is expected to return same object it receives
+        employeeToAdd.setGrossSalary(5000f);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String employeeJson = objectMapper.writeValueAsString(employeeToAdd); // converts employee object to JSON string
+
+        // POST request (.post("/employee/")) takes to be a Json of employee in request Body
+        getMockMvc().perform(MockMvcRequestBuilders.post("/employee/")
+                .with(httpBasic("abbas_habib_1", "123"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(employeeJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof CustomException))
+                .andExpect(result -> assertEquals("firstName has to be alphabets only!", Objects.requireNonNull(result.getResolvedException()).getMessage()));
+    }
+
+    @Test
+    @DatabaseSetup("/hr-only.xml")
+    public void add_employee_with_hr_last_name_contains_numbers() throws Exception {
+        Employee employeeToAdd = new Employee();
+        employeeToAdd.setFullName("ahmed sa51fty");
+        employeeToAdd.setGender(Gender.MALE);
+        employeeToAdd.setRole(EmployeeRole.EMPLOYEE);
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = simpleDateFormat.parse("2012-01-02");
+        employeeToAdd.setGraduationDate(date);
+
+        employeeToAdd.setNationalId("1234");
+        // Is expected to return same object it receives
+        employeeToAdd.setGrossSalary(5000f);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String employeeJson = objectMapper.writeValueAsString(employeeToAdd); // converts employee object to JSON string
+
+        // POST request (.post("/employee/")) takes to be a Json of employee in request Body
+        getMockMvc().perform(MockMvcRequestBuilders.post("/employee/")
+                .with(httpBasic("abbas_habib_1", "123"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(employeeJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof CustomException))
+                .andExpect(result -> assertEquals("lastName has to be alphabets only!", Objects.requireNonNull(result.getResolvedException()).getMessage()));
+    }
+
+    @Test
+    @DatabaseSetup("/hr-only.xml")
+    public void add_employee_with_hr_national_id_contains_letters() throws Exception {
+        Employee employeeToAdd = new Employee();
+        employeeToAdd.setFullName("ahmed safty");
+        employeeToAdd.setGender(Gender.MALE);
+        employeeToAdd.setRole(EmployeeRole.EMPLOYEE);
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = simpleDateFormat.parse("2012-01-02");
+        employeeToAdd.setGraduationDate(date);
+
+        employeeToAdd.setNationalId("123a4");
+        // Is expected to return same object it receives
+        employeeToAdd.setGrossSalary(5000f);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String employeeJson = objectMapper.writeValueAsString(employeeToAdd); // converts employee object to JSON string
+
+        // POST request (.post("/employee/")) takes to be a Json of employee in request Body
+        getMockMvc().perform(MockMvcRequestBuilders.post("/employee/")
+                .with(httpBasic("abbas_habib_1", "123"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(employeeJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof CustomException))
+                .andExpect(result -> assertEquals("nationalId has to be numbers only!", Objects.requireNonNull(result.getResolvedException()).getMessage()));
+    }
 }
 
 

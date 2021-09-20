@@ -8,7 +8,6 @@ import com.spring.Employee.EmployeeLog.dayDetails.DayDetailsCommand;
 import com.spring.Employee.EmployeeLog.dayDetails.DayDetailsDTO;
 import com.spring.Employee.EmployeeLog.monthDetails.MonthDTO;
 import com.spring.Employee.EmployeeLog.monthDetails.MonthDetails;
-import com.spring.ExceptionsCustom.CustomException;
 import com.spring.IntegrationTest;
 import com.spring.TestsByHr.testShortcuts.TestShortcutMethods;
 import org.json.JSONObject;
@@ -180,8 +179,6 @@ public class AttendanceIntegrationTest extends IntegrationTest {
                 }
             }
         }
-
-        ObjectMapper objectMapper = new ObjectMapper();
 
         for (int monthInYear = 1; monthInYear <= 12; monthInYear++) {
             monthStr = (monthInYear < 10) ? "0" + monthInYear : monthInYear + "";

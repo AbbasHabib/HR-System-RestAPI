@@ -1,7 +1,6 @@
 package com.spring.TestsByEmployee;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.spring.ExceptionsCustom.CustomException;
 import com.spring.IntegrationTest;
 import com.spring.Security.UserCredentials;
 import org.junit.jupiter.api.Assertions;

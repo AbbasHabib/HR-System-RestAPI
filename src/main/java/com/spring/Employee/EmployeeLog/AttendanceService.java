@@ -74,7 +74,7 @@ public class AttendanceService {
         AttendanceTable attendanceTable = getAttendanceTableByEmployeeId(employeeId);
 
         if (dailyAttendanceRepository.countAllByAttendanceTable_IdAndDate(attendanceTable.getId(), dayDetails.getDate()) > 0)
-            throw new CustomException("Info at this date is already stored for this employee\n->use update day data api");
+            throw new CustomException("this day already exists!\ncheck day modification api");
 
         // get month this function will create it not found
         MonthDetails monthOfThatDay = getMonthOfDayAndCreateIfNotFound(dayDetails.getDate(), attendanceTable);
@@ -95,6 +95,7 @@ public class AttendanceService {
         DayDetailsDTO.setDayDetailsToDTO(savedDayDetails, responseDayDetailsDTO);
         return responseDayDetailsDTO;
     }
+
 
 
     public void injectDayAndMonthToAttendanceTable(DayDetails dayDetails, MonthDetails monthOfThatDay, AttendanceTable attendanceTable) {
@@ -253,4 +254,16 @@ public class AttendanceService {
         Long attendanceTableId = this.getAttendanceTableIdByEmployeeId(employeeID);
         return monthDetailsRepository.findAllByAttendanceTable_IdAndGrossSalaryOfMonthNotNullOrderByDateAsc(attendanceTableId);
     }
+
+
+//    public void GenerateEmployeeMonthlySalary() {
+//        List<Employee> employeeList = employeeService.getAllEmployees();
+//
+//        for(Employee emp : employeeList){
+//            DayDetails dayDetails = new DayDetails()
+//            this.addNewDayDataAndSave(emp, )
+//        }
+//    }
+
+
 }

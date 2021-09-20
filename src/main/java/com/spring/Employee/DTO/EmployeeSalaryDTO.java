@@ -1,6 +1,5 @@
 package com.spring.Employee.DTO;
 
-import com.spring.Employee.Employee;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,4 +15,17 @@ public class EmployeeSalaryDTO {
     private Integer numberOfAbsencesThroughYear;
     private Integer allowedAbsences;
     private Integer exceededBy;
+
+    public EmployeeSalaryDTO() {
+    }
+
+    public EmployeeSalaryDTO(LocalDate infoDate, Float grossSalary, Float netSalary, Integer numberOfAbsencesInMonth, Integer numberOfAbsencesThroughYear, Integer allowedAbsences, Integer exceededBy) {
+        this.infoDate = infoDate;
+        this.grossSalary = grossSalary;
+        this.netSalary = netSalary;
+        this.numberOfAbsencesInMonth = numberOfAbsencesInMonth;
+        this.numberOfAbsencesThroughYear = numberOfAbsencesThroughYear;
+        this.allowedAbsences = allowedAbsences;
+        this.exceededBy = exceededBy;
+    }
 }
