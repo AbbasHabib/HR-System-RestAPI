@@ -19,8 +19,13 @@ public class AttendanceController {
     AttendanceService attendanceService;
 
     @PostMapping(value = "/attendance/day/employee/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public DayDetailsDTO addNewDayDataOrModify(@PathVariable String id, @RequestBody DayDetailsCommand dayDetailsCommand) throws CustomException {
-        return attendanceService.addNewDayDataAndSave(Long.parseLong(id), dayDetailsCommand);
+    public DayDetailsDTO addNewDayData(@PathVariable String id, @RequestBody DayDetailsCommand dayDetailsCommand) throws CustomException {
+        return attendanceService.addNewDayDataOrModifyAndSave(Long.parseLong(id), dayDetailsCommand, false);
+    }
+
+    @PutMapping(value = "/attendance/day/employee/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public DayDetailsDTO modifyExistedDay(@PathVariable String id, @RequestBody DayDetailsCommand dayDetailsCommand) throws CustomException {
+        return attendanceService.addNewDayDataOrModifyAndSave(Long.parseLong(id), dayDetailsCommand, true);
     }
 
     @GetMapping(value = "/attendance/employee/{id}", produces = MediaType.APPLICATION_JSON_VALUE)

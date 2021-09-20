@@ -1,18 +1,18 @@
 package com.hrsystem.attendancelogs;
 
 
+import com.hrsystem.attendancelogs.daydetails.DayDetails;
+import com.hrsystem.attendancelogs.daydetails.DayDetailsCommand;
 import com.hrsystem.attendancelogs.daydetails.DayDetailsDTO;
 import com.hrsystem.attendancelogs.daydetails.DayDetailsRepository;
 import com.hrsystem.attendancelogs.monthdetails.MonthDTO;
 import com.hrsystem.attendancelogs.monthdetails.MonthDetails;
 import com.hrsystem.attendancelogs.monthdetails.MonthDetailsRepository;
+import com.hrsystem.employee.EmployeeService;
 import com.hrsystem.employee.dtos.EmployeeSalaryDTO;
 import com.hrsystem.employee.dtos.EmployeeSalaryDTOBuilder;
-import com.hrsystem.attendancelogs.daydetails.DayDetails;
-import com.hrsystem.attendancelogs.daydetails.DayDetailsCommand;
-import com.hrsystem.employee.EmployeeService;
-import com.hrsystem.utilities.interfaces.constants.SalariesYearsConstants;
 import com.hrsystem.utilities.CustomException;
+import com.hrsystem.utilities.interfaces.constants.SalariesYearsConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,53 +30,36 @@ public class AttendanceService {
     @Autowired
     private MonthDetailsRepository monthDetailsRepository;
 
-    public AttendanceTable findAttendanceTable(Long attendanceTableId) {
-        // if no table with this id is found return null
-        return attendanceRepository.findById(attendanceTableId).orElse(null);
-    }
-
-
-    public AttendanceTable getAttendanceTable(Long attendanceTableId) throws CustomException {
-        AttendanceTable attendanceTableToFind = this.findAttendanceTable(attendanceTableId);
-        if (attendanceTableToFind == null)
-            throw new CustomException("this table id doesnt exist");
-        else
-            return attendanceTableToFind;
-    }
 
     public AttendanceTable getAttendanceTableByEmployeeId(long employeeId) throws CustomException {
         AttendanceTable attendanceTable = attendanceRepository.findByEmployeeId(employeeId).orElse(null);
         if (attendanceTable != null)
             return attendanceTable;
         throw new CustomException("""
-                *this employee id doesn't exist
+                *this employee id does not exist
                 *or employee doesn't have an attendance table""");
     }
 
 
-    public AttendanceTable saveToDb(AttendanceTable attendanceTable) {
-        return attendanceRepository.save(attendanceTable);
-    }
-
-    // this api return a list of all days info where employee had stored day info
-    public List<DayDetails> findAllStoredDaysInfo(Long attendanceTableId) {
-        return dailyAttendanceRepository.findAllByAttendanceTable_Id(attendanceTableId);
-    }
-
-    public DayDetailsDTO addNewDayDataAndSave(Long employeeId, DayDetailsCommand dayDetailsCommand) throws CustomException {
-        // get attendance table to add month and day data into
-
+    public DayDetailsDTO addNewDayDataOrModifyAndSave(Long employeeId, DayDetailsCommand dayDetailsCommand, boolean isModification) throws CustomException {
         DayDetails dayDetails = new DayDetails();
-
-        DayDetailsCommand.mapDayCommandToDayDetails(dayDetailsCommand, dayDetails);
-
 
         AttendanceTable attendanceTable = getAttendanceTableByEmployeeId(employeeId);
 
-        if (dailyAttendanceRepository.countAllByAttendanceTable_IdAndDate(attendanceTable.getId(), dayDetails.getDate()) > 0)
-            throw new CustomException("this day already exists!\ncheck day modification api");
+        // map command to day object
+        DayDetailsCommand.mapDayCommandToDayDetails(dayDetailsCommand, dayDetails);
 
-        // get month this function will create it not found
+
+        if (isModification) {
+            DayDetails dayBeforeModification = dailyAttendanceRepository.findByAttendanceTable_IdAndDate(attendanceTable.getId(), dayDetails.getDate());
+            removeDayDataFromMonth(dayBeforeModification, attendanceTable.getId());
+        }
+        else if (dailyAttendanceRepository.countAllByAttendanceTable_IdAndDate(attendanceTable.getId(), dayDetails.getDate()) > 0) {
+            throw new CustomException("this day already exists!\ncheck day modification api!");
+        }
+
+
+        // get month this function will create it if not found
         MonthDetails monthOfThatDay = getMonthOfDayAndCreateIfNotFound(dayDetails.getDate(), attendanceTable);
 
         // inject month and day inside the attendance table
@@ -91,24 +74,26 @@ public class AttendanceService {
         monthDetailsRepository.save(monthOfThatDay);
         attendanceRepository.save(attendanceTable);
 
+        // map day to dto
         DayDetailsDTO responseDayDetailsDTO = new DayDetailsDTO();
         DayDetailsDTO.setDayDetailsToDTO(savedDayDetails, responseDayDetailsDTO);
+
+        // return the dto
         return responseDayDetailsDTO;
     }
 
 
-
     public void injectDayAndMonthToAttendanceTable(DayDetails dayDetails, MonthDetails monthOfThatDay, AttendanceTable attendanceTable) {
-        // inject to attendance table dayDetails
+        // inject day to attendance table
         dayDetails.setAttendanceTable(attendanceTable);
         if (monthOfThatDay.getAttendanceTable() == null) {
             // if month didn't exist before add new Day and Month to attendance Table lists
             monthOfThatDay.setAttendanceTable(attendanceTable);
             attendanceTable.addMonthAndDayDetails(dayDetails, monthOfThatDay);
-        } else
-            // if month existed just add the day to attendanceTable-> Days List
+        } else {
+            // if month existed just add the day to attendanceTable
             attendanceTable.addDay(dayDetails);
-
+        }
     }
 
     private void insertDayDataToMonth(DayDetails dayDetails, MonthDetails monthOfThatDay) {
@@ -116,7 +101,18 @@ public class AttendanceService {
             monthOfThatDay.addAbsence(1);
         if (dayDetails.getBonusInSalary() > 0)
             monthOfThatDay.addBonus(dayDetails.getBonusInSalary());
+    }
 
+    // this method is called if there was any modification in a day
+    // to remove all previous data of that day from this day month
+    private void removeDayDataFromMonth(DayDetails dayBeforeModification, Long attendanceTableId) throws CustomException {
+        MonthDetails monthOfDayToModify = monthDetailsRepository.findByDateAndAttendanceTable_Id(dayBeforeModification.getDate(), attendanceTableId).orElse(null);
+        if (monthOfDayToModify == null)
+            throw new CustomException("this day did not exist before!");
+        monthOfDayToModify.addAbsence((dayBeforeModification.isAbsent() ? -1 : 0));// if this day had absence remove it from the month
+
+        float bonusStoredInDay = dayBeforeModification.getBonusInSalary();
+        monthOfDayToModify.addBonus((bonusStoredInDay > 0f) ? (bonusStoredInDay * -1) : 0);// if this day had bonus in salary remove it from the month
     }
 
 
@@ -165,7 +161,6 @@ public class AttendanceService {
         Long employeeId = employeeService.getEmployeeIdFromAuthentication();
         return getMonthDetailsDTO(employeeId, date);
     }
-
 
     public EmployeeSalaryDTO employeeSalaryAtMonthByLoggedUser(LocalDate date) throws CustomException {
         Long employeeId = employeeService.getEmployeeIdFromAuthentication();

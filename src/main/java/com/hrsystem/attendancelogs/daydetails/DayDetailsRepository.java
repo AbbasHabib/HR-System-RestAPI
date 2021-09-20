@@ -9,4 +9,5 @@ public interface DayDetailsRepository extends JpaRepository<DayDetails, Long> {
     List<DayDetails> findAllByAttendanceTable_Id(Long attendanceTable_id);
 
     Integer countAllByAttendanceTable_IdAndDate(Long attendanceTable_id, LocalDate date);
+    DayDetails findByAttendanceTable_IdAndDate(Long attendanceTable_id, LocalDate date);
 }

@@ -136,13 +136,13 @@ public class AttendanceIntegrationTest extends IntegrationTest {
         absenceInDaysList.add(new DayDetailsCommand(null, "2020-01-06", false, 0.0f)); // not absent
         absenceInDaysList.add(new DayDetailsCommand(null, "2020-01-07", true, 0.0f)); // absent
 
-        getAttendanceService().addNewDayDataAndSave(employeeId, absenceInDaysList.get(0));
-        getAttendanceService().addNewDayDataAndSave(employeeId, absenceInDaysList.get(1));
-        getAttendanceService().addNewDayDataAndSave(employeeId, absenceInDaysList.get(2));
-        getAttendanceService().addNewDayDataAndSave(employeeId, absenceInDaysList.get(3));
-        getAttendanceService().addNewDayDataAndSave(employeeId, absenceInDaysList.get(4));
-        getAttendanceService().addNewDayDataAndSave(employeeId, absenceInDaysList.get(5));
-        getAttendanceService().addNewDayDataAndSave(employeeId, absenceInDaysList.get(6));
+        getAttendanceService().addNewDayDataOrModifyAndSave(employeeId, absenceInDaysList.get(0), false);
+        getAttendanceService().addNewDayDataOrModifyAndSave(employeeId, absenceInDaysList.get(1), false);
+        getAttendanceService().addNewDayDataOrModifyAndSave(employeeId, absenceInDaysList.get(2), false);
+        getAttendanceService().addNewDayDataOrModifyAndSave(employeeId, absenceInDaysList.get(3), false);
+        getAttendanceService().addNewDayDataOrModifyAndSave(employeeId, absenceInDaysList.get(4), false);
+        getAttendanceService().addNewDayDataOrModifyAndSave(employeeId, absenceInDaysList.get(5), false);
+        getAttendanceService().addNewDayDataOrModifyAndSave(employeeId, absenceInDaysList.get(6), false);
 
 
         MvcResult result = getMockMvc().perform(MockMvcRequestBuilders.get("/attendance/absence/employee/" + employeeId + "/" + month)
@@ -174,7 +174,7 @@ public class AttendanceIntegrationTest extends IntegrationTest {
                     monthStr = (month < 10) ? "0" + month : month + "";
                     String dayDate = year + "-" + monthStr + "-" + dayStr;
                     DayDetailsCommand dayDetailsToAddCommand = new DayDetailsCommand(null, dayDate, true, 0.0f);
-                    getAttendanceService().addNewDayDataAndSave(employeeId, dayDetailsToAddCommand);
+                    getAttendanceService().addNewDayDataOrModifyAndSave(employeeId, dayDetailsToAddCommand, false);
                     absencesInYearMonths[month - 1] += 1;
                 }
             }
