@@ -9,9 +9,8 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-public class DayDetailsCommand implements IdOwner {
+public class DayDetailsCommand {
 
-    private Long id = 0L;
     private String date;
     private boolean absent = false;
     private Float bonusInSalary = 0.0F;
@@ -21,7 +20,6 @@ public class DayDetailsCommand implements IdOwner {
 
 
     public DayDetailsCommand(Long id, String date, boolean absent, Float bonusInSalary) {
-        this.id = id;
         this.date = date;
         this.absent = absent;
         this.bonusInSalary = bonusInSalary;

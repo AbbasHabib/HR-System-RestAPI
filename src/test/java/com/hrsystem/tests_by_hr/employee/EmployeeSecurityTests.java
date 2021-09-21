@@ -29,7 +29,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class EmployeeSecurityTests extends IntegrationTest {
 
     @Test
-    @Transactional
     @DatabaseSetup("/data.xml")
     public void modify_hr_password_done_by_hr() throws Exception {
         String userName = "abbas_habib_10";
@@ -46,7 +45,61 @@ public class EmployeeSecurityTests extends IntegrationTest {
 
 
         getMockMvc().perform(MockMvcRequestBuilders.put("/security/password-reset")
-                .with(httpBasic("abbas_habib_10", "123"))
+                .with(httpBasic(userName, currentPassword))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(passwordChangeCommandJSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string("password updated!"));
+
+        UserCredentials userCredentialsAfterModification = getUserCredentialsRepository().getById(userName);
+
+        Assertions.assertEquals(userName, userCredentialsAfterModification.getUserName());
+        Assertions.assertTrue(BCrypt.checkpw(newPassword, userCredentialsAfterModification.getPassword()));
+    }
+
+    @Test
+    @DatabaseSetup("/data.xml")
+    public void modify_hr_password_done_by_hr_current_password_incorrect() throws Exception {
+        String userName = "abbas_habib_10";
+        String newPassword = "ahmed";
+        String currentPassword = "123";
+        String currentPasswordIncorrect = "5515";
+        passwordChangeCommand passwordChangeCommand = new passwordChangeCommand();
+        passwordChangeCommand.setNewPassword(newPassword);
+        passwordChangeCommand.setCurrentPassword(currentPasswordIncorrect);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String passwordChangeCommandJSON = objectMapper.writeValueAsString(passwordChangeCommand);
+
+
+        getMockMvc().perform(MockMvcRequestBuilders.put("/security/password-reset")
+                .with(httpBasic(userName, currentPassword))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(passwordChangeCommandJSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof CustomException))
+                .andExpect(result -> Assertions.assertEquals("current password does not match actual current password!", Objects.requireNonNull(result.getResolvedException()).getMessage()));
+    }
+
+    @Test
+    @Transactional
+    @DatabaseSetup("/data.xml")
+    public void modify_hr_password_done_by_employee() throws Exception {
+        String userName = "lamona_habib_105";
+        String newPassword = "ahmed";
+        String currentPassword = "1234";
+
+        passwordChangeCommand passwordChangeCommand = new passwordChangeCommand();
+        passwordChangeCommand.setNewPassword(newPassword);
+        passwordChangeCommand.setCurrentPassword(currentPassword);
+
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String passwordChangeCommandJSON = objectMapper.writeValueAsString(passwordChangeCommand);
+
+
+        getMockMvc().perform(MockMvcRequestBuilders.put("/security/password-reset")
+                .with(httpBasic(userName, currentPassword))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(passwordChangeCommandJSON))
                 .andExpect(status().isOk())
@@ -61,9 +114,10 @@ public class EmployeeSecurityTests extends IntegrationTest {
     @Test
     @Transactional
     @DatabaseSetup("/data.xml")
-    public void modify_hr_password_done_by_hr_current_password_incorrect() throws Exception {
-        String userName = "abbas_habib_10";
+    public void modify_hr_password_done_by_employee_current_password_incorrect() throws Exception {
+        String userName = "lamona_habib_105";
         String newPassword = "ahmed";
+        String currentPassword = "1234";
         String currentPasswordIncorrect = "5515";
         passwordChangeCommand passwordChangeCommand = new passwordChangeCommand();
         passwordChangeCommand.setNewPassword(newPassword);
@@ -74,13 +128,14 @@ public class EmployeeSecurityTests extends IntegrationTest {
 
 
         getMockMvc().perform(MockMvcRequestBuilders.put("/security/password-reset")
-                .with(httpBasic("abbas_habib_10", "123"))
+                .with(httpBasic(userName, currentPassword))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(passwordChangeCommandJSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof CustomException))
                 .andExpect(result -> Assertions.assertEquals("current password does not match actual current password!", Objects.requireNonNull(result.getResolvedException()).getMessage()));
     }
+
 
 
 

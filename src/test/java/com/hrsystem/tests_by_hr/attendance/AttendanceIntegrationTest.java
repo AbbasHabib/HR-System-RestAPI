@@ -12,8 +12,10 @@ import com.hrsystem.attendancelogs.monthdetails.MonthDetails;
 import com.hrsystem.employee.dtos.EmployeeSalaryDTO;
 import com.hrsystem.employee.dtos.EmployeeSalaryDTOBuilder;
 import com.hrsystem.tests_by_hr.testShortcuts.TestShortcutMethods;
+import com.hrsystem.utilities.CustomException;
 import com.hrsystem.utilities.interfaces.constants.SalariesYearsConstants;
 import org.json.JSONObject;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
@@ -24,10 +26,12 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class AttendanceIntegrationTest extends IntegrationTest {
@@ -69,6 +73,64 @@ public class AttendanceIntegrationTest extends IntegrationTest {
         tester.setObjectIdFromResponseResult(responseDTO, expectedDTOResponse);
 
         assertEquals(objectMapper.writeValueAsString(expectedDTOResponse), responseDTO.getResponse().getContentAsString());
+    }
+
+    @Test
+    @Transactional
+    @DatabaseSetup("/absenceDaysWithMonths.xml")
+    public void add_new_day_data_by_hr_and_it_exists_exception_thrown() throws Exception {
+        long employeeId = 101L;
+        AttendanceTable attendanceTable = getAttendanceService().getAttendanceTableByEmployeeId(employeeId);
+
+        DayDetails dayToAdd = new DayDetails();
+        dayToAdd.setDate(LocalDate.of(2020, 10, 1));
+        dayToAdd.setAbsent(true);
+        dayToAdd.setAttendanceTable(attendanceTable);
+        attendanceTable.addDay(dayToAdd);
+
+        DayDetailsCommand dayDetailsCommand = new DayDetailsCommand();
+
+        dayDetailsCommand.setDate("2021-01-02");
+        dayDetailsCommand.setBonusInSalary(0f);
+        dayDetailsCommand.setAbsent(true);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String dayToAddDetailsCommandJson = objectMapper.writeValueAsString(dayDetailsCommand); // converts employee object to JSON string
+
+
+        getMockMvc().perform(post("/attendance/day/employee/" + employeeId)
+                .with(httpBasic("abbas_habib_1", "123"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(dayToAddDetailsCommandJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof CustomException))
+                .andExpect(result -> assertEquals("this day already exists!\ncheck day modification api!", Objects.requireNonNull(result.getResolvedException()).getMessage()));
+    }
+
+
+    @Test
+    @DatabaseSetup("/absenceDaysWithMonths.xml")
+    public void modify_existing_day_data_by_hr() throws Exception {
+        long employeeId = 101L;
+        LocalDate dayDate = LocalDate.of(2021, 1, 2);
+        Long attendanceTableId = getAttendanceService().getAttendanceTableIdByEmployeeId(employeeId);
+        
+        DayDetailsCommand dayModificationCommand = new DayDetailsCommand();
+        dayModificationCommand.setAbsent(false);
+        dayModificationCommand.setDate(dayDate.toString());
+        dayModificationCommand.setBonusInSalary(50000f);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String dayModificationCommandJSON = objectMapper.writeValueAsString(dayModificationCommand); // converts employee object to JSON string
+
+        getMockMvc().perform(put("/attendance/day/employee/" + employeeId)
+                .with(httpBasic("abbas_habib_1", "123"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(dayModificationCommandJSON))
+                .andExpect(status().isOk());
+
+        DayDetails dayModified = getDayDetailsRepository().findByAttendanceTable_IdAndDate(attendanceTableId, dayDate);
+        Assertions.assertEquals(dayModified.isAbsent(), dayModificationCommand.isAbsent());
+        Assertions.assertEquals(dayModified.getBonusInSalary(), dayModificationCommand.getBonusInSalary());
     }
 
     @Test

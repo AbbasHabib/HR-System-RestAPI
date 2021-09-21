@@ -93,6 +93,10 @@ public class IntegrationTest {
         return attendanceService;
     }
 
+    public DayDetailsRepository getDayDetailsRepository() {
+        return dayDetailsRepository;
+    }
+
     public EmployeeService getEmployeeService() {
         return employeeService;
     }

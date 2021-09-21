@@ -44,6 +44,8 @@ public class AttendanceService {
     public DayDetailsDTO addNewDayDataOrModifyAndSave(Long employeeId, DayDetailsCommand dayDetailsCommand, boolean isModification) throws CustomException {
         DayDetails dayDetails = new DayDetails();
 
+        if(dayDetailsCommand.getDate() == null)
+            throw new CustomException("dayDate cannot be null!");
         AttendanceTable attendanceTable = getAttendanceTableByEmployeeId(employeeId);
 
         // map command to day object
@@ -52,6 +54,7 @@ public class AttendanceService {
 
         if (isModification) {
             DayDetails dayBeforeModification = dailyAttendanceRepository.findByAttendanceTable_IdAndDate(attendanceTable.getId(), dayDetails.getDate());
+            dayDetails.setId(dayBeforeModification.getId());
             removeDayDataFromMonth(dayBeforeModification, attendanceTable.getId());
         }
         else if (dailyAttendanceRepository.countAllByAttendanceTable_IdAndDate(attendanceTable.getId(), dayDetails.getDate()) > 0) {
@@ -106,7 +109,8 @@ public class AttendanceService {
     // this method is called if there was any modification in a day
     // to remove all previous data of that day from this day month
     private void removeDayDataFromMonth(DayDetails dayBeforeModification, Long attendanceTableId) throws CustomException {
-        MonthDetails monthOfDayToModify = monthDetailsRepository.findByDateAndAttendanceTable_Id(dayBeforeModification.getDate(), attendanceTableId).orElse(null);
+        LocalDate monthDate = LocalDate.of(dayBeforeModification.getDate().getYear(), dayBeforeModification.getDate().getMonth(), 1);
+        MonthDetails monthOfDayToModify = monthDetailsRepository.findByDateAndAttendanceTable_Id(monthDate, attendanceTableId).orElse(null);
         if (monthOfDayToModify == null)
             throw new CustomException("this day did not exist before!");
         monthOfDayToModify.addAbsence((dayBeforeModification.isAbsent() ? -1 : 0));// if this day had absence remove it from the month

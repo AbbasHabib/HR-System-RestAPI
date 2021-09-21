@@ -58,7 +58,6 @@ public class EmployeeController {
         return employeeService.getManagerEmployees(Long.parseLong(id));
     }
 
-
     @GetMapping(value = "/profile/employee", produces = MediaType.APPLICATION_JSON_VALUE)
     public EmployeeInfoDTO getEmployeeByLoggedUser() throws CustomException {
         EmployeeInfoDTO employeeDto = employeeService.getEmployeeInDTOByUserFromAuthentication();
@@ -66,7 +65,6 @@ public class EmployeeController {
             throw new CustomException("this user Id does not exits");
         return employeeDto;
     }
-
 
     @PutMapping(value = "/profile/employee", produces = MediaType.APPLICATION_JSON_VALUE)
     public EmployeeInfoDTO modifyEmployeeByLoggedUSer(@RequestBody EmployeeModificationByLoggedUserCommand employeeModifyCommand) throws CustomException, IllegalAccessException {
