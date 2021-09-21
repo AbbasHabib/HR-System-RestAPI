@@ -8,12 +8,14 @@ import com.hrsystem.attendancelogs.daydetails.DayDetailsRepository;
 import com.hrsystem.attendancelogs.monthdetails.MonthDTO;
 import com.hrsystem.attendancelogs.monthdetails.MonthDetails;
 import com.hrsystem.attendancelogs.monthdetails.MonthDetailsRepository;
+import com.hrsystem.employee.Employee;
 import com.hrsystem.employee.EmployeeService;
 import com.hrsystem.employee.dtos.EmployeeSalaryDTO;
 import com.hrsystem.employee.dtos.EmployeeSalaryDTOBuilder;
 import com.hrsystem.utilities.CustomException;
 import com.hrsystem.utilities.interfaces.constants.SalariesYearsConstants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -44,7 +46,7 @@ public class AttendanceService {
     public DayDetailsDTO addNewDayDataOrModifyAndSave(Long employeeId, DayDetailsCommand dayDetailsCommand, boolean isModification) throws CustomException {
         DayDetails dayDetails = new DayDetails();
 
-        if(dayDetailsCommand.getDate() == null)
+        if (dayDetailsCommand.getDate() == null)
             throw new CustomException("dayDate cannot be null!");
         AttendanceTable attendanceTable = getAttendanceTableByEmployeeId(employeeId);
 
@@ -56,8 +58,7 @@ public class AttendanceService {
             DayDetails dayBeforeModification = dailyAttendanceRepository.findByAttendanceTable_IdAndDate(attendanceTable.getId(), dayDetails.getDate());
             dayDetails.setId(dayBeforeModification.getId());
             removeDayDataFromMonth(dayBeforeModification, attendanceTable.getId());
-        }
-        else if (dailyAttendanceRepository.countAllByAttendanceTable_IdAndDate(attendanceTable.getId(), dayDetails.getDate()) > 0) {
+        } else if (dailyAttendanceRepository.countAllByAttendanceTable_IdAndDate(attendanceTable.getId(), dayDetails.getDate()) > 0) {
             throw new CustomException("this day already exists!\ncheck day modification api!");
         }
 
@@ -228,7 +229,7 @@ public class AttendanceService {
 
 
     private float calculateNetSalary(float grossSalary, int absenceDaysTillMonth, float monthBonuses, Float salaryRaise, int permittedAbsenceDays, int monthDays) {
-        if(salaryRaise == null)
+        if (salaryRaise == null)
             salaryRaise = 0f;
         float netSalary = grossSalary + monthBonuses + salaryRaise;
         if (absenceDaysTillMonth > permittedAbsenceDays) {
@@ -256,15 +257,20 @@ public class AttendanceService {
         return monthDetailsRepository.findAllByAttendanceTable_IdAndGrossSalaryOfMonthNotNullOrderByDateAsc(attendanceTableId);
     }
 
-
-//    public void GenerateEmployeeMonthlySalary() {
-//        List<Employee> employeeList = employeeService.getAllEmployees();
-//
-//        for(Employee emp : employeeList){
-//            DayDetails dayDetails = new DayDetails()
-//            this.addNewDayDataAndSave(emp, )
-//        }
-//    }
-
-
+    @Scheduled(cron = "0 0 0 25 * *")
+    public void GenerateEmployeeMonthlySalary() throws CustomException {
+        List<Employee> employeeList = employeeService.getAllEmployees();
+        LocalDate currentDate = LocalDate.now();
+        for (Employee emp : employeeList) {
+            DayDetailsCommand dayDetailsCommand = new DayDetailsCommand();
+            dayDetailsCommand.setAbsent(false);
+            dayDetailsCommand.setBonusInSalary(0.0f);
+            dayDetailsCommand.setDate(currentDate.toString());
+            try {
+                this.addNewDayDataOrModifyAndSave(emp.getId(), dayDetailsCommand, false);// this day will be inserted if it exists nothing will happen
+            } catch (Exception e) {
+                //nothing
+            }
+        }
+    }
 }
