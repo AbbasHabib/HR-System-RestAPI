@@ -5,7 +5,7 @@ this project is an HR system where the of it is managing employees teams, depart
 #### The project will be fully driven by [JavaSpringBoot](https://www.tutorialspoint.com/spring_boot/spring_boot_introduction.htm) ​Framework, and MySql Database
 
 
-###Add new employee using postman
+## Add new employee using postman
 New employee data is transferred through an HTTP request body carrying employee data as a json. This request gets sent to a servlet that calls the addEmployee api.
 json date from request body gets mapped to a java object that gets stored in the SQL database. Using JPA and hibernate that are built in springboot
 
