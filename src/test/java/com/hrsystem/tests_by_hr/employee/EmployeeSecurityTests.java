@@ -1,23 +1,88 @@
 package com.hrsystem.tests_by_hr.employee;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.hrsystem.IntegrationTest;
 import com.hrsystem.department.Department;
-import com.hrsystem.employee.commands.EmployeeModifyCommand;
 import com.hrsystem.employee.Employee;
 import com.hrsystem.employee.Gender;
-import com.hrsystem.IntegrationTest;
+import com.hrsystem.employee.commands.EmployeeModifyCommand;
+import com.hrsystem.security.UserCredentials;
+import com.hrsystem.security.passwordChangeCommand;
 import com.hrsystem.team.Team;
+import com.hrsystem.utilities.CustomException;
 import javassist.NotFoundException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.Objects;
+
+import static org.junit.Assert.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class EmployeeSecurityTests extends IntegrationTest {
+
+    @Test
+    @Transactional
+    @DatabaseSetup("/data.xml")
+    public void modify_hr_password_done_by_hr() throws Exception {
+        String userName = "abbas_habib_10";
+        String newPassword = "ahmed";
+        String currentPassword = "123";
+
+        passwordChangeCommand passwordChangeCommand = new passwordChangeCommand();
+        passwordChangeCommand.setNewPassword(newPassword);
+        passwordChangeCommand.setCurrentPassword(currentPassword);
+
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String passwordChangeCommandJSON = objectMapper.writeValueAsString(passwordChangeCommand);
+
+
+        getMockMvc().perform(MockMvcRequestBuilders.put("/security/password-reset")
+                .with(httpBasic("abbas_habib_10", "123"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(passwordChangeCommandJSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string("password updated!"));
+
+        UserCredentials userCredentialsAfterModification = getUserCredentialsRepository().getById(userName);
+
+        Assertions.assertEquals(userName, userCredentialsAfterModification.getUserName());
+        Assertions.assertTrue(BCrypt.checkpw(newPassword, userCredentialsAfterModification.getPassword()));
+    }
+
+    @Test
+    @Transactional
+    @DatabaseSetup("/data.xml")
+    public void modify_hr_password_done_by_hr_current_password_incorrect() throws Exception {
+        String userName = "abbas_habib_10";
+        String newPassword = "ahmed";
+        String currentPasswordIncorrect = "5515";
+        passwordChangeCommand passwordChangeCommand = new passwordChangeCommand();
+        passwordChangeCommand.setNewPassword(newPassword);
+        passwordChangeCommand.setCurrentPassword(currentPasswordIncorrect);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String passwordChangeCommandJSON = objectMapper.writeValueAsString(passwordChangeCommand);
+
+
+        getMockMvc().perform(MockMvcRequestBuilders.put("/security/password-reset")
+                .with(httpBasic("abbas_habib_10", "123"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(passwordChangeCommandJSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof CustomException))
+                .andExpect(result -> Assertions.assertEquals("current password does not match actual current password!", Objects.requireNonNull(result.getResolvedException()).getMessage()));
+    }
+
+
 
     @Test
     @Transactional

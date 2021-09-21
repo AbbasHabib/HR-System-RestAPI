@@ -34,6 +34,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.
                 authorizeRequests()
                 .antMatchers("/profile/**").hasRole(EmployeeRole.EMPLOYEE.name())
+                .antMatchers("/security/password-reset").hasAnyRole(EmployeeRole.EMPLOYEE.name(), EmployeeRole.HR.name())
                 .antMatchers("/employee/**").hasRole(EmployeeRole.HR.name())
                 .antMatchers("/team/**").hasRole(EmployeeRole.HR.name())
                 .antMatchers("/department/**").hasRole(EmployeeRole.HR.name())
