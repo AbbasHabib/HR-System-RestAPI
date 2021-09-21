@@ -4,8 +4,9 @@ this project is an HR system where the of it is managing employees teams, depart
 
 #### The project will be fully driven by [JavaSpringBoot](https://www.tutorialspoint.com/spring_boot/spring_boot_introduction.htm) ​Framework, and MySql Database
 
+##
 
-### Add new employee using postman
+## Add new employee using postman
 New employee data is transferred through an HTTP request body carrying employee data as a json. This request gets sent to a servlet that calls the addEmployee api.
 json date from request body gets mapped to a java object that gets stored in the SQL database. Using JPA and hibernate that are built in springboot
 
@@ -20,19 +21,19 @@ json date from request body gets mapped to a java object that gets stored in the
   ```
 ![add-employee-postman](screen-shots/add-employee-postman.JPG)
 
-### Modify employee using postman
+## Modify employee using postman
 - **this request can be done by employees with HR role only**
 - employee id has to be added after the uri
 
 ![modify-employee-postman](screen-shots/modify-employee-postman.JPG)
 
-### Get employee from authentication using postman
+## Get employee from authentication using postman
 - **this request can be done by employees with HR or EMPLOYEE role**
 - this request gets employee data from authentication username
 
 ![get-employee-postman](screen-shots/get-employee-by-logged-user-posman.JPG)
 
-### Add new day details
+## Add new day details
 - **this request can be done by employees with HR role only**
 - employee id has to be added after the uri
 - this request adds new dat data to a month
@@ -40,7 +41,7 @@ json date from request body gets mapped to a java object that gets stored in the
 - **important ->** to creat a new month for an employee a day has to be added and this month date
 ![add-new-day-postman](screen-shots/add-new-day-date-by-hr-postman.JPG)
 
-### Change password
+## Change password
 - **this request can be done by employees with HR or EMPLOYEE role**
 - old password (currentPassword) has to be correct inorder to change old password with the new one
 ![change-password-postman](screen-shots/logged-user-change-password-postman.JPG)
