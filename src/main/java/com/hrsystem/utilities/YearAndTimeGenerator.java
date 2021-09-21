@@ -3,8 +3,12 @@ package com.hrsystem.utilities;
 import java.util.Calendar;
 
 public class YearAndTimeGenerator {
+    public static Calendar getCurrentCalender() {
+        return Calendar.getInstance();
+    }
+
     public static int getCurrentYear() {
-        return Calendar.getInstance().get(Calendar.YEAR);
+        return getCurrentCalender().get(Calendar.YEAR);
     }
 
     public static int getTestingYear() {

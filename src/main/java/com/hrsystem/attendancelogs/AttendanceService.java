@@ -13,12 +13,15 @@ import com.hrsystem.employee.EmployeeService;
 import com.hrsystem.employee.dtos.EmployeeSalaryDTO;
 import com.hrsystem.employee.dtos.EmployeeSalaryDTOBuilder;
 import com.hrsystem.utilities.CustomException;
+import com.hrsystem.utilities.YearAndTimeGenerator;
 import com.hrsystem.utilities.interfaces.constants.SalariesYearsConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 @Service
@@ -257,20 +260,20 @@ public class AttendanceService {
         return monthDetailsRepository.findAllByAttendanceTable_IdAndGrossSalaryOfMonthNotNullOrderByDateAsc(attendanceTableId);
     }
 
-    @Scheduled(cron = "0 0 0 25 * *")
-    public void GenerateEmployeeMonthlySalary() throws CustomException {
-        List<Employee> employeeList = employeeService.getAllEmployees();
-        LocalDate currentDate = LocalDate.now();
-        for (Employee emp : employeeList) {
-            DayDetailsCommand dayDetailsCommand = new DayDetailsCommand();
-            dayDetailsCommand.setAbsent(false);
-            dayDetailsCommand.setBonusInSalary(0.0f);
-            dayDetailsCommand.setDate(currentDate.toString());
-            try {
-                this.addNewDayDataOrModifyAndSave(emp.getId(), dayDetailsCommand, false);// this day will be inserted if it exists nothing will happen
-            } catch (Exception e) {
-                //nothing
-            }
-        }
-    }
+//    @Scheduled(cron = "0 0 0 25 * *")
+//    public void GenerateEmployeeMonthlySalary() throws CustomException {
+//        List<Employee> employeeList = employeeService.getAllEmployees();
+//
+//        for (Employee emp : employeeList) {
+//            DayDetailsCommand dayDetailsCommand = new DayDetailsCommand();
+//            dayDetailsCommand.setAbsent(false);
+//            dayDetailsCommand.setBonusInSalary(0.0f);
+//            dayDetailsCommand.setDate(currentDate.toString());
+//            try {
+//                this.addNewDayDataOrModifyAndSave(emp.getId(), dayDetailsCommand, false);// this day will be inserted if it exists nothing will happen
+//            } catch (Exception e) {
+//                //nothing
+//            }
+//        }
+//    }
 }

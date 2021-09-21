@@ -5,6 +5,7 @@ import com.hrsystem.department.Department;
 import com.hrsystem.employee.Employee;
 import com.hrsystem.employee.Gender;
 import com.hrsystem.security.EmployeeRole;
+import com.hrsystem.team.Team;
 import com.hrsystem.utilities.interfaces.IEmployeeInfoDTO;
 import com.hrsystem.utilities.interfaces.IdOwner;
 import com.hrsystem.utilities.ModelMapperGen;
@@ -25,6 +26,7 @@ public class EmployeeInfoDTO implements IdOwner, IEmployeeInfoDTO {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date graduationDate;
     private Department department;
+    private Team team;
     private Gender gender;
     private Float grossSalary;
     private Float netSalary;

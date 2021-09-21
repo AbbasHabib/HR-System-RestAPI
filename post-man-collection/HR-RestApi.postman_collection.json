@@ -1,0 +1,1054 @@
+{
+	"info": {
+		"_postman_id": "4ed932f9-7dd2-4e69-b495-a5a8d92b43a6",
+		"name": "HR-RestApi",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Employee(Add+Remove+Modify+GetDate)",
+			"item": [
+				{
+					"name": "HR",
+					"item": [
+						{
+							"name": "AddEmployee",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "username",
+											"value": "hamada_elgin_1",
+											"type": "string"
+										},
+										{
+											"key": "password",
+											"value": "123",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"nationalId\": \"1234\",\r\n    \"firstName\": \"ahmed\",\r\n    \"lastName\": \"safty\",\r\n    \"degree\": \"ARCHITECT\",\r\n    \"yearsOfExperience\": 50,\r\n    \"birthDate\": \"2000-07-08\",\r\n    \"graduationDate\": \"2012-02-27\",\r\n    \"gender\": \"MALE\",\r\n    \"department\": null,\r\n    \"team\": null,\r\n    \"manager\": {\"id\":1},\r\n    \"grossSalary\": 10000.0,\r\n    \"role\":\"EMPLOYEE\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8080/employee/",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"employee",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetEmployee",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "123",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "hamada_elgin_1",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/employee/1",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"employee",
+										"1"
+									],
+									"query": [
+										{
+											"key": "",
+											"value": "",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetEmployees",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "username",
+											"value": "hamada_elgin_1",
+											"type": "string"
+										},
+										{
+											"key": "password",
+											"value": "123",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/employee/",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"employee",
+										""
+									],
+									"query": [
+										{
+											"key": "",
+											"value": "",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DeleteEmployee",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "123",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "hamada_elgin_1",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/employee/2",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"employee",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ModifyEmployee",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "123",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "hamada_elgin_1",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"lastName\":\"abbas\",\r\n    \"firstName\":\"abbas\",\r\n    \"birthDate\":\"2000-01-01\",\r\n    \"graduationDate\":\"2020-01-01\",\r\n    \"gender\":\"MALE\",\r\n    \"manager\":{\"id\":1}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8080/employee/2",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"employee",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetEmployeesUnderManager",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/employee/manager/52",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"employee",
+										"manager",
+										"52"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetEmployeesUnderManagerRecursive",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/employee/manager/recursive/1",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"employee",
+										"manager",
+										"recursive",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ModifyEmployeeSalary(salaryRaise+GrossSalary)",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "123",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "hamada_elgin_1",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"grossSalary\":null,\r\n    \"salaryRaise\":2000\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8080/employee/2/salary",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"employee",
+										"2",
+										"salary"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "RegularUser(Employee)",
+					"item": [
+						{
+							"name": "GetEmployee(CURRENT USER)",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "username",
+											"value": "ahmed_safty_2",
+											"type": "string"
+										},
+										{
+											"key": "password",
+											"value": "1234",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/profile/employee",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"profile",
+										"employee"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ModifyEmployee (CURRENT USER)",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "1234",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "ahmed_safty_2",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstName\":\"hamada\",\r\n    \"lastName\":\"za3tar\",\r\n    \"birthDate\":\"2000-01-02\",\r\n    \"gender\":\"FEMALE\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8080/profile/employee",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"profile",
+										"employee"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetSubEmployees (CURRENT USER)",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "1234",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "ahmed_safty_2",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/profile/employee/all-sub-employees",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"profile",
+										"employee",
+										"all-sub-employees"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "EmployeeLogs(Attendance+Salary)",
+			"item": [
+				{
+					"name": "HR",
+					"item": [
+						{
+							"name": "AddDayInfo",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "username",
+											"value": "hamada_elgin_1",
+											"type": "string"
+										},
+										{
+											"key": "password",
+											"value": "123",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"date\": \"2021-01-01\",\r\n    \"absent\": true,\r\n    \"bonusInSalary\": 0.0\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8080/attendance/day/employee/2",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"attendance",
+										"day",
+										"employee",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ModifyExistedDay",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "123",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "hamada_elgin_1",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"date\": \"2021-01-01\",\r\n    \"absent\": true,\r\n    \"bonusInSalary\": 0.0\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8080/attendance/day/employee/2",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"attendance",
+										"day",
+										"employee",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetMonthData",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "username",
+											"value": "hamada_elgin_1",
+											"type": "string"
+										},
+										{
+											"key": "password",
+											"value": "123",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/attendance/month/employee/2/2021-01-01",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"attendance",
+										"month",
+										"employee",
+										"2",
+										"2021-01-01"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetSalaryAtMonth",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "username",
+											"value": "hamada_elgin_1",
+											"type": "string"
+										},
+										{
+											"key": "password",
+											"value": "123",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/attendance/salary/employee/2/2021-01-01",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"attendance",
+										"salary",
+										"employee",
+										"2",
+										"2021-01-01"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetAllSalaryHistory",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "username",
+											"value": "hamada_elgin_1",
+											"type": "string"
+										},
+										{
+											"key": "password",
+											"value": "123",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/attendance/salary/all-history/employee/2",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"attendance",
+										"salary",
+										"all-history",
+										"employee",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetAbsencesThroughTheYearTillMonth",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "username",
+											"value": "hamada_elgin_1",
+											"type": "string"
+										},
+										{
+											"key": "password",
+											"value": "123",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/attendance/absence/employee/2/2021-12-01",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"attendance",
+										"absence",
+										"employee",
+										"2",
+										"2021-12-01"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetAttendacneTableWithEmployeeId",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/attendance/employee/6",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"attendance",
+										"employee",
+										"6"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "RegularUser(Employee)",
+					"item": [
+						{
+							"name": "GetMonhData(CURRENT USER)",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "1234",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "ahmed_safty_2",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/profile/attendance/month/2021-01-01",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"profile",
+										"attendance",
+										"month",
+										"2021-01-01"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetSalaryAtMonth(CURRENT USER)",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "1234",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "ahmed_safty_2",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/profile/salary/2021-01-01",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"profile",
+										"salary",
+										"2021-01-01"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetAllSalaryHistory(CURRENT USER)",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "1234",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "ahmed_safty_2",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/profile/salary/all-history",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"profile",
+										"salary",
+										"all-history"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "TeamAndDepartment",
+			"item": [
+				{
+					"name": "HR",
+					"item": [
+						{
+							"name": "AddDepartment",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "username",
+											"value": "hamada_elgin_1",
+											"type": "string"
+										},
+										{
+											"key": "password",
+											"value": "1234",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\":\"Developers\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8080/department/",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"department",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "AddTeam",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\":2,\r\n    \"teamName\":\"ashba7\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8080/team/",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"team",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetDepartments",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/department/",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"department",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetTeam",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/team/1",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"team",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetEmployessInTeam",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": null
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "RegularUser(Employee)",
+					"item": [
+						{
+							"name": "GetTeam(CURRENT USER)",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "1234",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "ahmed_safty_2",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/profile/team",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"profile",
+										"team"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetDepartment(CURRENT USER)",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "1234",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "ahmed_safty_2",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/profile/department",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"profile",
+										"department"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Security",
+			"item": [
+				{
+					"name": "ChangePassword",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "123",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "hamada_elgin_1",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"currentPassword\":\"123\",\r\n    \"newPassword\":\"12345\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/security/password-reset",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"security",
+								"password-reset"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
