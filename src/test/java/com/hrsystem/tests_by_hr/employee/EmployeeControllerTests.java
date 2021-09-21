@@ -25,6 +25,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.text.SimpleDateFormat;
@@ -103,6 +104,32 @@ public class EmployeeControllerTests extends IntegrationTest {
         assertEquals(employeeToAdd.createUserName(), employeeFromDb.createUserName());
         assertEquals(employeeToAdd.getGender(), employeeFromDb.getGender());
         assertEquals(expectedNetSalary, employeeFromDb.getNetSalary());
+    }
+
+
+    @Test
+    @DatabaseSetup("/data.xml")
+    public void modify_manager_to_be_manager_of_himself() throws Exception {
+        // Initial values of the employee
+        Long employeeId = 101L; // employee id to modify
+        Employee employeeToModify = getEmployeeService().getEmployee(employeeId);
+
+        // Expected modification
+        EmployeeModifyCommand employeeModificationDto = new EmployeeModifyCommand();
+        employeeModificationDto.setManager(employeeToModify);
+
+        employeeModificationDto.commandToEmployee(employeeToModify); // copy modified data to employee
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String employeeDtoJson = objectMapper.writeValueAsString(employeeModificationDto);
+
+        getMockMvc().perform(MockMvcRequestBuilders.put("/employee/" + employeeId)
+                .with(httpBasic("abbas_habib_10", "123"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(employeeDtoJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof CustomException))
+                .andExpect(result -> assertEquals("manager cannot be a manager of himself!", Objects.requireNonNull(result.getResolvedException()).getMessage()));
     }
 
 

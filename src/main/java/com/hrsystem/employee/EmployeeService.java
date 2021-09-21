@@ -182,9 +182,10 @@ public class EmployeeService {
     }
 
 
-    public boolean checkManagerChange(Employee employeeToModify, Employee goToManager) {
+    public boolean checkManagerChange(Employee employeeToModify, Employee goToManager) throws CustomException {
         if (employeeToModify.getId().equals(goToManager.getId()))
-            return false;
+            throw new CustomException("manager cannot be a manager of himself!");
+
         List<Employee> employeesUnderCurrentEmployee = employeeRepository.findManagerEmployeesRecursivelyQueried(employeeToModify.getId());
 
         return employeesUnderCurrentEmployee.stream().noneMatch(o -> o.getId().equals(goToManager.getId())); // if it contains this manager then he cant be my manager
@@ -197,7 +198,7 @@ public class EmployeeService {
         {
             if (!checkManagerChange(employeeToModify, employeeModifyCommand.getManager())) // if the manager is working underMe he cant be my manager
             {
-                throw new CustomException("Infinite recursive relation between employee and manager");
+                throw new CustomException("infinite recursive relation between employee and manager!");
             }
         }
         employeeModifyCommand.commandToEmployee(employeeToModify); //  copying new data to employee

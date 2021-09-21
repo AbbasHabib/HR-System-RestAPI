@@ -56,6 +56,7 @@ public class Employee implements IdOwner {
     // recursive relationship where a manager is an employee
     // many employees share the same manager id
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "manager_id")// in case the manager_id is null that means that
     // manager is a a super manager doesn't have a manager above him
     private Employee manager;

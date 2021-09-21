@@ -108,13 +108,14 @@ public class AttendanceIntegrationTest extends IntegrationTest {
     }
 
 
+
     @Test
     @DatabaseSetup("/absenceDaysWithMonths.xml")
     public void modify_existing_day_data_by_hr() throws Exception {
         long employeeId = 101L;
         LocalDate dayDate = LocalDate.of(2021, 1, 2);
         Long attendanceTableId = getAttendanceService().getAttendanceTableIdByEmployeeId(employeeId);
-        
+
         DayDetailsCommand dayModificationCommand = new DayDetailsCommand();
         dayModificationCommand.setAbsent(false);
         dayModificationCommand.setDate(dayDate.toString());
@@ -131,6 +132,48 @@ public class AttendanceIntegrationTest extends IntegrationTest {
         DayDetails dayModified = getDayDetailsRepository().findByAttendanceTable_IdAndDate(attendanceTableId, dayDate);
         Assertions.assertEquals(dayModified.isAbsent(), dayModificationCommand.isAbsent());
         Assertions.assertEquals(dayModified.getBonusInSalary(), dayModificationCommand.getBonusInSalary());
+    }
+
+    @Test
+    @DatabaseSetup("/absenceDaysWithMonths.xml")
+    public void modify_existing_day_without_giving_a_data_done_by_hr() throws Exception {
+        long employeeId = 101L;
+
+        DayDetailsCommand dayModificationCommand = new DayDetailsCommand();
+        dayModificationCommand.setAbsent(false);
+        dayModificationCommand.setBonusInSalary(50000f);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String dayModificationCommandJSON = objectMapper.writeValueAsString(dayModificationCommand); // converts employee object to JSON string
+
+        getMockMvc().perform(put("/attendance/day/employee/" + employeeId)
+                .with(httpBasic("abbas_habib_1", "123"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(dayModificationCommandJSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof CustomException))
+                .andExpect(result -> assertEquals("dayDate cannot be null!", Objects.requireNonNull(result.getResolvedException()).getMessage()));
+
+    }
+
+    @Test
+    @DatabaseSetup("/absenceDaysWithMonths.xml")
+    public void add_new_day_without_giving_a_data_done_by_hr() throws Exception {
+        long employeeId = 101L;
+
+        DayDetailsCommand dayModificationCommand = new DayDetailsCommand();
+        dayModificationCommand.setAbsent(false);
+        dayModificationCommand.setBonusInSalary(50000f);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String dayModificationCommandJSON = objectMapper.writeValueAsString(dayModificationCommand); // converts employee object to JSON string
+
+        getMockMvc().perform(post("/attendance/day/employee/" + employeeId)
+                .with(httpBasic("abbas_habib_1", "123"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(dayModificationCommandJSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof CustomException))
+                .andExpect(result -> assertEquals("dayDate cannot be null!", Objects.requireNonNull(result.getResolvedException()).getMessage()));
+
     }
 
     @Test
