@@ -1,11 +1,12 @@
 package com.hrsystem.tests_by_regular_employee;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.hrsystem.employee.commands.EmployeeModificationByLoggedUserCommand;
-import com.hrsystem.employee.dtos.EmployeeInfoDTO;
+import com.hrsystem.IntegrationTest;
 import com.hrsystem.employee.Employee;
 import com.hrsystem.employee.Gender;
-import com.hrsystem.IntegrationTest;
+import com.hrsystem.employee.commands.EmployeeModificationByLoggedUserCommand;
+import com.hrsystem.employee.dtos.EmployeeBasicInfoDTO;
+import com.hrsystem.employee.dtos.EmployeeInfoDTO;
 import com.hrsystem.tests_by_hr.testShortcuts.TestShortcutMethods;
 import com.hrsystem.utilities.CustomException;
 import org.junit.jupiter.api.Assertions;
@@ -15,10 +16,12 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.List;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class EmployeeControllerByLoggedUser extends IntegrationTest {
@@ -78,6 +81,26 @@ public class EmployeeControllerByLoggedUser extends IntegrationTest {
         String responseJson = result.getResponse().getContentAsString();
         Assertions.assertEquals(expectedEmployeeInfoDTOJSON, responseJson);
     }
+
+    @Test
+    @DatabaseSetup("/data.xml")
+    public void get_sub_employees_by_logged_user() throws Exception {
+        Long managerId = 102L;
+        List<Employee> employeesUnderManager = getEmployeeRepository().findEmployeesByManager_Id(managerId);
+        EmployeeBasicInfoDTO employeeBasicInfoDTO = new EmployeeBasicInfoDTO();
+        List<EmployeeBasicInfoDTO> EmployeesInfoDTO = employeeBasicInfoDTO.generateDTOListFromEmployeeList(employeesUnderManager);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String employeesDtoJson = objectMapper.writeValueAsString(EmployeesInfoDTO);
+
+        getMockMvc().perform(MockMvcRequestBuilders.get("/profile/employee/all-sub-employees")
+                .with(httpBasic("hamada_elgin_102", "101087")))
+                .andExpect(content().json(employeesDtoJson))
+                .andExpect(status().isOk());
+
+    }
+
+    // exception handling
     @Test
     @DatabaseSetup("/EmployeeWithCredentials.xml")
     public void modify_employee_by_logged_user_sending_number_in_first_name() throws Exception {
