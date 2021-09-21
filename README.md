@@ -20,19 +20,19 @@ json date from request body gets mapped to a java object that gets stored in the
   ```
 ![add-employee-postman](screen-shots/add-employee-postman.JPG)
 
-###modify employee using postman
+## modify employee using postman
 - **this request can be done by employees with HR role only**
 - employee id has to be added after the uri
 
 ![modify-employee-postman](screen-shots/modify-employee-postman.JPG)
 
-###get employee from authentication using postman
+## get employee from authentication using postman
 - **this request can be done by employees with HR or EMPLOYEE role**
 - this request gets employee data from authentication username
 
 ![get-employee-postman](screen-shots/get-employee-by-logged-user-posman.JPG)
 
-###add new day details
+## add new day details
 - **this request can be done by employees with HR role only**
 - employee id has to be added after the uri
 - this request adds new dat data to a month
@@ -40,7 +40,7 @@ json date from request body gets mapped to a java object that gets stored in the
 - **important ->** to creat a new month for an employee a day has to be added and this month date
 ![add-new-day-postman](screen-shots/add-new-day-date-by-hr-postman.JPG)
 
-###change password
+## change password
 - **this request can be done by employees with HR or EMPLOYEE role**
 - old password (currentPassword) has to be correct inorder to change old password with the new one
 ![change-password-postman](screen-shots/logged-user-change-password-postman.JPG)
