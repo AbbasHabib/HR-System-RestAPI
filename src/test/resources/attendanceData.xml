@@ -10,8 +10,11 @@
 
 
     <attendance_table id="101" initial_working_years="9"/>
-    <employee id="101" first_name="Big" graduation_date="2012-01-01" last_name="rami" attendance_table_id="101"
-              national_id="10101001" gross_salary="100000" gender="MALE" role="EMPLOYEE"/>
+    <employee id="101" first_name="big" graduation_date="2012-01-01" last_name="rami" attendance_table_id="101"
+              national_id="1234" gross_salary="100000" gender="MALE" salary_raise="0" role="EMPLOYEE"/>
+    <user_credentials user_name="big_rami_101" password="$2a$06$9eISw8eEN1Tq3dGiYm/GFORhA46pXR3nhiix1BdhLbdFy0I5Eeafq"
+                      employee_id="101" user_role="EMPLOYEE"/>
+
     <month_details id="1" absences="2" bonuses="2" date="2021-01-01" attendance_table_id="101"
                    gross_salary_of_month="100000"/>
 

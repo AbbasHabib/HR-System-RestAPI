@@ -45,7 +45,7 @@ public class AttendanceController {
 
     @GetMapping(value = "/attendance/salary/employee/{id}/{date}", produces = MediaType.APPLICATION_JSON_VALUE)
     public EmployeeSalaryDTO getEmployeeSalaryAtMonth(@PathVariable String id, @PathVariable String date) throws CustomException {
-        return attendanceService.employeeSalaryAtMonth(Long.parseLong(id), LocalDate.parse(date));
+        return attendanceService.getEmployeeSalaryAtMonth(Long.parseLong(id), LocalDate.parse(date));
     }
 
     @GetMapping(value = "/attendance/salary/all-history/employee/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -54,17 +54,17 @@ public class AttendanceController {
     }
     // -------------------------------- apis for employee with employee role ------------------------------------//
 
-    @GetMapping(value = "profile/attendance/month/{date}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/profile/attendance/month/{date}", produces = MediaType.APPLICATION_JSON_VALUE)
     public MonthDTO getMonthDataByLoggedUser(@PathVariable String date) throws CustomException {
         return attendanceService.getMonthDetailsByLoggedUser(LocalDate.parse(date));
     }
 
-    @GetMapping(value = "profile/salary/{date}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/profile/salary/{date}", produces = MediaType.APPLICATION_JSON_VALUE)
     public EmployeeSalaryDTO getEmployeeSalaryAtMonthByLoggedUser(@PathVariable String date) throws CustomException {
         return attendanceService.employeeSalaryAtMonthByLoggedUser(LocalDate.parse(date));
     }
 
-    @GetMapping(value = "profile/salary/all-history", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/profile/salary/all-history", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<MonthDetails> getSalaryHistoryByLoggedUser() throws CustomException {
         return attendanceService.getAllSalaryHistoryByLoggedUser();
     }

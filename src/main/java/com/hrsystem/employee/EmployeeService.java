@@ -65,9 +65,9 @@ public class EmployeeService {
     }
 
     public void handleEmployeeFieldsNamesWithRegex(Employee employee) throws CustomException {
-        if (RegexChecker.isStringOnlyAlphabet(employee.getFirstName()))
+        if (!RegexChecker.isStringOnlyAlphabet(employee.getFirstName()))
             throw new CustomException("firstName has to be alphabets only!");
-        if (RegexChecker.isStringOnlyAlphabet(employee.getLastName()))
+        if (!RegexChecker.isStringOnlyAlphabet(employee.getLastName()))
             throw new CustomException("lastName has to be alphabets only!");
         if (!RegexChecker.isNumbersOnly(employee.getNationalId()))
             throw new CustomException("nationalId has to be numbers only!");

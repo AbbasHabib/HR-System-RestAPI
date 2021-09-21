@@ -7,6 +7,7 @@ import com.hrsystem.employee.Employee;
 import com.hrsystem.employee.Gender;
 import com.hrsystem.IntegrationTest;
 import com.hrsystem.tests_by_hr.testShortcuts.TestShortcutMethods;
+import com.hrsystem.utilities.CustomException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -14,6 +15,9 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.Objects;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -51,7 +55,7 @@ public class EmployeeControllerByLoggedUser extends IntegrationTest {
         Long searchForId = 1L;
         Employee employeeExpected = getEmployeeService().getEmployee(searchForId);
         EmployeeModificationByLoggedUserCommand modificationCommand = new EmployeeModificationByLoggedUserCommand();
-        modificationCommand.setFirstName("7omos");
+        modificationCommand.setFirstName("homos");
         modificationCommand.setLastName("elsham");
         modificationCommand.setGender(Gender.FEMALE);
         modificationCommand.commandToEmployee(employeeExpected);
@@ -73,6 +77,57 @@ public class EmployeeControllerByLoggedUser extends IntegrationTest {
 
         String responseJson = result.getResponse().getContentAsString();
         Assertions.assertEquals(expectedEmployeeInfoDTOJSON, responseJson);
+    }
+    @Test
+    @DatabaseSetup("/EmployeeWithCredentials.xml")
+    public void modify_employee_by_logged_user_sending_number_in_first_name() throws Exception {
+        Long searchForId = 1L;
+        Employee employeeExpected = getEmployeeService().getEmployee(searchForId);
+        EmployeeModificationByLoggedUserCommand modificationCommand = new EmployeeModificationByLoggedUserCommand();
+        modificationCommand.setFirstName("18aje932");
+        modificationCommand.setLastName("elsham");
+        modificationCommand.setGender(Gender.FEMALE);
+        modificationCommand.commandToEmployee(employeeExpected);
+
+        EmployeeInfoDTO expectedEmployeeInfoDTO = new EmployeeInfoDTO();
+        expectedEmployeeInfoDTO.setEmployeeToDTO(employeeExpected);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String modificationCommandJSON = objectMapper.writeValueAsString(modificationCommand);
+
+        getMockMvc().perform(MockMvcRequestBuilders.put("/profile/employee/")
+                .with(httpBasic("ahmed_habib_1", "123"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(modificationCommandJSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof CustomException))
+                .andExpect(result -> assertEquals("firstName has to be alphabets only!", Objects.requireNonNull(result.getResolvedException()).getMessage()));
+    }
+
+    @Test
+    @DatabaseSetup("/EmployeeWithCredentials.xml")
+    public void modify_employee_by_logged_user_sending_number_in_last_name() throws Exception {
+        Long searchForId = 1L;
+        Employee employeeExpected = getEmployeeService().getEmployee(searchForId);
+        EmployeeModificationByLoggedUserCommand modificationCommand = new EmployeeModificationByLoggedUserCommand();
+        modificationCommand.setFirstName("ahmed");
+        modificationCommand.setLastName("564elsham");
+        modificationCommand.setGender(Gender.FEMALE);
+        modificationCommand.commandToEmployee(employeeExpected);
+
+        EmployeeInfoDTO expectedEmployeeInfoDTO = new EmployeeInfoDTO();
+        expectedEmployeeInfoDTO.setEmployeeToDTO(employeeExpected);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String modificationCommandJSON = objectMapper.writeValueAsString(modificationCommand);
+
+        getMockMvc().perform(MockMvcRequestBuilders.put("/profile/employee/")
+                .with(httpBasic("ahmed_habib_1", "123"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(modificationCommandJSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof CustomException))
+                .andExpect(result -> assertEquals("lastName has to be alphabets only!", Objects.requireNonNull(result.getResolvedException()).getMessage()));
     }
 
 

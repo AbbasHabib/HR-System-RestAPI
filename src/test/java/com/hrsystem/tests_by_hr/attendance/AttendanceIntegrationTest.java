@@ -2,14 +2,17 @@ package com.hrsystem.tests_by_hr.attendance;
 
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.hrsystem.IntegrationTest;
 import com.hrsystem.attendancelogs.AttendanceTable;
 import com.hrsystem.attendancelogs.daydetails.DayDetails;
 import com.hrsystem.attendancelogs.daydetails.DayDetailsCommand;
 import com.hrsystem.attendancelogs.daydetails.DayDetailsDTO;
 import com.hrsystem.attendancelogs.monthdetails.MonthDTO;
 import com.hrsystem.attendancelogs.monthdetails.MonthDetails;
-import com.hrsystem.IntegrationTest;
+import com.hrsystem.employee.dtos.EmployeeSalaryDTO;
+import com.hrsystem.employee.dtos.EmployeeSalaryDTOBuilder;
 import com.hrsystem.tests_by_hr.testShortcuts.TestShortcutMethods;
+import com.hrsystem.utilities.interfaces.constants.SalariesYearsConstants;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -112,6 +115,40 @@ public class AttendanceIntegrationTest extends IntegrationTest {
         String responseJson = result.getResponse().getContentAsString();
 
         assertEquals(monthDetailsJson, responseJson);
+
+    }
+
+
+    @Test
+    @DatabaseSetup("/employeeWithDailyData.xml")
+    public void get_month_salary_by_hr() throws Exception {
+        long employeeId = 101L;
+        LocalDate monthToFind = LocalDate.of(2021, 1, 1);
+        float grossSalary = 100000;
+        int absences = 10;
+        float netSalary = grossSalary;
+        netSalary = netSalary * (1 - SalariesYearsConstants.TAXES) - SalariesYearsConstants.DEDUCTED_INSURANCE;
+
+        EmployeeSalaryDTOBuilder salaryDTOBuilder = new EmployeeSalaryDTOBuilder();
+        salaryDTOBuilder.setInfoDate(monthToFind)
+                .setGrossSalary(grossSalary)
+                .setNetSalary(netSalary)
+                .setNumberOfAbsencesThroughYear(absences)
+                .setNumberOfAbsencesInMonth(absences)
+                .setAllowedAbsencesThroughYear(SalariesYearsConstants.AVAILABLE_ABSENCES_JUNIOR)
+                .setExceededBy(0);
+
+        EmployeeSalaryDTO employeeSalaryDTO = salaryDTOBuilder.build();
+
+        MvcResult result = getMockMvc().perform(MockMvcRequestBuilders.get("/attendance/salary/employee/" + employeeId + "/" + monthToFind)
+                .with(httpBasic("abbas_habib_1", "123")))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String expectedMonthSalaryDtoJSON = objectMapper.writeValueAsString(employeeSalaryDTO);
+        String responseJson = result.getResponse().getContentAsString();
+        assertEquals(expectedMonthSalaryDtoJSON, responseJson);
 
     }
 

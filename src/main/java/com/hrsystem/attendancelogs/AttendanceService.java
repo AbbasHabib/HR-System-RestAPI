@@ -164,7 +164,7 @@ public class AttendanceService {
 
     public EmployeeSalaryDTO employeeSalaryAtMonthByLoggedUser(LocalDate date) throws CustomException {
         Long employeeId = employeeService.getEmployeeIdFromAuthentication();
-        return employeeSalaryAtMonth(employeeId, date);
+        return getEmployeeSalaryAtMonth(employeeId, date);
     }
 
     public List<MonthDetails> getAllSalaryHistoryByLoggedUser() throws CustomException {
@@ -190,7 +190,7 @@ public class AttendanceService {
     }
 
 
-    public EmployeeSalaryDTO employeeSalaryAtMonth(long employeeId, LocalDate date) throws CustomException {
+    public EmployeeSalaryDTO getEmployeeSalaryAtMonth(long employeeId, LocalDate date) throws CustomException {
         AttendanceTable attendanceTable = getAttendanceTableByEmployeeId(employeeId);
         Long attendanceTableId = attendanceTable.getId();
         MonthDetails monthInquiring = getMonthDetails(employeeId, date);
@@ -219,11 +219,13 @@ public class AttendanceService {
                 .setAllowedAbsencesThroughYear(permittedAbsenceDays)
                 .setExceededBy(Math.max(absenceDaysTillMonth - permittedAbsenceDays, 0));
 
-        return employeeSalaryDTOBuilder.Build();
+        return employeeSalaryDTOBuilder.build();
     }
 
 
-    private float calculateNetSalary(float grossSalary, int absenceDaysTillMonth, float monthBonuses, float salaryRaise, int permittedAbsenceDays, int monthDays) {
+    private float calculateNetSalary(float grossSalary, int absenceDaysTillMonth, float monthBonuses, Float salaryRaise, int permittedAbsenceDays, int monthDays) {
+        if(salaryRaise == null)
+            salaryRaise = 0f;
         float netSalary = grossSalary + monthBonuses + salaryRaise;
         if (absenceDaysTillMonth > permittedAbsenceDays) {
             float salaryPerDay = netSalary / monthDays;

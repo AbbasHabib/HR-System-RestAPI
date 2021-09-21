@@ -8,7 +8,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class EmployeeSalaryDTO {
-    private LocalDate infoDate;
+    private String infoDate;
     private Float grossSalary;
     private Float netSalary;
     private Integer numberOfAbsencesInMonth;
@@ -19,7 +19,7 @@ public class EmployeeSalaryDTO {
     public EmployeeSalaryDTO() {
     }
 
-    public EmployeeSalaryDTO(LocalDate infoDate, Float grossSalary, Float netSalary, Integer numberOfAbsencesInMonth, Integer numberOfAbsencesThroughYear, Integer allowedAbsences, Integer exceededBy) {
+    public EmployeeSalaryDTO(String infoDate, Float grossSalary, Float netSalary, Integer numberOfAbsencesInMonth, Integer numberOfAbsencesThroughYear, Integer allowedAbsences, Integer exceededBy) {
         this.infoDate = infoDate;
         this.grossSalary = grossSalary;
         this.netSalary = netSalary;

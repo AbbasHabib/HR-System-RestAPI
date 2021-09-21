@@ -18,7 +18,7 @@ public class EmployeeSalaryDTOBuilder {
     public EmployeeSalaryDTOBuilder() {
     }
 
-    public EmployeeSalaryDTO Build()
+    public EmployeeSalaryDTO build()
     {
         EmployeeSalaryDTO employeeSalaryDTO= new EmployeeSalaryDTO();
         ModelMapperGen.getModelMapperSingleton().map(this, employeeSalaryDTO);
