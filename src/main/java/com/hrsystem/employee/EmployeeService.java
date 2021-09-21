@@ -198,7 +198,7 @@ public class EmployeeService {
         {
             if (!checkManagerChange(employeeToModify, employeeModifyCommand.getManager())) // if the manager is working underMe he cant be my manager
             {
-                throw new CustomException("infinite recursive relation between employee and manager!");
+                throw new CustomException("(a sub employee cannot be a manager of his manager) infinite recursive relation between employee and manager!");
             }
         }
         employeeModifyCommand.commandToEmployee(employeeToModify); //  copying new data to employee

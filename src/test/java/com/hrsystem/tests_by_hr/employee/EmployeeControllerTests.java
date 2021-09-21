@@ -132,6 +132,33 @@ public class EmployeeControllerTests extends IntegrationTest {
                 .andExpect(result -> assertEquals("manager cannot be a manager of himself!", Objects.requireNonNull(result.getResolvedException()).getMessage()));
     }
 
+    @Test
+    @DatabaseSetup("/data.xml")
+    public void modify_a_manager_to_be_a_sub_employee_of_his_sub_employees() throws Exception {
+        // Initial values of the employee
+        Long managerId = 101L; // employee id to modify
+        Long aSubEmployee = 102L;
+        Employee employeeToModify = getEmployeeService().getEmployee(managerId);
+        Employee subEmployee = getEmployeeService().getEmployee(aSubEmployee);
+
+        // Expected modification
+        EmployeeModifyCommand employeeModificationDto = new EmployeeModifyCommand();
+        employeeModificationDto.setManager(subEmployee);
+
+        employeeModificationDto.commandToEmployee(employeeToModify); // copy modified data to employee
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String employeeDtoJson = objectMapper.writeValueAsString(employeeModificationDto);
+
+        getMockMvc().perform(MockMvcRequestBuilders.put("/employee/" + managerId)
+                .with(httpBasic("abbas_habib_10", "123"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(employeeDtoJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof CustomException))
+                .andExpect(result -> assertEquals("(a sub employee cannot be a manager of his manager) infinite recursive relation between employee and manager!",
+                        Objects.requireNonNull(result.getResolvedException()).getMessage()));
+    }
 
     @Test
     @DatabaseSetup("/data.xml")
