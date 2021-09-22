@@ -16,7 +16,7 @@ json date from request body gets mapped to a java object that gets stored in the
 
   ```
   "manager":{"id":1},
-  "team":{"id":1}
+  "team":{"id":1},
   "department":{"id":1}
   ```
 ![add-employee-postman](screen-shots/add-employee-postman.JPG)
@@ -38,12 +38,14 @@ json date from request body gets mapped to a java object that gets stored in the
 - employee id has to be added after the uri
 - this request adds new dat data to a month
 - this day can either carry absence in current day or bonus in salary
-- **important ->** to creat a new month for an employee a day has to be added and this month date
+- **important ->** to creat a new month for an employee a day has to be added at this month date
+
 ![add-new-day-postman](screen-shots/add-new-day-date-by-hr-postman.JPG)
 
 ## Change password
 - **this request can be done by employees with HR or EMPLOYEE role**
 - old password (currentPassword) has to be correct inorder to change old password with the new one
+
 ![change-password-postman](screen-shots/logged-user-change-password-postman.JPG)
 
 ## ~~Current TodoList~~
