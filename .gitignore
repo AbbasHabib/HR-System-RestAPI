@@ -4,9 +4,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-### server ###
-server.log
-*.log
+!**/src/main/**/server.log/
 
 ### STS ###
 .apt_generated
