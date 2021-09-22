@@ -5,6 +5,7 @@ target/
 !**/src/test/**/target/
 
 ### server ###
+server.log
 *.log
 
 ### STS ###
