@@ -1,5 +1,6 @@
 package com.hrsystem.employee;
 
+import com.hrsystem.employee.commands.AddEmployeeCommand;
 import com.hrsystem.employee.commands.EmployeeModificationByLoggedUserCommand;
 import com.hrsystem.employee.commands.EmployeeModifyCommand;
 import com.hrsystem.employee.commands.EmployeeSalaryModifyCommand;
@@ -18,8 +19,8 @@ public class EmployeeController {
     EmployeeService employeeService;
 
     @PostMapping(value = "/employee/", produces = MediaType.APPLICATION_JSON_VALUE)
-    public EmployeeInfoDTO addEmployee(@RequestBody Employee employee) throws Exception {
-        return employeeService.addEmployee(employee);
+    public EmployeeInfoDTO addEmployee(@RequestBody AddEmployeeCommand addEmployeeCommand) throws Exception {
+        return employeeService.addEmployee(addEmployeeCommand);
     }
 
     @GetMapping("/employee/")

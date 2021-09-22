@@ -53,6 +53,8 @@ public class Employee implements IdOwner {
     @JoinColumn(name = "team_id")
     private Team team;
 
+    private String expertise;
+
     // recursive relationship where a manager is an employee
     // many employees share the same manager id
     @ManyToOne

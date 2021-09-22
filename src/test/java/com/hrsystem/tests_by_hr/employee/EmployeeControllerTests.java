@@ -3,6 +3,7 @@ package com.hrsystem.tests_by_hr.employee;
 import com.blazebit.persistence.CriteriaBuilderFactory;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.hrsystem.department.Department;
+import com.hrsystem.employee.commands.AddEmployeeCommand;
 import com.hrsystem.employee.commands.EmployeeModifyCommand;
 import com.hrsystem.employee.commands.EmployeeSalaryModifyCommand;
 import com.hrsystem.employee.dtos.EmployeeBasicInfoDTO;
@@ -16,7 +17,7 @@ import com.hrsystem.security.UserCredentials;
 import com.hrsystem.security.UserCredentialsRepository;
 import com.hrsystem.team.Team;
 import com.hrsystem.tests_by_hr.testShortcuts.TestShortcutMethods;
-import com.hrsystem.utilities.YearAndTimeGenerator;
+import com.hrsystem.utilities.TimeGenerator;
 import javassist.NotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -25,7 +26,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
-import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.text.SimpleDateFormat;
@@ -48,24 +48,24 @@ public class EmployeeControllerTests extends IntegrationTest {
     @Test
     @DatabaseSetup("/hr-only.xml")
     public void add_employee_by_hr() throws Exception {
-        Employee employeeToAdd = new Employee();
-        employeeToAdd.setFullName("ahmed safty");
-        employeeToAdd.setGender(Gender.MALE);
-        employeeToAdd.setGrossSalary(10000f);
-        employeeToAdd.setRole(EmployeeRole.EMPLOYEE);
+        Employee addEmployeeCommand = new Employee();
+        addEmployeeCommand.setFullName("ahmed safty");
+        addEmployeeCommand.setGender(Gender.MALE);
+        addEmployeeCommand.setGrossSalary(10000f);
+        addEmployeeCommand.setRole(EmployeeRole.EMPLOYEE);
 
-        Float expectedNetSalary = getEmployeeService().calculateNetSalary(employeeToAdd.getGrossSalary(), employeeToAdd.getSalaryRaise());
+        Float expectedNetSalary = getEmployeeService().calculateNetSalary(addEmployeeCommand.getGrossSalary(), addEmployeeCommand.getSalaryRaise());
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = simpleDateFormat.parse("2012-01-02");
-        employeeToAdd.setGraduationDate(date);
+        addEmployeeCommand.setGraduationDate(date);
 
-        employeeToAdd.setNationalId("1234");
+        addEmployeeCommand.setNationalId("1234");
         // set Department to employee
         Long departmentId = 101L;
         Department dep = getDepartmentService().getDepartment(departmentId);
         if (dep == null) throw new NotFoundException("department is not found");
-        employeeToAdd.setDepartment(dep);
+        addEmployeeCommand.setDepartment(dep);
 
         // this test is expected to: return same object it receives and add employee to database
 
@@ -73,11 +73,11 @@ public class EmployeeControllerTests extends IntegrationTest {
         Long teamId = 101L;
         Team team = getTeamService().getTeam(teamId);
         if (team == null) throw new NotFoundException("team is not found");
-        employeeToAdd.setTeam(team);
+        addEmployeeCommand.setTeam(team);
 
         // Is expected to return same object it receives
         ObjectMapper objectMapper = new ObjectMapper();
-        String employeeJson = objectMapper.writeValueAsString(employeeToAdd); // converts employee object to JSON string
+        String employeeJson = objectMapper.writeValueAsString(addEmployeeCommand); // converts employee object to JSON string
 
         // POST request (.post("/employee/")) takes to be a Json of employee in request Body
         MvcResult response = getMockMvc().perform(MockMvcRequestBuilders.post("/employee/")
@@ -90,19 +90,19 @@ public class EmployeeControllerTests extends IntegrationTest {
         // check if employee got inserted in database and got credentials and attendance table
 
         TestShortcutMethods<Employee> tester = new TestShortcutMethods<>();
-        tester.setObjectIdFromResponseResult(response, employeeToAdd); // just to get the id from the response as its auto incremented by database
+        tester.setObjectIdFromResponseResult(response, addEmployeeCommand); // just to get the id from the response as its auto incremented by database
 
-        Employee employeeFromDb = getEmployeeService().getEmployee(employeeToAdd.getId());
+        Employee employeeFromDb = getEmployeeService().getEmployee(addEmployeeCommand.getId());
 
-        int expectedInitialWorkingYears = YearAndTimeGenerator.getCurrentYear() - employeeToAdd.calcGraduationYear();
+        int expectedInitialWorkingYears = (new TimeGenerator()).getCurrentYear() - addEmployeeCommand.calcGraduationYear();
 
         Assertions.assertNotEquals(null, employeeFromDb.getAttendanceTable());
         Assertions.assertNotEquals(null, employeeFromDb.getUserCredentials());
 
         assertEquals(expectedInitialWorkingYears, employeeFromDb.getAttendanceTable().getInitialWorkingYears()); // from 2012 to 2021(testing year)
-        assertEquals(employeeToAdd.getId(), employeeFromDb.getId());
-        assertEquals(employeeToAdd.createUserName(), employeeFromDb.createUserName());
-        assertEquals(employeeToAdd.getGender(), employeeFromDb.getGender());
+        assertEquals(addEmployeeCommand.getId(), employeeFromDb.getId());
+        assertEquals(addEmployeeCommand.createUserName(), employeeFromDb.createUserName());
+        assertEquals(addEmployeeCommand.getGender(), employeeFromDb.getGender());
         assertEquals(expectedNetSalary, employeeFromDb.getNetSalary());
     }
 
@@ -352,21 +352,21 @@ public class EmployeeControllerTests extends IntegrationTest {
     @Test
     @DatabaseSetup("/hr-only.xml")
     public void add_employee_by_hr_duplicate_national_id() throws Exception {
-        Employee employeeToAdd = new Employee();
-        employeeToAdd.setFullName("ahmed safty");
-        employeeToAdd.setGender(Gender.MALE);
-        employeeToAdd.setGrossSalary(10000f);
-        employeeToAdd.setRole(EmployeeRole.EMPLOYEE);
+        Employee addEmployeeCommand = new Employee();
+        addEmployeeCommand.setFullName("ahmed safty");
+        addEmployeeCommand.setGender(Gender.MALE);
+        addEmployeeCommand.setGrossSalary(10000f);
+        addEmployeeCommand.setRole(EmployeeRole.EMPLOYEE);
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = simpleDateFormat.parse("2012-01-02");
-        employeeToAdd.setGraduationDate(date);
+        addEmployeeCommand.setGraduationDate(date);
 
 
-        employeeToAdd.setNationalId("123"); // duplicate nationalId
+        addEmployeeCommand.setNationalId("123"); // duplicate nationalId
         // Is expected to return same object it receives
         ObjectMapper objectMapper = new ObjectMapper();
-        String employeeJson = objectMapper.writeValueAsString(employeeToAdd); // converts employee object to JSON string
+        String employeeJson = objectMapper.writeValueAsString(addEmployeeCommand); // converts employee object to JSON string
 
         // POST request (.post("/employee/")) takes to be a Json of employee in request Body
         getMockMvc().perform(MockMvcRequestBuilders.post("/employee/")
@@ -381,19 +381,19 @@ public class EmployeeControllerTests extends IntegrationTest {
     @Test
     @DatabaseSetup("/hr-only.xml")
     public void add_employee_by_hr_first_name_null() throws Exception {
-        Employee employeeToAdd = new Employee();
-        employeeToAdd.setLastName("ahmed");
-        employeeToAdd.setGender(Gender.MALE);
-        employeeToAdd.setGrossSalary(10000f);
-        employeeToAdd.setRole(EmployeeRole.EMPLOYEE);
+        AddEmployeeCommand addEmployeeCommand = new AddEmployeeCommand();
+        addEmployeeCommand.setLastName("ahmed");
+        addEmployeeCommand.setGender(Gender.MALE);
+        addEmployeeCommand.setGrossSalary(10000f);
+        addEmployeeCommand.setRole(EmployeeRole.EMPLOYEE);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = simpleDateFormat.parse("2012-01-02");
-        employeeToAdd.setGraduationDate(date);
+        addEmployeeCommand.setGraduationDate(date);
 
-        employeeToAdd.setNationalId("1234");
+        addEmployeeCommand.setNationalId("1234");
         // Is expected to return same object it receives
         ObjectMapper objectMapper = new ObjectMapper();
-        String employeeJson = objectMapper.writeValueAsString(employeeToAdd);
+        String employeeJson = objectMapper.writeValueAsString(addEmployeeCommand);
 
         // POST request (.post("/employee/")) takes to be a Json of employee in request Body
         getMockMvc().perform(MockMvcRequestBuilders.post("/employee/")
@@ -408,19 +408,19 @@ public class EmployeeControllerTests extends IntegrationTest {
     @Test
     @DatabaseSetup("/hr-only.xml")
     public void add_employee_by_hr_last_name_null() throws Exception {
-        Employee employeeToAdd = new Employee();
-        employeeToAdd.setFirstName("ahmed");
-        employeeToAdd.setGender(Gender.MALE);
-        employeeToAdd.setGrossSalary(10000f);
-        employeeToAdd.setRole(EmployeeRole.EMPLOYEE);
+        AddEmployeeCommand addEmployeeCommand = new AddEmployeeCommand();
+        addEmployeeCommand.setFirstName("ahmed");
+        addEmployeeCommand.setGender(Gender.MALE);
+        addEmployeeCommand.setGrossSalary(10000f);
+        addEmployeeCommand.setRole(EmployeeRole.EMPLOYEE);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = simpleDateFormat.parse("2012-01-02");
-        employeeToAdd.setGraduationDate(date);
+        addEmployeeCommand.setGraduationDate(date);
 
-        employeeToAdd.setNationalId("1234");
+        addEmployeeCommand.setNationalId("1234");
         // Is expected to return same object it receives
         ObjectMapper objectMapper = new ObjectMapper();
-        String employeeJson = objectMapper.writeValueAsString(employeeToAdd); // converts employee object to JSON string
+        String employeeJson = objectMapper.writeValueAsString(addEmployeeCommand); // converts employee object to JSON string
 
         // POST request (.post("/employee/")) takes to be a Json of employee in request Body
         getMockMvc().perform(MockMvcRequestBuilders.post("/employee/")
@@ -436,19 +436,19 @@ public class EmployeeControllerTests extends IntegrationTest {
     @Test
     @DatabaseSetup("/hr-only.xml")
     public void add_employee_by_hr_national_id_null() throws Exception {
-        Employee employeeToAdd = new Employee();
-        employeeToAdd.setFirstName("ahmed");
-        employeeToAdd.setLastName("abbas");
-        employeeToAdd.setGender(Gender.MALE);
-        employeeToAdd.setGrossSalary(10000f);
+        AddEmployeeCommand addEmployeeCommand = new AddEmployeeCommand();
+        addEmployeeCommand.setFirstName("ahmed");
+        addEmployeeCommand.setLastName("abbas");
+        addEmployeeCommand.setGender(Gender.MALE);
+        addEmployeeCommand.setGrossSalary(10000f);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = simpleDateFormat.parse("2012-01-02");
-        employeeToAdd.setGraduationDate(date);
+        addEmployeeCommand.setGraduationDate(date);
 
 
         // Is expected to return same object it receives
         ObjectMapper objectMapper = new ObjectMapper();
-        String employeeJson = objectMapper.writeValueAsString(employeeToAdd); // converts employee object to JSON string
+        String employeeJson = objectMapper.writeValueAsString(addEmployeeCommand); // converts employee object to JSON string
 
         // POST request (.post("/employee/")) takes to be a Json of employee in request Body
         getMockMvc().perform(MockMvcRequestBuilders.post("/employee/")
@@ -463,19 +463,19 @@ public class EmployeeControllerTests extends IntegrationTest {
     @Test
     @DatabaseSetup("/hr-only.xml")
     public void add_employee_by_hr_gender_null() throws Exception {
-        Employee employeeToAdd = new Employee();
-        employeeToAdd.setFirstName("ahmed");
-        employeeToAdd.setLastName("abbas");
-        employeeToAdd.setGrossSalary(10000f);
+        AddEmployeeCommand addEmployeeCommand = new AddEmployeeCommand();
+        addEmployeeCommand.setFirstName("ahmed");
+        addEmployeeCommand.setLastName("abbas");
+        addEmployeeCommand.setGrossSalary(10000f);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = simpleDateFormat.parse("2012-01-02");
-        employeeToAdd.setGraduationDate(date);
-        employeeToAdd.setNationalId("1234");
+        addEmployeeCommand.setGraduationDate(date);
+        addEmployeeCommand.setNationalId("1234");
 
 
         // Is expected to return same object it receives
         ObjectMapper objectMapper = new ObjectMapper();
-        String employeeJson = objectMapper.writeValueAsString(employeeToAdd); // converts employee object to JSON string
+        String employeeJson = objectMapper.writeValueAsString(addEmployeeCommand); // converts employee object to JSON string
 
         // POST request (.post("/employee/")) takes to be a Json of employee in request Body
         getMockMvc().perform(MockMvcRequestBuilders.post("/employee/")
@@ -491,17 +491,17 @@ public class EmployeeControllerTests extends IntegrationTest {
     @Test
     @DatabaseSetup("/hr-only.xml")
     public void add_employee_by_hr_graduation_date_null() throws Exception {
-        Employee employeeToAdd = new Employee();
-        employeeToAdd.setFirstName("ahmed");
-        employeeToAdd.setLastName("abbas");
-        employeeToAdd.setGrossSalary(10000f);
-        employeeToAdd.setNationalId("1234");
-        employeeToAdd.setGender(Gender.MALE);
+        AddEmployeeCommand addEmployeeCommand = new AddEmployeeCommand();
+        addEmployeeCommand.setFirstName("ahmed");
+        addEmployeeCommand.setLastName("abbas");
+        addEmployeeCommand.setGrossSalary(10000f);
+        addEmployeeCommand.setNationalId("1234");
+        addEmployeeCommand.setGender(Gender.MALE);
 
 
         // Is expected to return same object it receives
         ObjectMapper objectMapper = new ObjectMapper();
-        String employeeJson = objectMapper.writeValueAsString(employeeToAdd); // converts employee object to JSON string
+        String employeeJson = objectMapper.writeValueAsString(addEmployeeCommand); // converts employee object to JSON string
 
         // POST request (.post("/employee/")) takes to be a Json of employee in request Body
         getMockMvc().perform(MockMvcRequestBuilders.post("/employee/")
@@ -517,17 +517,17 @@ public class EmployeeControllerTests extends IntegrationTest {
     @Test
     @DatabaseSetup("/hr-only.xml")
     public void add_employee_by_hr_gross_salary_null() throws Exception {
-        Employee employeeToAdd = new Employee();
-        employeeToAdd.setFirstName("ahmed");
-        employeeToAdd.setLastName("abbas");
+        AddEmployeeCommand addEmployeeCommand = new AddEmployeeCommand();
+        addEmployeeCommand.setFirstName("ahmed");
+        addEmployeeCommand.setLastName("abbas");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = simpleDateFormat.parse("2012-01-02");
-        employeeToAdd.setGraduationDate(date);
-        employeeToAdd.setNationalId("1234");
-        employeeToAdd.setGender(Gender.MALE);
+        addEmployeeCommand.setGraduationDate(date);
+        addEmployeeCommand.setNationalId("1234");
+        addEmployeeCommand.setGender(Gender.MALE);
         // Is expected to return same object it receives
         ObjectMapper objectMapper = new ObjectMapper();
-        String employeeJson = objectMapper.writeValueAsString(employeeToAdd); // converts employee object to JSON string
+        String employeeJson = objectMapper.writeValueAsString(addEmployeeCommand); // converts employee object to JSON string
 
         // POST request (.post("/employee/")) takes to be a Json of employee in request Body
         getMockMvc().perform(MockMvcRequestBuilders.post("/employee/")
@@ -542,19 +542,19 @@ public class EmployeeControllerTests extends IntegrationTest {
     @Test
     @DatabaseSetup("/hr-only.xml")
     public void add_employee_by_hr_user_role_null() throws Exception {
-        Employee employeeToAdd = new Employee();
-        employeeToAdd.setFirstName("ahmed");
-        employeeToAdd.setGrossSalary(10000f);
+        AddEmployeeCommand addEmployeeCommand = new AddEmployeeCommand();
+        addEmployeeCommand.setFirstName("ahmed");
+        addEmployeeCommand.setGrossSalary(10000f);
 
-        employeeToAdd.setLastName("abbas");
+        addEmployeeCommand.setLastName("abbas");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = simpleDateFormat.parse("2012-01-02");
-        employeeToAdd.setGraduationDate(date);
-        employeeToAdd.setNationalId("1234");
-        employeeToAdd.setGender(Gender.MALE);
+        addEmployeeCommand.setGraduationDate(date);
+        addEmployeeCommand.setNationalId("1234");
+        addEmployeeCommand.setGender(Gender.MALE);
         // Is expected to return same object it receives
         ObjectMapper objectMapper = new ObjectMapper();
-        String employeeJson = objectMapper.writeValueAsString(employeeToAdd); // converts employee object to JSON string
+        String employeeJson = objectMapper.writeValueAsString(addEmployeeCommand); // converts employee object to JSON string
 
         // POST request (.post("/employee/")) takes to be a Json of employee in request Body
         getMockMvc().perform(MockMvcRequestBuilders.post("/employee/")
@@ -570,20 +570,21 @@ public class EmployeeControllerTests extends IntegrationTest {
     @Test
     @DatabaseSetup("/hr-only.xml")
     public void add_employee_by_hr_user_gross_salary_negative() throws Exception {
-        Employee employeeToAdd = new Employee();
-        employeeToAdd.setFullName("ahmed safty");
-        employeeToAdd.setGender(Gender.MALE);
-        employeeToAdd.setRole(EmployeeRole.EMPLOYEE);
+        AddEmployeeCommand addEmployeeCommand = new AddEmployeeCommand();
+        addEmployeeCommand.setFirstName("ahmed");
+        addEmployeeCommand.setLastName("ahmed");
+        addEmployeeCommand.setGender(Gender.MALE);
+        addEmployeeCommand.setRole(EmployeeRole.EMPLOYEE);
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = simpleDateFormat.parse("2012-01-02");
-        employeeToAdd.setGraduationDate(date);
+        addEmployeeCommand.setGraduationDate(date);
 
-        employeeToAdd.setNationalId("1234");
+        addEmployeeCommand.setNationalId("1234");
         // Is expected to return same object it receives
-        employeeToAdd.setGrossSalary(-500f);
+        addEmployeeCommand.setGrossSalary(-500f);
         ObjectMapper objectMapper = new ObjectMapper();
-        String employeeJson = objectMapper.writeValueAsString(employeeToAdd); // converts employee object to JSON string
+        String employeeJson = objectMapper.writeValueAsString(addEmployeeCommand); // converts employee object to JSON string
 
         // POST request (.post("/employee/")) takes to be a Json of employee in request Body
         getMockMvc().perform(MockMvcRequestBuilders.post("/employee/")
@@ -648,20 +649,21 @@ public class EmployeeControllerTests extends IntegrationTest {
     @Test
     @DatabaseSetup("/hr-only.xml")
     public void add_employee_with_hr_first_name_contains_numbers() throws Exception {
-        Employee employeeToAdd = new Employee();
-        employeeToAdd.setFullName("ahme2d safty");
-        employeeToAdd.setGender(Gender.MALE);
-        employeeToAdd.setRole(EmployeeRole.EMPLOYEE);
+        AddEmployeeCommand addEmployeeCommand = new AddEmployeeCommand();
+        addEmployeeCommand.setFirstName("ahme2d");
+        addEmployeeCommand.setLastName("ahmed");
+        addEmployeeCommand.setGender(Gender.MALE);
+        addEmployeeCommand.setRole(EmployeeRole.EMPLOYEE);
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = simpleDateFormat.parse("2012-01-02");
-        employeeToAdd.setGraduationDate(date);
+        addEmployeeCommand.setGraduationDate(date);
 
-        employeeToAdd.setNationalId("1234");
+        addEmployeeCommand.setNationalId("1234");
         // Is expected to return same object it receives
-        employeeToAdd.setGrossSalary(5000f);
+        addEmployeeCommand.setGrossSalary(5000f);
         ObjectMapper objectMapper = new ObjectMapper();
-        String employeeJson = objectMapper.writeValueAsString(employeeToAdd); // converts employee object to JSON string
+        String employeeJson = objectMapper.writeValueAsString(addEmployeeCommand); // converts employee object to JSON string
 
         // POST request (.post("/employee/")) takes to be a Json of employee in request Body
         getMockMvc().perform(MockMvcRequestBuilders.post("/employee/")
@@ -676,20 +678,21 @@ public class EmployeeControllerTests extends IntegrationTest {
     @Test
     @DatabaseSetup("/hr-only.xml")
     public void add_employee_with_hr_last_name_contains_numbers() throws Exception {
-        Employee employeeToAdd = new Employee();
-        employeeToAdd.setFullName("ahmed sa51fty");
-        employeeToAdd.setGender(Gender.MALE);
-        employeeToAdd.setRole(EmployeeRole.EMPLOYEE);
+        AddEmployeeCommand addEmployeeCommand = new AddEmployeeCommand();
+        addEmployeeCommand.setLastName("sa51fty");
+        addEmployeeCommand.setFirstName("saty");
+        addEmployeeCommand.setGender(Gender.MALE);
+        addEmployeeCommand.setRole(EmployeeRole.EMPLOYEE);
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = simpleDateFormat.parse("2012-01-02");
-        employeeToAdd.setGraduationDate(date);
+        addEmployeeCommand.setGraduationDate(date);
 
-        employeeToAdd.setNationalId("1234");
+        addEmployeeCommand.setNationalId("1234");
         // Is expected to return same object it receives
-        employeeToAdd.setGrossSalary(5000f);
+        addEmployeeCommand.setGrossSalary(5000f);
         ObjectMapper objectMapper = new ObjectMapper();
-        String employeeJson = objectMapper.writeValueAsString(employeeToAdd); // converts employee object to JSON string
+        String employeeJson = objectMapper.writeValueAsString(addEmployeeCommand); // converts employee object to JSON string
 
         // POST request (.post("/employee/")) takes to be a Json of employee in request Body
         getMockMvc().perform(MockMvcRequestBuilders.post("/employee/")
@@ -704,20 +707,21 @@ public class EmployeeControllerTests extends IntegrationTest {
     @Test
     @DatabaseSetup("/hr-only.xml")
     public void add_employee_with_hr_national_id_contains_letters() throws Exception {
-        Employee employeeToAdd = new Employee();
-        employeeToAdd.setFullName("ahmed safty");
-        employeeToAdd.setGender(Gender.MALE);
-        employeeToAdd.setRole(EmployeeRole.EMPLOYEE);
+        AddEmployeeCommand addEmployeeCommand = new AddEmployeeCommand();
+        addEmployeeCommand.setLastName("ahmed");
+        addEmployeeCommand.setFirstName("ahaha");
+        addEmployeeCommand.setGender(Gender.MALE);
+        addEmployeeCommand.setRole(EmployeeRole.EMPLOYEE);
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = simpleDateFormat.parse("2012-01-02");
-        employeeToAdd.setGraduationDate(date);
+        addEmployeeCommand.setGraduationDate(date);
 
-        employeeToAdd.setNationalId("123a4");
+        addEmployeeCommand.setNationalId("123a4");
         // Is expected to return same object it receives
-        employeeToAdd.setGrossSalary(5000f);
+        addEmployeeCommand.setGrossSalary(5000f);
         ObjectMapper objectMapper = new ObjectMapper();
-        String employeeJson = objectMapper.writeValueAsString(employeeToAdd); // converts employee object to JSON string
+        String employeeJson = objectMapper.writeValueAsString(addEmployeeCommand); // converts employee object to JSON string
 
         // POST request (.post("/employee/")) takes to be a Json of employee in request Body
         getMockMvc().perform(MockMvcRequestBuilders.post("/employee/")

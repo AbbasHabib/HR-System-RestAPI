@@ -40,6 +40,7 @@ create table employee
     national_id         varchar(255) not null,
     net_salary          float        null,
     role                varchar(255) not null,
+    expertise           TEXT         null,
     years_of_experience int          null,
     attendance_table_id bigint       null,
     department_id       bigint       null,

@@ -1,5 +1,6 @@
 package com.hrsystem.employee;
 
+import com.hrsystem.employee.commands.AddEmployeeCommand;
 import com.hrsystem.employee.commands.EmployeeModificationByLoggedUserCommand;
 import com.hrsystem.employee.commands.EmployeeModifyCommand;
 import com.hrsystem.employee.commands.EmployeeSalaryModifyCommand;
@@ -13,7 +14,7 @@ import com.hrsystem.security.UserCredentials;
 import com.hrsystem.security.UserCredentialsRepository;
 import com.hrsystem.security.UserPrincipalDetailsService;
 import com.hrsystem.utilities.interfaces.constants.SalariesYearsConstants;
-import com.hrsystem.utilities.YearAndTimeGenerator;
+import com.hrsystem.utilities.TimeGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -33,17 +34,19 @@ public class EmployeeService {
     @Autowired
     private UserPrincipalDetailsService userPrincipalDetailsService;
 
-    public EmployeeInfoDTO addEmployee(Employee employee) throws Exception {
-        Employee employeeToAdd = null;
-        this.handleEmployeeInsertionExceptions(employee);
+    public EmployeeInfoDTO addEmployee(AddEmployeeCommand addEmployeeCommand) throws Exception {
+        Employee employeeToAdd = new Employee();
+        addEmployeeCommand.commandToEmployee(employeeToAdd);
 
-        if (employeeRepository.findEmployeeByNationalId(employee.getNationalId()).isPresent())
+        this.handleEmployeeInsertionExceptions(employeeToAdd);
+
+        if (employeeRepository.findEmployeeByNationalId(employeeToAdd.getNationalId()).isPresent())
             throw new CustomException("nationalId already exists!");
 
-        if (employee.getId() == null)
-            employeeToAdd = saveEmployee(employee);
-        else if (this.getEmployee(employee.getId()) == null)
-            employeeToAdd = saveEmployee(employee);
+        if (employeeToAdd.getId() == null)
+            employeeToAdd = saveEmployee(employeeToAdd);
+        else if (this.getEmployee(employeeToAdd.getId()) == null)
+            employeeToAdd = saveEmployee(employeeToAdd);
         if (employeeToAdd != null) {
             EmployeeInfoDTO employeeInfoDTO = new EmployeeInfoDTO();
             employeeInfoDTO.setEmployeeToDTO(employeeToAdd);
@@ -90,7 +93,7 @@ public class EmployeeService {
     public void AddAttendanceTable(Employee employee) {
         if (employee.getAttendanceTable() == null) {
             AttendanceTable attendanceTableForNewEmployee = new AttendanceTable(employee);
-            attendanceTableForNewEmployee.setInitialWorkingYears(YearAndTimeGenerator.getCurrentYear() - employee.calcGraduationYear());
+            attendanceTableForNewEmployee.setInitialWorkingYears((new TimeGenerator()).getCurrentYear() - employee.calcGraduationYear());
             AttendanceTable attendanceTableForNewEmployeeFromServer = attendanceRepository.save(attendanceTableForNewEmployee);
             employee.setAttendanceTable(attendanceTableForNewEmployeeFromServer);
         }
