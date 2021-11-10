@@ -48,6 +48,17 @@ json date from request body gets mapped to a java object that gets stored in the
 
 ![change-password-postman](screen-shots/logged-user-change-password-postman.JPG)
 
+## Entity Relation Diagram
+
+![ERD](screen-shots/ERD.JPG)
+
+## Test Cases
+- there are currently **56 test cases** for this application covering most of the possible scenarios.
+- currently, working on adding I will keep adding more test cases and reducing the number of code warnings.
+
+![change-password-postman](screen-shots/TestCase.JPG)
+
+
 ## ~~Current TodoList~~
 - [x] add command + api to modify employee salary
 - [x] working on attendance apis
@@ -69,9 +80,6 @@ json date from request body gets mapped to a java object that gets stored in the
 - [x] Improve Testing using **_DBunit_**
 - [x] mapping data from DTO to main entities delete all boilerplate code.
 - [x] **Remove the beautiful magic numbers ✨**
-
-
-
 ## ~~ToDo List~~ 
 
 - [x] Add Team to Employee
